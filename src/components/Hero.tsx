@@ -48,7 +48,7 @@ const Hero = () => {
               size="lg"
               className="border-border text-foreground hover:bg-secondary text-base"
             >
-              <a href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/5521960001439" target="_blank" rel="noopener noreferrer">
                 <PhoneCall className="w-5 h-5 mr-2" /> Fale Conosco
               </a>
             </Button>
