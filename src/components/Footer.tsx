@@ -7,7 +7,7 @@ const Footer = () => (
         <div className="flex items-center gap-2">
           <Shield className="w-6 h-6 text-primary" />
           <span className="text-lg font-bold">
-            Tech<span className="text-primary">Guard</span>
+            Espier.<span className="text-primary">Telecom</span>
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
@@ -18,7 +18,7 @@ const Footer = () => (
           <a href="#contato" className="hover:text-primary transition-colors">Contato</a>
         </div>
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} TechGuard. Todos os direitos reservados.
+          © {new Date().getFullYear()} Espier.Telecom. Todos os direitos reservados.
         </p>
       </div>
     </div>
