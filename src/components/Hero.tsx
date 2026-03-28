@@ -7,8 +7,9 @@ const Hero = () => {
     <section id="home" className="relative min-h-screen flex items-center pt-20">
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        <img src={heroBg} alt="Tecnologia" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+        <img src={heroBg} alt="Tecnologia" className="w-full h-full object-cover" width={1920} height={1080} />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/50 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-background/60" />
       </div>
 
       <div className="section-container relative z-10 py-20">
@@ -20,13 +21,13 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight animate-fade-up-delay-1">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight animate-fade-up-delay-1 text-foreground/90 drop-shadow-lg">
             Tecnologia que{" "}
-            <span className="gradient-text">protege</span> e{" "}
-            <span className="gradient-text">impulsiona</span> seu negócio
+            <span className="gradient-text opacity-90">protege</span> e{" "}
+            <span className="gradient-text opacity-90">impulsiona</span> seu negócio
           </h1>
 
-          <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-2xl animate-fade-up-delay-2">
+          <p className="mt-6 text-lg sm:text-xl text-muted-foreground/80 max-w-2xl animate-fade-up-delay-2 drop-shadow-md">
             Infraestrutura de TI, cabeamento estruturado, segurança eletrônica e
             suporte técnico especializado. Tudo o que sua empresa precisa em um
             único parceiro.
