@@ -1,10 +1,10 @@
 import { Star, Quote } from "lucide-react";
 
 const testimonials = [
-  { name: "Carlos Eduardo", role: "CEO — LogTech Transportes", text: "A TechGuard transformou nossa infraestrutura de TI. O cabeamento estruturado ficou impecável e o suporte é excepcional. Recomendo fortemente!" },
+  { name: "Carlos Eduardo", role: "CEO — LogTech Transportes", text: "A Espier.Telecom transformou nossa infraestrutura de TI. O cabeamento estruturado ficou impecável e o suporte é excepcional. Recomendo fortemente!" },
   { name: "Ana Paula Ferreira", role: "Diretora — Clínica Saúde+", text: "Instalaram câmeras e controle de acesso em nossa clínica com total profissionalismo. O monitoramento remoto nos dá tranquilidade 24 horas." },
-  { name: "Roberto Mendes", role: "Gerente de TI — Construtora ABC", text: "A migração para a nuvem foi perfeita. Zero downtime e performance muito superior. A equipe é extremamente competente e organizada." },
-  { name: "Juliana Santos", role: "Proprietária — JS Contabilidade", text: "Com a terceirização de TI da TechGuard, podemos focar 100% nos nossos clientes. O suporte é rápido e sempre resolve tudo." },
+  { name: "Roberto Mendes", role: "Gerente de TI — Construtora ABC", text: "A migração para a nuvem foi perfeita. Zero downtime e performance muito superior. A equipe da Espier.Telecom é extremamente competente e organizada." },
+  { name: "Juliana Santos", role: "Proprietária — JS Contabilidade", text: "Com a terceirização de TI da Espier.Telecom, podemos focar 100% nos nossos clientes. O suporte é rápido e sempre resolve tudo." },
 ];
 
 const Testimonials = () => (
