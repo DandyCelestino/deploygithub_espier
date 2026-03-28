@@ -21,7 +21,7 @@ const Navbar = () => {
         <a href="#home" className="flex items-center gap-2">
           <Shield className="w-8 h-8 text-primary" />
           <span className="text-xl font-bold tracking-tight">
-            Tech<span className="text-primary">Guard</span>
+            Espier.<span className="text-primary">Telecom</span>
           </span>
         </a>
 

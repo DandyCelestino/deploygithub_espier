@@ -1,6 +1,6 @@
 import { ArrowRight, PhoneCall, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroBg from "@/assets/hero-bg.png";
 
 const Hero = () => {
   return (
