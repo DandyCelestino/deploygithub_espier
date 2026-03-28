@@ -73,7 +73,7 @@ const Contact = () => {
               </div>
               <div>
                 <h4 className="font-bold mb-1">Telefone / WhatsApp</h4>
-                <p className="text-muted-foreground">(00) 00000-0000</p>
+                <p className="text-muted-foreground">(21) 96000-1439</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
