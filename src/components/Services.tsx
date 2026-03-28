@@ -3,7 +3,7 @@ import {
   Brain, Monitor, Users, Cable, CheckSquare, Activity, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import cablingImg from "@/assets/cabling.jpg";
+import cablingImg from "@/assets/serverroom.png";
 
 const services = [
   { icon: Wrench, title: "Manutenção e Suporte Técnico", desc: "Atendimento presencial e remoto para manutenção preventiva e corretiva de computadores, notebooks e periféricos.", benefits: ["Redução de downtime", "Maior vida útil dos equipamentos"] },

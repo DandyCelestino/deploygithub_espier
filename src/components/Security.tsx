@@ -1,6 +1,6 @@
 import { Camera, Wifi, Bell, Fingerprint, Zap, Cpu, Link2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import securityImg from "@/assets/security.jpg";
+import securityImg from "@/assets/installation.png";
 
 const securityServices = [
   { icon: Camera, title: "CFTV — Câmeras de Segurança", desc: "Instalação de câmeras IP, analógicas e sistemas completos de monitoramento com acesso remoto via smartphone." },

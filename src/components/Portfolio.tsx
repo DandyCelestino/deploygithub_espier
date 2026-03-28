@@ -1,14 +1,16 @@
-import cablingImg from "@/assets/cabling.jpg";
-import securityImg from "@/assets/security.jpg";
-import heroImg from "@/assets/hero-bg.jpg";
+import serverroomImg from "@/assets/serverroom.png";
+import monitoringImg from "@/assets/monitoring.png";
+import receptionImg from "@/assets/reception.png";
+import installationImg from "@/assets/installation.png";
+import securityCamImg from "@/assets/security-cam.png";
 
 const projects = [
-  { img: cablingImg, title: "Data Center Corporativo", category: "Cabeamento Estruturado", desc: "Projeto completo de cabeamento Cat6 com certificação para empresa de 200 pontos." },
-  { img: securityImg, title: "Monitoramento Industrial", category: "Segurança Eletrônica", desc: "Sistema de CFTV com 48 câmeras IP e monitoramento remoto 24h." },
-  { img: heroImg, title: "Infraestrutura Cloud", category: "Cloud Computing", desc: "Migração completa de servidores on-premise para nuvem com zero downtime." },
-  { img: cablingImg, title: "Rede Hospitalar", category: "Redes & Infraestrutura", desc: "Rede de alta disponibilidade para hospital com 500 leitos e redundância total." },
-  { img: securityImg, title: "Condomínio Inteligente", category: "Segurança & Automação", desc: "Controle de acesso, CFTV e automação integrados em condomínio residencial." },
-  { img: heroImg, title: "Outsourcing Completo", category: "Terceirização de TI", desc: "Gestão completa de TI para escritório de advocacia com 80 estações." },
+  { img: serverroomImg, title: "Data Center Corporativo", category: "Cabeamento Estruturado", desc: "Projeto completo de cabeamento Cat6 com certificação para empresa de 200 pontos." },
+  { img: monitoringImg, title: "Monitoramento Industrial", category: "Segurança Eletrônica", desc: "Sistema de CFTV com 48 câmeras IP e monitoramento remoto 24h." },
+  { img: receptionImg, title: "Infraestrutura Cloud", category: "Cloud Computing", desc: "Migração completa de servidores on-premise para nuvem com zero downtime." },
+  { img: securityCamImg, title: "Rede Hospitalar", category: "Redes & Infraestrutura", desc: "Rede de alta disponibilidade para hospital com 500 leitos e redundância total." },
+  { img: installationImg, title: "Condomínio Inteligente", category: "Segurança & Automação", desc: "Controle de acesso, CFTV e automação integrados em condomínio residencial." },
+  { img: monitoringImg, title: "Outsourcing Completo", category: "Terceirização de TI", desc: "Gestão completa de TI para escritório de advocacia com 80 estações." },
 ];
 
 const Portfolio = () => (
