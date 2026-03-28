@@ -21,7 +21,7 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight animate-fade-up-delay-1 text-foreground/90 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight animate-fade-up-delay-1 text-foreground/90 drop-shadow-lg font-heading">
             Tecnologia que{" "}
             <span className="gradient-text opacity-90">protege</span> e{" "}
             <span className="gradient-text opacity-90">impulsiona</span> seu negócio

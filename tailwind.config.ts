@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Poppins", "system-ui", "sans-serif"],
-        heading: ["Raleway", "system-ui", "sans-serif"],
+        heading: ["Montserrat", "system-ui", "sans-serif"],
         mono: ["monospace"],
       },
       colors: {
