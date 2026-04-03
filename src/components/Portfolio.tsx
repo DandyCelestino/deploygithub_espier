@@ -1,16 +1,12 @@
-import serverroomImg from "@/assets/serverroom.png";
-import monitoringImg from "@/assets/monitoring.png";
-import receptionImg from "@/assets/reception.png";
-import installationImg from "@/assets/installation.png";
-import securityCamImg from "@/assets/security-cam.png";
+import { Cable, Camera, Cloud, Network, ShieldCheck, Users, LucideIcon } from "lucide-react";
 
-const projects = [
-  { img: serverroomImg, title: "Data Center Corporativo", category: "Cabeamento Estruturado", desc: "Projeto completo de cabeamento Cat6 com certificação para empresa de 200 pontos." },
-  { img: monitoringImg, title: "Monitoramento Industrial", category: "Segurança Eletrônica", desc: "Sistema de CFTV com 48 câmeras IP e monitoramento remoto 24h." },
-  { img: receptionImg, title: "Infraestrutura Cloud", category: "Cloud Computing", desc: "Migração completa de servidores on-premise para nuvem com zero downtime." },
-  { img: securityCamImg, title: "Rede Hospitalar", category: "Redes & Infraestrutura", desc: "Rede de alta disponibilidade para hospital com 500 leitos e redundância total." },
-  { img: installationImg, title: "Condomínio Inteligente", category: "Segurança & Automação", desc: "Controle de acesso, CFTV e automação integrados em condomínio residencial." },
-  { img: monitoringImg, title: "Outsourcing Completo", category: "Terceirização de TI", desc: "Gestão completa de TI para escritório de advocacia com 80 estações." },
+const projects: { icon: LucideIcon; title: string; category: string; desc: string }[] = [
+  { icon: Cable, title: "Data Center Corporativo", category: "Cabeamento Estruturado", desc: "Projeto completo de cabeamento Cat6 com certificação para empresa de 200 pontos." },
+  { icon: Camera, title: "Monitoramento Industrial", category: "Segurança Eletrônica", desc: "Sistema de CFTV com 48 câmeras IP e monitoramento remoto 24h." },
+  { icon: Cloud, title: "Infraestrutura Cloud", category: "Cloud Computing", desc: "Migração completa de servidores on-premise para nuvem com zero downtime." },
+  { icon: Network, title: "Rede Hospitalar", category: "Redes & Infraestrutura", desc: "Rede de alta disponibilidade para hospital com 500 leitos e redundância total." },
+  { icon: ShieldCheck, title: "Condomínio Inteligente", category: "Segurança & Automação", desc: "Controle de acesso, CFTV e automação integrados em condomínio residencial." },
+  { icon: Users, title: "Outsourcing Completo", category: "Terceirização de TI", desc: "Gestão completa de TI para escritório de advocacia com 80 estações." },
 ];
 
 const Portfolio = () => (
@@ -29,13 +25,8 @@ const Portfolio = () => (
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((p, i) => (
           <div key={i} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-1">
-            <div className="h-48 overflow-hidden">
-              <img
-                src={p.img}
-                alt={p.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                loading="lazy"
-              />
+            <div className="h-48 flex items-center justify-center bg-secondary/50">
+              <p.icon className="w-16 h-16 text-primary group-hover:scale-110 transition-transform duration-500" />
             </div>
             <div className="p-6">
               <span className="text-xs font-mono text-accent uppercase">{p.category}</span>
