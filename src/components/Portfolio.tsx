@@ -24,14 +24,14 @@ const Portfolio = () => (
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((p, i) => (
-          <div key={i} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-1">
+          <div key={i} className="group bg-card text-card-foreground border border-border rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-1">
             <div className="h-48 flex items-center justify-center bg-secondary/50">
               <p.icon className="w-16 h-16 text-primary group-hover:scale-110 transition-transform duration-500" />
             </div>
             <div className="p-6">
               <span className="text-xs font-mono text-accent uppercase">{p.category}</span>
               <h3 className="text-lg font-bold mt-1 mb-2">{p.title}</h3>
-              <p className="text-sm text-muted-foreground">{p.desc}</p>
+              <p className="text-sm text-card-foreground/70">{p.desc}</p>
             </div>
           </div>
         ))}

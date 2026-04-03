@@ -41,11 +41,11 @@ const Services = () => (
         {services.map((s) => (
           <div
             key={s.title}
-            className="group bg-card border border-border rounded-lg p-6 hover:border-primary/40 transition-all hover:-translate-y-1"
+            className="group bg-card text-card-foreground border border-border rounded-lg p-6 hover:border-primary/40 transition-all hover:-translate-y-1"
           >
             <s.icon className="w-9 h-9 text-primary mb-4 group-hover:scale-110 transition-transform" />
             <h3 className="text-lg font-bold mb-2">{s.title}</h3>
-            <p className="text-sm text-muted-foreground mb-4">{s.desc}</p>
+            <p className="text-sm text-card-foreground/70 mb-4">{s.desc}</p>
             <div className="flex flex-wrap gap-2">
               {s.benefits.map((b) => (
                 <span key={b} className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent border border-accent/20">
