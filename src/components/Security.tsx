@@ -38,15 +38,15 @@ const Security = () => (
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {securityServices.map((s) => (
-          <div
+           <div
             key={s.title}
-            className="group bg-card border border-border rounded-lg p-6 hover:border-primary/40 transition-all hover:-translate-y-1"
+            className="group bg-card text-card-foreground border border-border rounded-lg p-6 hover:border-primary/40 transition-all hover:-translate-y-1"
           >
             <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
               <s.icon className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="font-bold mb-2">{s.title}</h3>
-            <p className="text-sm text-muted-foreground">{s.desc}</p>
+            <h3 className="font-bold mb-2 text-card-foreground">{s.title}</h3>
+            <p className="text-sm text-card-foreground/70">{s.desc}</p>
           </div>
         ))}
       </div>
