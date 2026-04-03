@@ -11,7 +11,12 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: "Mensagem enviada!", description: "Entraremos em contato em breve." });
+    const subject = encodeURIComponent(`Contato de ${form.nome}`);
+    const body = encodeURIComponent(
+      `Nome: ${form.nome}\nE-mail: ${form.email}\nTelefone: ${form.telefone}\n\nMensagem:\n${form.mensagem}`
+    );
+    window.open(`mailto:espier.telecom@gmail.com?subject=${subject}&body=${body}`, "_blank");
+    toast({ title: "Mensagem enviada!", description: "Seu cliente de e-mail foi aberto para enviar a mensagem." });
     setForm({ nome: "", email: "", telefone: "", mensagem: "" });
   };
 
