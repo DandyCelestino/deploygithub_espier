@@ -19,13 +19,13 @@ const Testimonials = () => (
 
       <div className="grid md:grid-cols-2 gap-6">
         {testimonials.map((t, i) => (
-          <div key={i} className="bg-card border border-border rounded-xl p-8 hover:border-primary/30 transition-colors">
+          <div key={i} className="bg-card text-card-foreground border border-border rounded-xl p-8 hover:border-primary/30 transition-colors">
             <Quote className="w-8 h-8 text-primary/30 mb-4" />
-            <p className="text-foreground mb-6 leading-relaxed">{t.text}</p>
+            <p className="text-card-foreground/90 mb-6 leading-relaxed">{t.text}</p>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-bold">{t.name}</p>
-                <p className="text-sm text-muted-foreground">{t.role}</p>
+                <p className="font-bold text-card-foreground">{t.name}</p>
+                <p className="text-sm text-card-foreground/60">{t.role}</p>
               </div>
               <div className="flex gap-1">
                 {[...Array(5)].map((_, j) => (
