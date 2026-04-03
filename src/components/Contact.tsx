@@ -11,7 +11,12 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({ title: "Mensagem enviada!", description: "Entraremos em contato em breve." });
+    const subject = encodeURIComponent(`Contato de ${form.nome}`);
+    const body = encodeURIComponent(
+      `Nome: ${form.nome}\nE-mail: ${form.email}\nTelefone: ${form.telefone}\n\nMensagem:\n${form.mensagem}`
+    );
+    window.open(`mailto:espier.telecom@gmail.com?subject=${subject}&body=${body}`, "_blank");
+    toast({ title: "Mensagem enviada!", description: "Seu cliente de e-mail foi aberto para enviar a mensagem." });
     setForm({ nome: "", email: "", telefone: "", mensagem: "" });
   };
 
@@ -36,7 +41,7 @@ const Contact = () => {
               value={form.nome}
               onChange={(e) => setForm({ ...form, nome: e.target.value })}
               required
-              className="bg-secondary border-border text-foreground placeholder:text-muted-foreground"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
             />
             <Input
               type="email"
@@ -44,13 +49,13 @@ const Contact = () => {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
-              className="bg-secondary border-border text-foreground placeholder:text-muted-foreground"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
             />
             <Input
               placeholder="Seu telefone"
               value={form.telefone}
               onChange={(e) => setForm({ ...form, telefone: e.target.value })}
-              className="bg-secondary border-border text-foreground placeholder:text-muted-foreground"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
             />
             <Textarea
               placeholder="Sua mensagem"
@@ -58,7 +63,7 @@ const Contact = () => {
               onChange={(e) => setForm({ ...form, mensagem: e.target.value })}
               required
               rows={5}
-              className="bg-secondary border-border text-foreground placeholder:text-muted-foreground"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
             />
             <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-red">
               <Send className="w-4 h-4 mr-2" /> Enviar Mensagem
