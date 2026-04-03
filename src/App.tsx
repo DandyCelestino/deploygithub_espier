@@ -19,6 +19,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/seguranca/alarmes" element={<Alarmes />} />
+          <Route path="/seguranca/cftv" element={<CFTV />} />
+          <Route path="/seguranca/controle-de-acesso" element={<ControleAcesso />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
