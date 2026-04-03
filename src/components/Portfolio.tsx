@@ -31,7 +31,7 @@ const Portfolio = () => (
             <div className="p-6">
               <span className="text-xs font-mono text-accent uppercase">{p.category}</span>
               <h3 className="text-lg font-bold mt-1 mb-2">{p.title}</h3>
-              <p className="text-sm text-muted-foreground">{p.desc}</p>
+              <p className="text-sm text-card-foreground/70">{p.desc}</p>
             </div>
           </div>
         ))}
