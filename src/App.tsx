@@ -5,6 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Alarmes from "./pages/Alarmes.tsx";
+import CFTV from "./pages/CFTV.tsx";
+import ControleAcesso from "./pages/ControleAcesso.tsx";
 
 const queryClient = new QueryClient();
 
