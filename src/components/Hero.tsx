@@ -21,10 +21,8 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight animate-fade-up-delay-1 text-foreground/90 drop-shadow-lg font-heading">
-            Tecnologia que{" "}
-            <span className="gradient-text opacity-90">protege</span> e{" "}
-            <span className="gradient-text opacity-90">impulsiona</span> seu negócio
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight animate-fade-up-delay-1 text-muted-foreground drop-shadow-lg font-heading">
+            Tecnologia que <span className="text-foreground">Protege</span>
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl text-muted-foreground/80 max-w-2xl animate-fade-up-delay-2 drop-shadow-md">
