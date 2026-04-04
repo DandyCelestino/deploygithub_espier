@@ -7,6 +7,7 @@ import {
   Settings,
   LayoutDashboard,
   LogOut,
+  Camera,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
