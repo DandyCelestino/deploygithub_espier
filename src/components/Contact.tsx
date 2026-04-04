@@ -15,7 +15,7 @@ const Contact = () => {
     const body = encodeURIComponent(
       `Nome: ${form.nome}\nE-mail: ${form.email}\nTelefone: ${form.telefone}\n\nMensagem:\n${form.mensagem}`
     );
-    window.open(`mailto:espier.telecom@gmail.com?subject=${subject}&body=${body}`, "_blank");
+    window.location.href = `mailto:espier.telecom@gmail.com?subject=${subject}&body=${body}`;
     toast({ title: "Mensagem enviada!", description: "Seu cliente de e-mail foi aberto para enviar a mensagem." });
     setForm({ nome: "", email: "", telefone: "", mensagem: "" });
   };
