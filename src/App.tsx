@@ -37,7 +37,7 @@ const App = () => (
             <Route path="/seguranca/alarmes" element={<Alarmes />} />
             <Route path="/seguranca/cftv" element={<CFTV />} />
             <Route path="/seguranca/controle-de-acesso" element={<ControleAcesso />} />
-
+            <Route path="/acompanhar" element={<AcompanharOS />} />
             {/* Área Restrita */}
             <Route
               path="/admin"
