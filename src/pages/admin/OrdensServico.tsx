@@ -1,29 +1,191 @@
-import { ClipboardList } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { ClipboardList, Play, CheckCircle, Search } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+const statusColors: Record<string, string> = {
+  aberta: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  em_andamento: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  concluida: "bg-green-500/20 text-green-400 border-green-500/30",
+  cancelada: "bg-red-500/20 text-red-400 border-red-500/30",
+};
+
+const statusLabels: Record<string, string> = {
+  aberta: "Aberta",
+  em_andamento: "Em Andamento",
+  concluida: "Concluída",
+  cancelada: "Cancelada",
+};
 
 const OrdensServico = () => {
+  const { user, profile, hasRole } = useAuth();
+  const queryClient = useQueryClient();
+  const [search, setSearch] = useState("");
+  const [selectedOS, setSelectedOS] = useState<any>(null);
+  const [obs, setObs] = useState("");
+  const canManage = hasRole("admin") || hasRole("gerente");
+  const isTecnico = hasRole("tecnico");
+
+  const { data: ordens = [], isLoading } = useQuery({
+    queryKey: ["ordens_servico"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("ordens_servico").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Check if tecnico already has an active order
+  const activeOrder = isTecnico ? ordens.find((o) => o.tecnico_id === user?.id && (o.status === "em_andamento")) : null;
+
+  const assignMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("ordens_servico").update({
+        tecnico_id: user!.id,
+        tecnico_nome: profile?.full_name || "",
+        status: "em_andamento",
+        data_inicio: new Date().toISOString(),
+      }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ordens_servico"] });
+      toast.success("Ordem atribuída com sucesso!");
+    },
+    onError: () => toast.error("Erro ao atribuir ordem"),
+  });
+
+  const completeMutation = useMutation({
+    mutationFn: async ({ id, observacoes }: { id: string; observacoes: string }) => {
+      const { error } = await supabase.from("ordens_servico").update({
+        status: "concluida",
+        data_conclusao: new Date().toISOString(),
+        observacoes,
+      }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ordens_servico"] });
+      setSelectedOS(null);
+      setObs("");
+      toast.success("Ordem concluída!");
+    },
+    onError: () => toast.error("Erro ao concluir ordem"),
+  });
+
+  const cancelMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("ordens_servico").update({ status: "cancelada" }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ordens_servico"] });
+      toast.success("Ordem cancelada!");
+    },
+    onError: () => toast.error("Erro ao cancelar ordem"),
+  });
+
+  const filtered = ordens.filter((o) =>
+    o.cliente_nome.toLowerCase().includes(search.toLowerCase()) ||
+    o.servico_solicitado.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Ordens de Serviço</h1>
-        <p className="text-muted-foreground">
-          Gerencie as ordens de serviço atribuídas a técnicos.
-        </p>
+        <h1 className="text-2xl font-bold text-white">Ordens de Serviço</h1>
+        <p className="text-gray-400">Gerencie as ordens de serviço atribuídas a técnicos.</p>
+        {isTecnico && activeOrder && (
+          <p className="text-yellow-400 text-sm mt-1">⚠ Você já possui uma ordem em andamento. Conclua-a antes de selecionar outra.</p>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Search className="h-4 w-4 text-gray-400" />
+        <Input placeholder="Buscar por cliente ou serviço..." className="max-w-sm bg-background border-border text-white placeholder:text-gray-500" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       <Card className="bg-card border-border">
-        <CardHeader>
-          <CardTitle className="text-card-foreground flex items-center gap-2">
-            <ClipboardList className="h-5 w-5 text-primary" />
-            Ordens Disponíveis
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground text-sm">
-            Nenhuma ordem de serviço disponível no momento. As ordens aparecerão aqui quando orçamentos forem aprovados.
-          </p>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border">
+                <TableHead className="text-gray-300">Cliente</TableHead>
+                <TableHead className="text-gray-300">Serviço</TableHead>
+                <TableHead className="text-gray-300">Local</TableHead>
+                <TableHead className="text-gray-300">Técnico</TableHead>
+                <TableHead className="text-gray-300">Status</TableHead>
+                <TableHead className="text-gray-300">Data</TableHead>
+                <TableHead className="text-gray-300">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow><TableCell colSpan={7} className="text-center text-gray-400">Carregando...</TableCell></TableRow>
+              ) : filtered.length === 0 ? (
+                <TableRow><TableCell colSpan={7} className="text-center text-gray-400">Nenhuma ordem de serviço encontrada.</TableCell></TableRow>
+              ) : filtered.map((os) => (
+                <TableRow key={os.id} className="border-border">
+                  <TableCell className="text-white font-medium">{os.cliente_nome}</TableCell>
+                  <TableCell className="text-gray-300">{os.servico_solicitado}</TableCell>
+                  <TableCell className="text-gray-300">{os.cidade}</TableCell>
+                  <TableCell className="text-gray-300">{os.tecnico_nome || "—"}</TableCell>
+                  <TableCell><Badge className={statusColors[os.status]}>{statusLabels[os.status]}</Badge></TableCell>
+                  <TableCell className="text-gray-400 text-xs">{new Date(os.created_at).toLocaleDateString("pt-BR")}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      {/* Técnico can pick open orders if no active order */}
+                      {isTecnico && os.status === "aberta" && !activeOrder && (
+                        <Button size="sm" variant="outline" className="gap-1 text-blue-400 border-blue-500/30" onClick={() => assignMutation.mutate(os.id)}>
+                          <Play className="h-3 w-3" /> Selecionar
+                        </Button>
+                      )}
+                      {/* Técnico can complete their own order */}
+                      {isTecnico && os.status === "em_andamento" && os.tecnico_id === user?.id && (
+                        <Button size="sm" variant="outline" className="gap-1 text-green-400 border-green-500/30" onClick={() => setSelectedOS(os)}>
+                          <CheckCircle className="h-3 w-3" /> Concluir
+                        </Button>
+                      )}
+                      {/* Admin can cancel */}
+                      {canManage && (os.status === "aberta" || os.status === "em_andamento") && (
+                        <Button size="sm" variant="ghost" className="text-red-400" onClick={() => cancelMutation.mutate(os.id)}>Cancelar</Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
+
+      {/* Complete OS dialog */}
+      <Dialog open={!!selectedOS} onOpenChange={() => setSelectedOS(null)}>
+        <DialogContent className="bg-card border-border">
+          <DialogHeader><DialogTitle className="text-white">Concluir Ordem de Serviço</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <p className="text-gray-300 text-sm">Cliente: <strong className="text-white">{selectedOS?.cliente_nome}</strong></p>
+            <p className="text-gray-300 text-sm">Serviço: <strong className="text-white">{selectedOS?.servico_solicitado}</strong></p>
+            <div>
+              <Label className="text-gray-300">Observações da conclusão</Label>
+              <Textarea className="bg-background border-border text-white" value={obs} onChange={(e) => setObs(e.target.value)} placeholder="Descreva o que foi realizado..." />
+            </div>
+            <Button className="w-full" onClick={() => completeMutation.mutate({ id: selectedOS.id, observacoes: obs })} disabled={completeMutation.isPending}>
+              {completeMutation.isPending ? "Salvando..." : "Confirmar Conclusão"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
