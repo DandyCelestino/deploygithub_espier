@@ -12,11 +12,12 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { email, password, full_name, matricula, role } = await req.json();
+    const { email, password, full_name, matricula, role, roles } = await req.json();
+    const rolesList: string[] = roles || (role ? [role] : []);
 
-    if (!email || !password || !full_name || !role) {
+    if (!email || !password || !full_name || rolesList.length === 0) {
       return new Response(
-        JSON.stringify({ error: "email, password, full_name e role são obrigatórios" }),
+        JSON.stringify({ error: "email, password, full_name e pelo menos uma role são obrigatórios" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
