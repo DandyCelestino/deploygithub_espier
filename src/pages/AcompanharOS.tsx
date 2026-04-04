@@ -56,7 +56,8 @@ const AcompanharOS = () => {
     try {
       const { data: result, error } = await supabase.rpc("get_os_by_tracking_code", { _codigo: codigo.trim() });
       if (error) throw error;
-      if (!result || !result.ordem) {
+      const parsed = result as unknown as OSData;
+      if (!parsed || !parsed.ordem) {
         toast.error("Código não encontrado.");
         setData(null);
       } else {
