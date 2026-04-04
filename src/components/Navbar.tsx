@@ -84,6 +84,14 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
+            ) : (link as any).isRoute ? (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
             ) : (
               <a
                 key={link.href}
