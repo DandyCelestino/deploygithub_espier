@@ -19,6 +19,7 @@ const navLinks = [
   { label: "Portfólio", href: "#portfolio" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Contato", href: "#contato" },
+  { label: "Área Restrita", href: "/login", isRoute: true },
 ];
 
 const Navbar = () => {
