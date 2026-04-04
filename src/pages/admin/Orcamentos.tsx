@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FileText, Plus, Search, Eye, CheckCircle, XCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,6 +33,9 @@ const Orcamentos = () => {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [viewItem, setViewItem] = useState<any>(null);
+  const [approveItem, setApproveItem] = useState<any>(null);
+  const [valorInstalacao, setValorInstalacao] = useState("");
+  const [prazoTermino, setPrazoTermino] = useState("");
   const canManage = hasRole("admin") || hasRole("gerente");
 
   const [form, setForm] = useState({
@@ -68,27 +71,42 @@ const Orcamentos = () => {
     onError: () => toast.error("Erro ao criar orçamento"),
   });
 
-  const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("orcamentos").update({ status }).eq("id", id);
+  const approveMutation = useMutation({
+    mutationFn: async ({ id, valor_instalacao, prazo_termino }: { id: string; valor_instalacao: number; prazo_termino: string }) => {
+      const { error } = await supabase.from("orcamentos").update({ status: "aprovado", valor_instalacao }).eq("id", id);
       if (error) throw error;
-      if (status === "aprovado") {
-        const orc = orcamentos.find((o) => o.id === id);
-        if (orc) {
-          const { error: osError } = await supabase.from("ordens_servico").insert({
-            orcamento_id: id,
-            cliente_nome: orc.cliente_nome,
-            endereco: orc.endereco,
-            cidade: orc.cidade,
-            servico_solicitado: orc.servico_solicitado,
-          });
-          if (osError) throw osError;
-        }
+      const orc = orcamentos.find((o) => o.id === id);
+      if (orc) {
+        const { error: osError } = await supabase.from("ordens_servico").insert({
+          orcamento_id: id,
+          cliente_nome: orc.cliente_nome,
+          endereco: orc.endereco,
+          cidade: orc.cidade,
+          servico_solicitado: orc.servico_solicitado,
+          valor_instalacao,
+          prazo_termino: prazo_termino || null,
+        });
+        if (osError) throw osError;
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orcamentos"] });
       queryClient.invalidateQueries({ queryKey: ["ordens_servico"] });
+      toast.success("Orçamento aprovado e OS gerada!");
+      setApproveItem(null);
+      setValorInstalacao("");
+      setPrazoTermino("");
+    },
+    onError: () => toast.error("Erro ao aprovar orçamento"),
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase.from("orcamentos").update({ status }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orcamentos"] });
       toast.success("Status atualizado!");
     },
     onError: () => toast.error("Erro ao atualizar status"),
@@ -171,7 +189,9 @@ const Orcamentos = () => {
                       <Button size="icon" variant="ghost" onClick={() => setViewItem(orc)}><Eye className="h-4 w-4 text-gray-500" /></Button>
                       {canManage && orc.status === "pendente" && (
                         <>
-                          <Button size="icon" variant="ghost" onClick={() => updateStatusMutation.mutate({ id: orc.id, status: "aprovado" })}><CheckCircle className="h-4 w-4 text-green-600" /></Button>
+                          <Button size="icon" variant="ghost" onClick={() => { setApproveItem(orc); setValorInstalacao(""); setPrazoTermino(""); }}>
+                            <CheckCircle className="h-4 w-4 text-green-600" />
+                          </Button>
                           <Button size="icon" variant="ghost" onClick={() => updateStatusMutation.mutate({ id: orc.id, status: "rejeitado" })}><XCircle className="h-4 w-4 text-red-500" /></Button>
                         </>
                       )}
@@ -184,6 +204,7 @@ const Orcamentos = () => {
         </CardContent>
       </Card>
 
+      {/* View details dialog */}
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent className="bg-white border-gray-200">
           <DialogHeader><DialogTitle className="text-gray-900">Detalhes do Orçamento</DialogTitle></DialogHeader>
@@ -197,7 +218,37 @@ const Orcamentos = () => {
               <p className="text-gray-600"><strong className="text-gray-900">Serviço:</strong> {viewItem.servico_solicitado}</p>
               <p className="text-gray-600"><strong className="text-gray-900">Descrição:</strong> {viewItem.descricao || "-"}</p>
               <p className="text-gray-600"><strong className="text-gray-900">Valor:</strong> R$ {Number(viewItem.valor_total).toFixed(2)}</p>
+              <p className="text-gray-600"><strong className="text-gray-900">Valor Instalação:</strong> R$ {Number(viewItem.valor_instalacao || 0).toFixed(2)}</p>
               <p className="text-gray-600"><strong className="text-gray-900">Status:</strong> <Badge className={statusColors[viewItem.status]}>{statusLabels[viewItem.status]}</Badge></p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Approve dialog with valor_instalacao and prazo */}
+      <Dialog open={!!approveItem} onOpenChange={() => setApproveItem(null)}>
+        <DialogContent className="bg-white border-gray-200">
+          <DialogHeader><DialogTitle className="text-gray-900">Aprovar Orçamento</DialogTitle></DialogHeader>
+          {approveItem && (
+            <div className="space-y-4">
+              <p className="text-gray-600 text-sm">Cliente: <strong className="text-gray-900">{approveItem.cliente_nome}</strong></p>
+              <p className="text-gray-600 text-sm">Serviço: <strong className="text-gray-900">{approveItem.servico_solicitado}</strong></p>
+              <p className="text-gray-600 text-sm">Valor do Orçamento: <strong className="text-gray-900">R$ {Number(approveItem.valor_total).toFixed(2)}</strong></p>
+              <div>
+                <Label className="text-gray-600">Valor da Instalação (R$) - pago ao técnico *</Label>
+                <Input type="number" className="bg-white border-gray-300 text-gray-900" value={valorInstalacao} onChange={(e) => setValorInstalacao(e.target.value)} placeholder="Ex: 150.00" />
+              </div>
+              <div>
+                <Label className="text-gray-600">Prazo para Término</Label>
+                <Input type="date" className="bg-white border-gray-300 text-gray-900" value={prazoTermino} onChange={(e) => setPrazoTermino(e.target.value)} />
+              </div>
+              <Button
+                className="w-full"
+                onClick={() => approveMutation.mutate({ id: approveItem.id, valor_instalacao: parseFloat(valorInstalacao) || 0, prazo_termino: prazoTermino })}
+                disabled={!valorInstalacao || approveMutation.isPending}
+              >
+                {approveMutation.isPending ? "Aprovando..." : "Aprovar e Gerar OS"}
+              </Button>
             </div>
           )}
         </DialogContent>
