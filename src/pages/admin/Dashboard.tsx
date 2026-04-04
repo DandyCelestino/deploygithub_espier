@@ -42,33 +42,33 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-400">Bem-vindo, {profile?.full_name || "Usuário"}!</p>
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-500">Bem-vindo, {profile?.full_name || "Usuário"}!</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((stat) => (
-          <Card key={stat.title} className="bg-card border-border">
+          <Card key={stat.title} className="bg-white border-gray-200">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-400">{stat.title}</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-500">{stat.title}</CardTitle>
               <stat.icon className={`h-5 w-5 ${stat.color}`} />
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-white">{stat.value}</p>
+              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <Card className="bg-card border-border">
+      <Card className="bg-white border-gray-200">
         <CardHeader>
-          <CardTitle className="text-white">Seus Dados</CardTitle>
+          <CardTitle className="text-gray-900">Seus Dados</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm text-gray-400">
-          <p><strong className="text-white">Nome:</strong> {profile?.full_name || "-"}</p>
-          <p><strong className="text-white">E-mail:</strong> {profile?.email || "-"}</p>
-          <p><strong className="text-white">Matrícula:</strong> {profile?.matricula || "-"}</p>
-          <p><strong className="text-white">Funções:</strong> {roles.join(", ") || "Nenhuma"}</p>
+        <CardContent className="space-y-2 text-sm text-gray-500">
+          <p><strong className="text-gray-900">Nome:</strong> {profile?.full_name || "-"}</p>
+          <p><strong className="text-gray-900">E-mail:</strong> {profile?.email || "-"}</p>
+          <p><strong className="text-gray-900">Matrícula:</strong> {profile?.matricula || "-"}</p>
+          <p><strong className="text-gray-900">Funções:</strong> {roles.join(", ") || "Nenhuma"}</p>
         </CardContent>
       </Card>
     </div>
