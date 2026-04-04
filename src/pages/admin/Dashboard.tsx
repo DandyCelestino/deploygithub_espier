@@ -25,8 +25,28 @@ const AdminDashboard = () => {
   const { user, profile, roles, hasRole } = useAuth();
   const queryClient = useQueryClient();
   const isTecnico = hasRole("tecnico");
+  const isGerente = hasRole("gerente") || hasRole("admin");
   const [finalizarOS, setFinalizarOS] = useState<any>(null);
   const [obs, setObs] = useState("");
+
+  const approveSupervisionMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("ordens_servico").update({
+        status: "concluida",
+        supervisao_aprovada: true,
+        supervisao_por: user!.id,
+        supervisao_data: new Date().toISOString(),
+        valor_liberado: true,
+        data_conclusao: new Date().toISOString(),
+      }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
+      toast.success("Supervisão aprovada! Valor liberado para o técnico.");
+    },
+    onError: () => toast.error("Erro ao aprovar supervisão"),
+  });
 
   const { data: stats } = useQuery({
     queryKey: ["dashboard_stats"],
