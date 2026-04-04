@@ -61,7 +61,7 @@ const AcompanharOS = () => {
         toast.error("Código não encontrado.");
         setData(null);
       } else {
-        setData(result as OSData);
+        setData(parsed);
         setCodigoUsado(codigo.trim());
       }
     } catch {
