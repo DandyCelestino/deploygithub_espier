@@ -19,6 +19,7 @@ const navLinks = [
   { label: "Portfólio", href: "#portfolio" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Contato", href: "#contato" },
+  { label: "Área Restrita", href: "/login", isRoute: true },
 ];
 
 const Navbar = () => {
@@ -83,6 +84,14 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
+            ) : (link as any).isRoute ? (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
             ) : (
               <a
                 key={link.href}
@@ -148,6 +157,15 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
+              ) : (link as any).isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
+                >
+                  {link.label}
+                </Link>
               ) : (
                 <a
                   key={link.href}
