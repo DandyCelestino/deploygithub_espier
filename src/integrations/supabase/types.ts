@@ -14,6 +14,265 @@ export type Database = {
   }
   public: {
     Tables: {
+      configuracoes: {
+        Row: {
+          chave: string
+          descricao: string | null
+          id: string
+          updated_at: string
+          valor: string | null
+        }
+        Insert: {
+          chave: string
+          descricao?: string | null
+          id?: string
+          updated_at?: string
+          valor?: string | null
+        }
+        Update: {
+          chave?: string
+          descricao?: string | null
+          id?: string
+          updated_at?: string
+          valor?: string | null
+        }
+        Relationships: []
+      }
+      estoque_itens: {
+        Row: {
+          codigo: string | null
+          created_at: string
+          descricao: string
+          id: string
+          localizacao: string | null
+          quantidade: number
+          quantidade_minima: number
+          unidade: string
+          updated_at: string
+        }
+        Insert: {
+          codigo?: string | null
+          created_at?: string
+          descricao: string
+          id?: string
+          localizacao?: string | null
+          quantidade?: number
+          quantidade_minima?: number
+          unidade?: string
+          updated_at?: string
+        }
+        Update: {
+          codigo?: string | null
+          created_at?: string
+          descricao?: string
+          id?: string
+          localizacao?: string | null
+          quantidade?: number
+          quantidade_minima?: number
+          unidade?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      estoque_movimentacoes: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          observacao: string | null
+          quantidade: number
+          tecnico_id: string | null
+          tecnico_nome: string | null
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          observacao?: string | null
+          quantidade: number
+          tecnico_id?: string | null
+          tecnico_nome?: string | null
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          observacao?: string | null
+          quantidade?: number
+          tecnico_id?: string | null
+          tecnico_nome?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_movimentacoes_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "estoque_itens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financeiro_contas: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          criado_por: string
+          data_pagamento: string | null
+          data_vencimento: string
+          descricao: string
+          id: string
+          referencia_id: string | null
+          referencia_tipo: string | null
+          status: string
+          tipo: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          criado_por: string
+          data_pagamento?: string | null
+          data_vencimento: string
+          descricao: string
+          id?: string
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          criado_por?: string
+          data_pagamento?: string | null
+          data_vencimento?: string
+          descricao?: string
+          id?: string
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      orcamentos: {
+        Row: {
+          cidade: string
+          cliente_email: string | null
+          cliente_nome: string
+          cliente_telefone: string | null
+          created_at: string
+          criado_por: string
+          descricao: string | null
+          endereco: string
+          estado: string
+          id: string
+          servico_solicitado: string
+          status: string
+          updated_at: string
+          valor_total: number
+        }
+        Insert: {
+          cidade: string
+          cliente_email?: string | null
+          cliente_nome: string
+          cliente_telefone?: string | null
+          created_at?: string
+          criado_por: string
+          descricao?: string | null
+          endereco: string
+          estado?: string
+          id?: string
+          servico_solicitado: string
+          status?: string
+          updated_at?: string
+          valor_total?: number
+        }
+        Update: {
+          cidade?: string
+          cliente_email?: string | null
+          cliente_nome?: string
+          cliente_telefone?: string | null
+          created_at?: string
+          criado_por?: string
+          descricao?: string | null
+          endereco?: string
+          estado?: string
+          id?: string
+          servico_solicitado?: string
+          status?: string
+          updated_at?: string
+          valor_total?: number
+        }
+        Relationships: []
+      }
+      ordens_servico: {
+        Row: {
+          cidade: string
+          cliente_nome: string
+          created_at: string
+          data_conclusao: string | null
+          data_inicio: string | null
+          endereco: string
+          id: string
+          observacoes: string | null
+          orcamento_id: string | null
+          servico_solicitado: string
+          status: string
+          tecnico_id: string | null
+          tecnico_nome: string | null
+          updated_at: string
+        }
+        Insert: {
+          cidade: string
+          cliente_nome: string
+          created_at?: string
+          data_conclusao?: string | null
+          data_inicio?: string | null
+          endereco: string
+          id?: string
+          observacoes?: string | null
+          orcamento_id?: string | null
+          servico_solicitado: string
+          status?: string
+          tecnico_id?: string | null
+          tecnico_nome?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cidade?: string
+          cliente_nome?: string
+          created_at?: string
+          data_conclusao?: string | null
+          data_inicio?: string | null
+          endereco?: string
+          id?: string
+          observacoes?: string | null
+          orcamento_id?: string | null
+          servico_solicitado?: string
+          status?: string
+          tecnico_id?: string | null
+          tecnico_nome?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordens_servico_orcamento_id_fkey"
+            columns: ["orcamento_id"]
+            isOneToOne: false
+            referencedRelation: "orcamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           active: boolean
