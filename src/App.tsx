@@ -19,6 +19,8 @@ import Estoque from "./pages/admin/Estoque.tsx";
 import Financeiro from "./pages/admin/Financeiro.tsx";
 import Administracao from "./pages/admin/Administracao.tsx";
 import Configuracoes from "./pages/admin/Configuracoes.tsx";
+import RelatoriosDiarios from "./components/admin/RelatoriosDiarios.tsx";
+import AcompanharOS from "./pages/AcompanharOS.tsx";
 
 const queryClient = new QueryClient();
 
