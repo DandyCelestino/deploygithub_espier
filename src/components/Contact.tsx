@@ -41,7 +41,7 @@ const Contact = () => {
               value={form.nome}
               onChange={(e) => setForm({ ...form, nome: e.target.value })}
               required
-              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground"
             />
             <Input
               type="email"
@@ -49,13 +49,13 @@ const Contact = () => {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
-              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground"
             />
             <Input
               placeholder="Seu telefone"
               value={form.telefone}
               onChange={(e) => setForm({ ...form, telefone: e.target.value })}
-              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground"
             />
             <Textarea
               placeholder="Sua mensagem"
@@ -63,7 +63,7 @@ const Contact = () => {
               onChange={(e) => setForm({ ...form, mensagem: e.target.value })}
               required
               rows={5}
-              className="bg-secondary border-border text-white placeholder:text-muted-foreground focus:text-accent"
+              className="bg-secondary border-border text-white placeholder:text-muted-foreground"
             />
             <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-red">
               <Send className="w-4 h-4 mr-2" /> Enviar Mensagem

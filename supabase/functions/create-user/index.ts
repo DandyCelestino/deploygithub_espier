@@ -86,8 +86,9 @@ Deno.serve(async (req) => {
         .eq("user_id", userId);
     }
 
-    // Assign role
-    await supabaseAdmin.from("user_roles").insert({ user_id: userId, role });
+    // Assign roles
+    const roleInserts = rolesList.map((r: string) => ({ user_id: userId, role: r }));
+    await supabaseAdmin.from("user_roles").insert(roleInserts);
 
     return new Response(
       JSON.stringify({ success: true, user_id: userId }),
