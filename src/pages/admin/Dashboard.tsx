@@ -254,6 +254,30 @@ const AdminDashboard = () => {
     );
   }
 
+  const isGerente = hasRole("gerente") || hasRole("admin");
+
+  const ordensAguardandoSupervisao = ordens.filter((o) => o.status === "aguardando_supervisao");
+  const ordensConcluidas = ordens.filter((o) => o.status === "concluida");
+
+  const approveSupervisionMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("ordens_servico").update({
+        status: "concluida",
+        supervisao_aprovada: true,
+        supervisao_por: user!.id,
+        supervisao_data: new Date().toISOString(),
+        valor_liberado: true,
+        data_conclusao: new Date().toISOString(),
+      }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
+      toast.success("Supervisão aprovada! Valor liberado para o técnico.");
+    },
+    onError: () => toast.error("Erro ao aprovar supervisão"),
+  });
+
   // Admin/Gerente/Financeiro dashboard
   const cards = [
     { title: "Ordens Abertas", value: stats?.ordensAbertas ?? 0, icon: ClipboardList, color: "text-primary" },
@@ -282,6 +306,65 @@ const AdminDashboard = () => {
           </Card>
         ))}
       </div>
+
+      {/* Gerente: Ordens aguardando supervisão */}
+      {isGerente && ordensAguardandoSupervisao.length > 0 && (
+        <Card className="bg-white border-gray-200">
+          <CardHeader>
+            <CardTitle className="text-gray-900 flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-purple-500" /> Ordens Aguardando Supervisão ({ordensAguardandoSupervisao.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {ordensAguardandoSupervisao.map((os) => (
+              <div key={os.id} className="flex items-center justify-between p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-900">{os.cliente_nome}</p>
+                  <p className="text-xs text-gray-500">{os.servico_solicitado}</p>
+                  <p className="text-xs text-gray-500">Técnico: {os.tecnico_nome || "—"}</p>
+                  {os.observacoes && <p className="text-xs text-gray-600 italic">"{os.observacoes}"</p>}
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  <span className="text-sm font-medium text-gray-900">R$ {Number(os.valor_instalacao || 0).toFixed(2)}</span>
+                  <Button
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white gap-1"
+                    onClick={() => approveSupervisionMutation.mutate(os.id)}
+                    disabled={approveSupervisionMutation.isPending}
+                  >
+                    <CheckCircle className="h-3 w-3" /> Liberar Pagamento
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Gerente: Ordens concluídas recentes */}
+      {isGerente && ordensConcluidas.length > 0 && (
+        <Card className="bg-white border-gray-200">
+          <CardHeader>
+            <CardTitle className="text-gray-900 flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-500" /> Ordens Concluídas Recentes
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {ordensConcluidas.slice(0, 5).map((os) => (
+              <div key={os.id} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{os.cliente_nome}</p>
+                  <p className="text-xs text-gray-500">{os.servico_solicitado} — {os.tecnico_nome || "—"}</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-green-600 text-sm font-medium">R$ {Number(os.valor_instalacao || 0).toFixed(2)} ✓</span>
+                  {os.data_conclusao && <p className="text-xs text-gray-400">{new Date(os.data_conclusao).toLocaleDateString("pt-BR")}</p>}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="bg-white border-gray-200">
         <CardHeader><CardTitle className="text-gray-900">Seus Dados</CardTitle></CardHeader>
