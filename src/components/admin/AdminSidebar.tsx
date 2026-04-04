@@ -7,6 +7,7 @@ import {
   Settings,
   LayoutDashboard,
   LogOut,
+  Camera,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,6 +37,7 @@ const menuGroups = [
     items: [
       { title: "Ordens de Serviço", url: "/admin/ordens", icon: ClipboardList },
       { title: "Orçamentos", url: "/admin/orcamentos", icon: FileText },
+      { title: "Relatórios Diários", url: "/admin/relatorios", icon: Camera },
       { title: "Estoque", url: "/admin/estoque", icon: Package },
     ],
   },

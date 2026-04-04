@@ -19,6 +19,8 @@ import Estoque from "./pages/admin/Estoque.tsx";
 import Financeiro from "./pages/admin/Financeiro.tsx";
 import Administracao from "./pages/admin/Administracao.tsx";
 import Configuracoes from "./pages/admin/Configuracoes.tsx";
+import RelatoriosDiarios from "./components/admin/RelatoriosDiarios.tsx";
+import AcompanharOS from "./pages/AcompanharOS.tsx";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +37,7 @@ const App = () => (
             <Route path="/seguranca/alarmes" element={<Alarmes />} />
             <Route path="/seguranca/cftv" element={<CFTV />} />
             <Route path="/seguranca/controle-de-acesso" element={<ControleAcesso />} />
-
+            <Route path="/acompanhar" element={<AcompanharOS />} />
             {/* Área Restrita */}
             <Route
               path="/admin"
@@ -52,6 +54,7 @@ const App = () => (
               <Route path="financeiro" element={<Financeiro />} />
               <Route path="administracao" element={<Administracao />} />
               <Route path="configuracoes" element={<Configuracoes />} />
+              <Route path="relatorios" element={<RelatoriosDiarios />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

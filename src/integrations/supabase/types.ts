@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      cliente_feedbacks: {
+        Row: {
+          codigo_rastreio: string
+          created_at: string
+          id: string
+          mensagem: string | null
+          nota: number | null
+          ordem_servico_id: string
+          tipo: string
+        }
+        Insert: {
+          codigo_rastreio: string
+          created_at?: string
+          id?: string
+          mensagem?: string | null
+          nota?: number | null
+          ordem_servico_id: string
+          tipo?: string
+        }
+        Update: {
+          codigo_rastreio?: string
+          created_at?: string
+          id?: string
+          mensagem?: string | null
+          nota?: number | null
+          ordem_servico_id?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cliente_feedbacks_ordem_servico_id_fkey"
+            columns: ["ordem_servico_id"]
+            isOneToOne: false
+            referencedRelation: "ordens_servico"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuracoes: {
         Row: {
           chave: string
@@ -227,6 +265,7 @@ export type Database = {
           checklist_teste: boolean
           cidade: string
           cliente_nome: string
+          codigo_rastreio: string
           created_at: string
           data_conclusao: string | null
           data_inicio: string | null
@@ -255,6 +294,7 @@ export type Database = {
           checklist_teste?: boolean
           cidade: string
           cliente_nome: string
+          codigo_rastreio?: string
           created_at?: string
           data_conclusao?: string | null
           data_inicio?: string | null
@@ -283,6 +323,7 @@ export type Database = {
           checklist_teste?: boolean
           cidade?: string
           cliente_nome?: string
+          codigo_rastreio?: string
           created_at?: string
           data_conclusao?: string | null
           data_inicio?: string | null
@@ -345,6 +386,47 @@ export type Database = {
         }
         Relationships: []
       }
+      relatorios_diarios: {
+        Row: {
+          created_at: string
+          data_relatorio: string
+          descricao: string
+          fotos: string[] | null
+          id: string
+          ordem_servico_id: string
+          tecnico_id: string
+          tecnico_nome: string | null
+        }
+        Insert: {
+          created_at?: string
+          data_relatorio?: string
+          descricao: string
+          fotos?: string[] | null
+          id?: string
+          ordem_servico_id: string
+          tecnico_id: string
+          tecnico_nome?: string | null
+        }
+        Update: {
+          created_at?: string
+          data_relatorio?: string
+          descricao?: string
+          fotos?: string[] | null
+          id?: string
+          ordem_servico_id?: string
+          tecnico_id?: string
+          tecnico_nome?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorios_diarios_ordem_servico_id_fkey"
+            columns: ["ordem_servico_id"]
+            isOneToOne: false
+            referencedRelation: "ordens_servico"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -368,6 +450,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_os_by_tracking_code: { Args: { _codigo: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
