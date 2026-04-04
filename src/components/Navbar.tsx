@@ -157,6 +157,15 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
+              ) : (link as any).isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
+                >
+                  {link.label}
+                </Link>
               ) : (
                 <a
                   key={link.href}
