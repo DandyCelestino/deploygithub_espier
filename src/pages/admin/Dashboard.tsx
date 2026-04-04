@@ -274,29 +274,8 @@ const AdminDashboard = () => {
     );
   }
 
-  const isGerente = hasRole("gerente") || hasRole("admin");
-
   const ordensAguardandoSupervisao = ordens.filter((o) => o.status === "aguardando_supervisao");
   const ordensConcluidas = ordens.filter((o) => o.status === "concluida");
-
-  const approveSupervisionMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("ordens_servico").update({
-        status: "concluida",
-        supervisao_aprovada: true,
-        supervisao_por: user!.id,
-        supervisao_data: new Date().toISOString(),
-        valor_liberado: true,
-        data_conclusao: new Date().toISOString(),
-      }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
-      toast.success("Supervisão aprovada! Valor liberado para o técnico.");
-    },
-    onError: () => toast.error("Erro ao aprovar supervisão"),
-  });
 
   // Admin/Gerente/Financeiro dashboard
   const cards = [
