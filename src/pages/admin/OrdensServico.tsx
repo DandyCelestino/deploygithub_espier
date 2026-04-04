@@ -229,7 +229,10 @@ const OrdensServico = () => {
                 <p className="text-gray-600"><strong className="text-gray-900">Técnico:</strong> {viewOS.tecnico_nome || "Não atribuído"}</p>
                 <p className="text-gray-600"><strong className="text-gray-900">Status:</strong> <Badge className={statusColors[viewOS.status] || ""}>{statusLabels[viewOS.status] || viewOS.status}</Badge></p>
                 {!isTecnico && (
-                  <p className="text-gray-600"><strong className="text-gray-900">Valor Instalação:</strong> R$ {Number(viewOS.valor_instalacao || 0).toFixed(2)}</p>
+                  <>
+                    <p className="text-gray-600"><strong className="text-gray-900">Valor Instalação:</strong> R$ {Number(viewOS.valor_instalacao || 0).toFixed(2)}</p>
+                    <p className="text-gray-600"><strong className="text-gray-900">Código Rastreio:</strong> <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">{viewOS.codigo_rastreio || "—"}</span></p>
+                  </>
                 )}
               </div>
               {viewOS.observacoes && (
