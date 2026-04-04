@@ -1,50 +1,58 @@
 
+## Plano: Fluxo Completo do Técnico
 
-## Plano: Tema Claro para a Área Restrita
+### 1. Alterações no Banco de Dados
 
-### Problema
-Atualmente, a área restrita usa cards com fundo escuro (preto) e fontes brancas/cinzas. O usuário deseja que:
-1. **Botões do menu lateral (sidebar)**: fundo branco com letras pretas
-2. **Cards e formulários**: fundo branco com fontes pretas
+**Tabela `ordens_servico` - novos campos:**
+- `prazo_termino` (date) - prazo para conclusão
+- `valor_instalacao` (numeric, default 0) - valor que o técnico recebe pela instalação
+- `status` - adicionar novos estados: `aguardando_supervisao`, `supervisionada`
+- `checklist_materiais` (boolean, default false)
+- `checklist_instalacao` (boolean, default false)  
+- `checklist_teste` (boolean, default false)
+- `checklist_limpeza` (boolean, default false)
+- `checklist_fotos` (boolean, default false)
+- `checklist_assinatura_cliente` (boolean, default false)
+- `supervisao_aprovada` (boolean, default false)
+- `supervisao_por` (uuid, nullable) - gerente que supervisionou
+- `supervisao_data` (timestamptz, nullable)
+- `valor_liberado` (boolean, default false)
 
-### Causa Raiz
-O CSS define `--card: 0 0% 5%` (preto) e `--background: 0 0% 100%` (branco). Todas as páginas admin usam `bg-card` (preto) para cards e `bg-background` (branco) para inputs, mas com `text-white` forçado — resultando em texto invisível em campos brancos.
+**Tabela `orcamentos` - novo campo:**
+- `valor_instalacao` (numeric, default 0) - valor da instalação definido pelo admin após aprovar
 
-### Solução
-Inverter o tema da área administrativa para fundo claro, aplicando as mudanças em todos os arquivos de uma vez.
+### 2. Fluxo de Trabalho
 
-### Arquivos a Alterar
+1. Admin cria orçamento → aprova → define valor de instalação → gera OS com prazo e valor
+2. Técnico visualiza detalhes da OS (modal) antes de aceitar
+3. Técnico aceita OS (apenas 1 por vez)
+4. Durante execução, técnico preenche checklist (6 itens)
+5. Checklist 100% → botão "Finalizar e Solicitar Supervisão" aparece
+6. Status muda para `aguardando_supervisao`
+7. Gerente supervisiona e aprova
+8. Status muda para `supervisionada` → `valor_liberado = true`
+9. Dashboard do técnico mostra: OS ativa, contadores, valor liberado
 
-**1. `src/components/admin/AdminSidebar.tsx`**
-- Sidebar: `bg-card` → `bg-white`
-- Texto dos itens de menu: remover cores escuras, usar `text-gray-800`
-- Logo e footer: fontes escuras sobre fundo branco
-- Botão "Sair": texto escuro
+### 3. Alterações de Interface
 
-**2. `src/components/admin/AdminLayout.tsx`**
-- Header: `bg-card` → `bg-white`
-- Background principal: manter `bg-gray-100` ou similar para contraste
-- Textos do header: cores escuras
+**OrdensServico.tsx:**
+- Modal de visualização detalhada antes de aceitar
+- Cards com data de criação e prazo
+- Checklist interativo para técnico na OS em andamento
+- Botão "Finalizar e Solicitar Supervisão" (só aparece com checklist completo)
 
-**3. Todas as páginas admin (6 arquivos)**
-`Dashboard.tsx`, `OrdensServico.tsx`, `Orcamentos.tsx`, `Estoque.tsx`, `Financeiro.tsx`, `Administracao.tsx`, `Configuracoes.tsx`
+**Dashboard.tsx (visão técnico):**
+- Card: OS ativa atual com detalhes e checklist
+- Card: Ordens concluídas (contador)
+- Card: Ordens em andamento (contador)
+- Card: Valores a receber (soma dos valores liberados)
+- Card: Valores liberados para recebimento
 
-Para cada arquivo:
-- Cards: `bg-card border-border` → `bg-white border-gray-200`
-- Títulos: `text-white` → `text-gray-900`
-- Subtítulos/labels: `text-gray-400` / `text-gray-300` → `text-gray-600` / `text-gray-500`
-- Inputs: `bg-background border-border text-white` → `bg-white border-gray-300 text-gray-900`
-- Tabelas: headers `text-gray-300` → `text-gray-600`, cells `text-white` → `text-gray-900`, cells secundários `text-gray-300` → `text-gray-600`
-- Dialogs: `bg-card border-border` → `bg-white border-gray-200`
-- Tabs: adaptar para tema claro
+**Orcamentos.tsx:**
+- Campo de valor de instalação ao aprovar orçamento
 
-**4. `src/pages/Login.tsx`**
-- Card de login: fundo branco, textos escuros
-- Inputs: fundo branco com borda cinza e texto preto
-
-### Detalhes Técnicos
-- Nenhuma alteração de banco de dados necessária
-- Nenhuma alteração de lógica/funcionalidade
-- Apenas substituição de classes Tailwind CSS de tema escuro para tema claro em ~9 arquivos
-- As variáveis CSS globais em `index.css` não serão alteradas para não afetar o site público
-
+### 4. Arquivos a Alterar
+- Migração SQL (novos campos)
+- `src/pages/admin/OrdensServico.tsx`
+- `src/pages/admin/Dashboard.tsx`
+- `src/pages/admin/Orcamentos.tsx`
