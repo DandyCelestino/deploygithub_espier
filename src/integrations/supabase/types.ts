@@ -178,6 +178,7 @@ export type Database = {
           servico_solicitado: string
           status: string
           updated_at: string
+          valor_instalacao: number
           valor_total: number
         }
         Insert: {
@@ -194,6 +195,7 @@ export type Database = {
           servico_solicitado: string
           status?: string
           updated_at?: string
+          valor_instalacao?: number
           valor_total?: number
         }
         Update: {
@@ -210,12 +212,19 @@ export type Database = {
           servico_solicitado?: string
           status?: string
           updated_at?: string
+          valor_instalacao?: number
           valor_total?: number
         }
         Relationships: []
       }
       ordens_servico: {
         Row: {
+          checklist_assinatura_cliente: boolean
+          checklist_fotos: boolean
+          checklist_instalacao: boolean
+          checklist_limpeza: boolean
+          checklist_materiais: boolean
+          checklist_teste: boolean
           cidade: string
           cliente_nome: string
           created_at: string
@@ -225,13 +234,25 @@ export type Database = {
           id: string
           observacoes: string | null
           orcamento_id: string | null
+          prazo_termino: string | null
           servico_solicitado: string
           status: string
+          supervisao_aprovada: boolean
+          supervisao_data: string | null
+          supervisao_por: string | null
           tecnico_id: string | null
           tecnico_nome: string | null
           updated_at: string
+          valor_instalacao: number
+          valor_liberado: boolean
         }
         Insert: {
+          checklist_assinatura_cliente?: boolean
+          checklist_fotos?: boolean
+          checklist_instalacao?: boolean
+          checklist_limpeza?: boolean
+          checklist_materiais?: boolean
+          checklist_teste?: boolean
           cidade: string
           cliente_nome: string
           created_at?: string
@@ -241,13 +262,25 @@ export type Database = {
           id?: string
           observacoes?: string | null
           orcamento_id?: string | null
+          prazo_termino?: string | null
           servico_solicitado: string
           status?: string
+          supervisao_aprovada?: boolean
+          supervisao_data?: string | null
+          supervisao_por?: string | null
           tecnico_id?: string | null
           tecnico_nome?: string | null
           updated_at?: string
+          valor_instalacao?: number
+          valor_liberado?: boolean
         }
         Update: {
+          checklist_assinatura_cliente?: boolean
+          checklist_fotos?: boolean
+          checklist_instalacao?: boolean
+          checklist_limpeza?: boolean
+          checklist_materiais?: boolean
+          checklist_teste?: boolean
           cidade?: string
           cliente_nome?: string
           created_at?: string
@@ -257,11 +290,17 @@ export type Database = {
           id?: string
           observacoes?: string | null
           orcamento_id?: string | null
+          prazo_termino?: string | null
           servico_solicitado?: string
           status?: string
+          supervisao_aprovada?: boolean
+          supervisao_data?: string | null
+          supervisao_por?: string | null
           tecnico_id?: string | null
           tecnico_nome?: string | null
           updated_at?: string
+          valor_instalacao?: number
+          valor_liberado?: boolean
         }
         Relationships: [
           {
