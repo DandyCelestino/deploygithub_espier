@@ -87,14 +87,13 @@ const Configuracoes = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Configurações</h1>
-        <p className="text-gray-400">Configurações do sistema e da sua conta.</p>
+        <h1 className="text-2xl font-bold text-gray-900">Configurações</h1>
+        <p className="text-gray-500">Configurações do sistema e da sua conta.</p>
       </div>
 
-      {/* Profile settings */}
-      <Card className="bg-card border-border">
+      <Card className="bg-white border-gray-200">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-gray-900 flex items-center gap-2">
             <Settings className="h-5 w-5 text-primary" />
             Minha Conta
           </CardTitle>
@@ -102,35 +101,34 @@ const Configuracoes = () => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label className="text-gray-300">Nome</Label>
-              <Input className="bg-background border-border text-white" value={profile?.full_name || ""} disabled />
+              <Label className="text-gray-600">Nome</Label>
+              <Input className="bg-gray-50 border-gray-300 text-gray-900" value={profile?.full_name || ""} disabled />
             </div>
             <div>
-              <Label className="text-gray-300">E-mail</Label>
-              <Input className="bg-background border-border text-white" value={profile?.email || ""} disabled />
+              <Label className="text-gray-600">E-mail</Label>
+              <Input className="bg-gray-50 border-gray-300 text-gray-900" value={profile?.email || ""} disabled />
             </div>
             <div>
-              <Label className="text-gray-300">Matrícula</Label>
-              <Input className="bg-background border-border text-white" value={profile?.matricula || ""} disabled />
+              <Label className="text-gray-600">Matrícula</Label>
+              <Input className="bg-gray-50 border-gray-300 text-gray-900" value={profile?.matricula || ""} disabled />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Change password */}
-      <Card className="bg-card border-border">
+      <Card className="bg-white border-gray-200">
         <CardHeader>
-          <CardTitle className="text-white">Alterar Senha</CardTitle>
+          <CardTitle className="text-gray-900">Alterar Senha</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label className="text-gray-300">Nova Senha</Label>
-              <Input type="password" className="bg-background border-border text-white" value={passwordForm.newPass} onChange={(e) => setPasswordForm({ ...passwordForm, newPass: e.target.value })} />
+              <Label className="text-gray-600">Nova Senha</Label>
+              <Input type="password" className="bg-white border-gray-300 text-gray-900" value={passwordForm.newPass} onChange={(e) => setPasswordForm({ ...passwordForm, newPass: e.target.value })} />
             </div>
             <div>
-              <Label className="text-gray-300">Confirmar Senha</Label>
-              <Input type="password" className="bg-background border-border text-white" value={passwordForm.confirm} onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })} />
+              <Label className="text-gray-600">Confirmar Senha</Label>
+              <Input type="password" className="bg-white border-gray-300 text-gray-900" value={passwordForm.confirm} onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })} />
             </div>
             <div className="flex items-end">
               <Button onClick={() => changePasswordMutation.mutate()} disabled={!passwordForm.newPass || changePasswordMutation.isPending} className="gap-2">
@@ -142,21 +140,20 @@ const Configuracoes = () => {
         </CardContent>
       </Card>
 
-      {/* System configs (admin only) */}
       {isAdmin && (
-        <Card className="bg-card border-border">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-white">Configurações do Sistema</CardTitle>
+            <CardTitle className="text-gray-900">Configurações do Sistema</CardTitle>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Nova</Button>
               </DialogTrigger>
-              <DialogContent className="bg-card border-border">
-                <DialogHeader><DialogTitle className="text-white">Nova Configuração</DialogTitle></DialogHeader>
+              <DialogContent className="bg-white border-gray-200">
+                <DialogHeader><DialogTitle className="text-gray-900">Nova Configuração</DialogTitle></DialogHeader>
                 <div className="space-y-4">
-                  <div><Label className="text-gray-300">Chave *</Label><Input className="bg-background border-border text-white" value={form.chave} onChange={(e) => setForm({ ...form, chave: e.target.value })} placeholder="ex: empresa_nome" /></div>
-                  <div><Label className="text-gray-300">Valor</Label><Input className="bg-background border-border text-white" value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })} /></div>
-                  <div><Label className="text-gray-300">Descrição</Label><Input className="bg-background border-border text-white" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></div>
+                  <div><Label className="text-gray-600">Chave *</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.chave} onChange={(e) => setForm({ ...form, chave: e.target.value })} placeholder="ex: empresa_nome" /></div>
+                  <div><Label className="text-gray-600">Valor</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })} /></div>
+                  <div><Label className="text-gray-600">Descrição</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></div>
                   <Button className="w-full" onClick={() => createConfigMutation.mutate()} disabled={!form.chave || createConfigMutation.isPending}>
                     {createConfigMutation.isPending ? "Salvando..." : "Salvar"}
                   </Button>
@@ -167,22 +164,22 @@ const Configuracoes = () => {
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow className="border-border">
-                  <TableHead className="text-gray-300">Chave</TableHead>
-                  <TableHead className="text-gray-300">Valor</TableHead>
-                  <TableHead className="text-gray-300">Descrição</TableHead>
-                  <TableHead className="text-gray-300">Ações</TableHead>
+                <TableRow className="border-gray-200">
+                  <TableHead className="text-gray-600">Chave</TableHead>
+                  <TableHead className="text-gray-600">Valor</TableHead>
+                  <TableHead className="text-gray-600">Descrição</TableHead>
+                  <TableHead className="text-gray-600">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {configs.length === 0 ? (
-                  <TableRow><TableCell colSpan={4} className="text-center text-gray-400">Nenhuma configuração cadastrada.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center text-gray-500">Nenhuma configuração cadastrada.</TableCell></TableRow>
                 ) : configs.map((cfg) => (
-                  <TableRow key={cfg.id} className="border-border">
-                    <TableCell className="text-white font-mono text-sm">{cfg.chave}</TableCell>
+                  <TableRow key={cfg.id} className="border-gray-200">
+                    <TableCell className="text-gray-900 font-mono text-sm">{cfg.chave}</TableCell>
                     <TableCell>
                       <Input
-                        className="bg-background border-border text-white h-8 text-sm"
+                        className="bg-white border-gray-300 text-gray-900 h-8 text-sm"
                         defaultValue={cfg.valor || ""}
                         onBlur={(e) => {
                           if (e.target.value !== cfg.valor) {
@@ -191,10 +188,10 @@ const Configuracoes = () => {
                         }}
                       />
                     </TableCell>
-                    <TableCell className="text-gray-400 text-sm">{cfg.descricao || "—"}</TableCell>
+                    <TableCell className="text-gray-500 text-sm">{cfg.descricao || "—"}</TableCell>
                     <TableCell>
                       <Button size="icon" variant="ghost" onClick={() => deleteConfigMutation.mutate(cfg.id)}>
-                        <Trash2 className="h-4 w-4 text-red-400" />
+                        <Trash2 className="h-4 w-4 text-red-500" />
                       </Button>
                     </TableCell>
                   </TableRow>

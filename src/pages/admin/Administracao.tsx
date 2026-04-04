@@ -21,10 +21,10 @@ const roleLabels: Record<string, string> = {
   financeiro: "Financeiro",
 };
 const roleColors: Record<string, string> = {
-  admin: "bg-red-500/20 text-red-400 border-red-500/30",
-  gerente: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  tecnico: "bg-green-500/20 text-green-400 border-green-500/30",
-  financeiro: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  admin: "bg-red-100 text-red-700 border-red-300",
+  gerente: "bg-blue-100 text-blue-700 border-blue-300",
+  tecnico: "bg-green-100 text-green-700 border-green-300",
+  financeiro: "bg-yellow-100 text-yellow-700 border-yellow-300",
 };
 
 const Administracao = () => {
@@ -87,10 +87,8 @@ const Administracao = () => {
 
   const updateRolesMutation = useMutation({
     mutationFn: async ({ userId, roles }: { userId: string; roles: string[] }) => {
-      // Delete existing roles
       const { error: delError } = await supabase.from("user_roles").delete().eq("user_id", userId);
       if (delError) throw delError;
-      // Insert new roles
       if (roles.length > 0) {
         const { error: insError } = await supabase.from("user_roles").insert(
           roles.map((role) => ({ user_id: userId, role: role as any }))
@@ -137,7 +135,7 @@ const Administracao = () => {
   if (!isAdmin) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-gray-400">Acesso restrito a administradores.</p>
+        <p className="text-gray-500">Acesso restrito a administradores.</p>
       </div>
     );
   }
@@ -146,25 +144,25 @@ const Administracao = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Administração</h1>
-          <p className="text-gray-400">Gerenciamento de usuários e permissões.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Administração</h1>
+          <p className="text-gray-500">Gerenciamento de usuários e permissões.</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> Novo Usuário</Button>
           </DialogTrigger>
-          <DialogContent className="bg-card border-border">
-            <DialogHeader><DialogTitle className="text-white">Criar Usuário</DialogTitle></DialogHeader>
+          <DialogContent className="bg-white border-gray-200">
+            <DialogHeader><DialogTitle className="text-gray-900">Criar Usuário</DialogTitle></DialogHeader>
             <div className="space-y-4">
-              <div><Label className="text-gray-300">Nome Completo *</Label><Input className="bg-background border-border text-white" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} /></div>
-              <div><Label className="text-gray-300">E-mail *</Label><Input className="bg-background border-border text-white" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-              <div><Label className="text-gray-300">Senha *</Label><Input type="password" className="bg-background border-border text-white" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
-              <div><Label className="text-gray-300">Matrícula</Label><Input className="bg-background border-border text-white" value={form.matricula} onChange={(e) => setForm({ ...form, matricula: e.target.value })} /></div>
+              <div><Label className="text-gray-600">Nome Completo *</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} /></div>
+              <div><Label className="text-gray-600">E-mail *</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div><Label className="text-gray-600">Senha *</Label><Input type="password" className="bg-white border-gray-300 text-gray-900" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></div>
+              <div><Label className="text-gray-600">Matrícula</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.matricula} onChange={(e) => setForm({ ...form, matricula: e.target.value })} /></div>
               <div>
-                <Label className="text-gray-300">Funções</Label>
+                <Label className="text-gray-600">Funções</Label>
                 <div className="flex flex-wrap gap-3 mt-2">
                   {ROLES.map((role) => (
-                    <label key={role} className="flex items-center gap-2 text-gray-300 text-sm cursor-pointer">
+                    <label key={role} className="flex items-center gap-2 text-gray-700 text-sm cursor-pointer">
                       <Checkbox checked={form.roles.includes(role)} onCheckedChange={() => toggleFormRole(role)} />
                       {roleLabels[role]}
                     </label>
@@ -181,54 +179,54 @@ const Administracao = () => {
 
       <div className="flex items-center gap-2">
         <Search className="h-4 w-4 text-gray-400" />
-        <Input placeholder="Buscar usuário..." className="max-w-sm bg-background border-border text-white placeholder:text-gray-500" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <Input placeholder="Buscar usuário..." className="max-w-sm bg-white border-gray-300 text-gray-900 placeholder:text-gray-400" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
-      <Card className="bg-card border-border">
+      <Card className="bg-white border-gray-200">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="border-border">
-                <TableHead className="text-gray-300">Nome</TableHead>
-                <TableHead className="text-gray-300">E-mail</TableHead>
-                <TableHead className="text-gray-300">Matrícula</TableHead>
-                <TableHead className="text-gray-300">Funções</TableHead>
-                <TableHead className="text-gray-300">Status</TableHead>
-                <TableHead className="text-gray-300">Ações</TableHead>
+              <TableRow className="border-gray-200">
+                <TableHead className="text-gray-600">Nome</TableHead>
+                <TableHead className="text-gray-600">E-mail</TableHead>
+                <TableHead className="text-gray-600">Matrícula</TableHead>
+                <TableHead className="text-gray-600">Funções</TableHead>
+                <TableHead className="text-gray-600">Status</TableHead>
+                <TableHead className="text-gray-600">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={6} className="text-center text-gray-400">Carregando...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center text-gray-500">Carregando...</TableCell></TableRow>
               ) : filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={6} className="text-center text-gray-400">Nenhum usuário encontrado.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center text-gray-500">Nenhum usuário encontrado.</TableCell></TableRow>
               ) : filtered.map((p) => {
                 const roles = getUserRoles(p.user_id);
                 return (
-                  <TableRow key={p.id} className="border-border">
-                    <TableCell className="text-white font-medium">{p.full_name}</TableCell>
-                    <TableCell className="text-gray-300">{p.email}</TableCell>
-                    <TableCell className="text-gray-300">{p.matricula || "—"}</TableCell>
+                  <TableRow key={p.id} className="border-gray-200">
+                    <TableCell className="text-gray-900 font-medium">{p.full_name}</TableCell>
+                    <TableCell className="text-gray-600">{p.email}</TableCell>
+                    <TableCell className="text-gray-600">{p.matricula || "—"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1 flex-wrap">
                         {roles.map((r) => (
                           <Badge key={r} className={roleColors[r] || ""}>{roleLabels[r] || r}</Badge>
                         ))}
-                        {roles.length === 0 && <span className="text-gray-500 text-xs">Nenhuma</span>}
+                        {roles.length === 0 && <span className="text-gray-400 text-xs">Nenhuma</span>}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={p.active ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}>
+                      <Badge className={p.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
                         {p.active ? "Ativo" : "Inativo"}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="icon" variant="ghost" onClick={() => { setEditUser(p); setEditRoles(roles); }}>
-                          <Shield className="h-4 w-4 text-blue-400" />
+                          <Shield className="h-4 w-4 text-blue-600" />
                         </Button>
                         <Button size="icon" variant="ghost" onClick={() => toggleActiveStatus.mutate({ id: p.id, active: !p.active })}>
-                          {p.active ? <Trash2 className="h-4 w-4 text-red-400" /> : <Edit className="h-4 w-4 text-green-400" />}
+                          {p.active ? <Trash2 className="h-4 w-4 text-red-500" /> : <Edit className="h-4 w-4 text-green-600" />}
                         </Button>
                       </div>
                     </TableCell>
@@ -240,18 +238,17 @@ const Administracao = () => {
         </CardContent>
       </Card>
 
-      {/* Edit roles dialog */}
       <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
-        <DialogContent className="bg-card border-border">
-          <DialogHeader><DialogTitle className="text-white">Editar Permissões</DialogTitle></DialogHeader>
+        <DialogContent className="bg-white border-gray-200">
+          <DialogHeader><DialogTitle className="text-gray-900">Editar Permissões</DialogTitle></DialogHeader>
           {editUser && (
             <div className="space-y-4">
-              <p className="text-gray-300 text-sm">Usuário: <strong className="text-white">{editUser.full_name}</strong></p>
+              <p className="text-gray-600 text-sm">Usuário: <strong className="text-gray-900">{editUser.full_name}</strong></p>
               <div>
-                <Label className="text-gray-300">Funções</Label>
+                <Label className="text-gray-600">Funções</Label>
                 <div className="flex flex-wrap gap-3 mt-2">
                   {ROLES.map((role) => (
-                    <label key={role} className="flex items-center gap-2 text-gray-300 text-sm cursor-pointer">
+                    <label key={role} className="flex items-center gap-2 text-gray-700 text-sm cursor-pointer">
                       <Checkbox checked={editRoles.includes(role)} onCheckedChange={() => toggleEditRole(role)} />
                       {roleLabels[role]}
                     </label>
