@@ -42,6 +42,7 @@ interface OSData {
 }
 
 const AcompanharOS = () => {
+  const [searchParams] = useSearchParams();
   const [codigo, setCodigo] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<OSData | null>(null);
@@ -50,6 +51,7 @@ const AcompanharOS = () => {
   const [feedbackNota, setFeedbackNota] = useState(5);
   const [submitting, setSubmitting] = useState(false);
   const [codigoUsado, setCodigoUsado] = useState("");
+  const [autoSearched, setAutoSearched] = useState(false);
 
   const buscar = async () => {
     if (!codigo.trim()) return;
