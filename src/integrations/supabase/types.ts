@@ -458,6 +458,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      validate_feedback_os: {
+        Args: { _codigo_rastreio: string; _ordem_servico_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "gerente" | "tecnico" | "financeiro"
