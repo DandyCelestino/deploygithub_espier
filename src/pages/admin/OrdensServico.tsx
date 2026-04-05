@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, CheckCircle, Search, Eye, ClipboardCheck, AlertTriangle } from "lucide-react";
+import { Play, CheckCircle, Search, Eye, ClipboardCheck, AlertTriangle, Copy, Share2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
