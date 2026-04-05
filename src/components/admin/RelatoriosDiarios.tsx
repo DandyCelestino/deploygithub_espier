@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Camera, Send, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,24 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+const useSignedUrl = (path: string | null) => {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!path) return;
+    // If it's already a full URL (legacy data), use as-is
+    if (path.startsWith("http")) { setUrl(path); return; }
+    supabase.storage.from("relatorios-fotos").createSignedUrl(path, 3600)
+      .then(({ data }) => { if (data) setUrl(data.signedUrl); });
+  }, [path]);
+  return url;
+};
+
+const SignedImage = ({ path, alt }: { path: string; alt: string }) => {
+  const url = useSignedUrl(path);
+  if (!url) return <div className="h-20 w-20 bg-gray-100 rounded animate-pulse" />;
+  return <img src={url} alt={alt} className="h-20 w-20 object-cover rounded border border-gray-200" />;
+};
 
 const RelatoriosDiarios = () => {
   const { user, profile, hasRole } = useAuth();
@@ -54,18 +72,15 @@ const RelatoriosDiarios = () => {
       if (!activeOS) throw new Error("Sem OS ativa");
       setUploading(true);
       
-      // Upload photos
-      const fotoUrls: string[] = [];
+      // Upload photos - store file paths (bucket is private, use signed URLs to view)
+      const fotoPaths: string[] = [];
       for (const foto of fotos) {
         const fileName = `${activeOS.id}/${Date.now()}_${foto.name}`;
         const { error: uploadError } = await supabase.storage
           .from("relatorios-fotos")
           .upload(fileName, foto);
         if (uploadError) throw uploadError;
-        const { data: urlData } = supabase.storage
-          .from("relatorios-fotos")
-          .getPublicUrl(fileName);
-        fotoUrls.push(urlData.publicUrl);
+        fotoPaths.push(fileName);
       }
 
       const { error } = await supabase.from("relatorios_diarios").insert({
@@ -73,7 +88,7 @@ const RelatoriosDiarios = () => {
         tecnico_id: user!.id,
         tecnico_nome: profile?.full_name || "",
         descricao,
-        fotos: fotoUrls,
+        fotos: fotoPaths,
       });
       if (error) throw error;
     },
@@ -179,7 +194,7 @@ const RelatoriosDiarios = () => {
                   {r.fotos && r.fotos.length > 0 && (
                     <div className="flex gap-2 mt-3 overflow-x-auto">
                       {r.fotos.map((foto: string, i: number) => (
-                        <img key={i} src={foto} alt={`Foto ${i + 1}`} className="h-20 w-20 object-cover rounded border border-gray-200" />
+                        <SignedImage key={i} path={foto} alt={`Foto ${i + 1}`} />
                       ))}
                     </div>
                   )}
