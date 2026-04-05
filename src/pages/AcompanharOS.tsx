@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Search, Clock, CheckCircle, ClipboardCheck, Camera, Star, MessageSquare, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ interface OSData {
 }
 
 const AcompanharOS = () => {
+  const [searchParams] = useSearchParams();
   const [codigo, setCodigo] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<OSData | null>(null);
@@ -49,6 +51,7 @@ const AcompanharOS = () => {
   const [feedbackNota, setFeedbackNota] = useState(5);
   const [submitting, setSubmitting] = useState(false);
   const [codigoUsado, setCodigoUsado] = useState("");
+  const [autoSearched, setAutoSearched] = useState(false);
 
   const buscar = async () => {
     if (!codigo.trim()) return;
@@ -70,6 +73,34 @@ const AcompanharOS = () => {
       setLoading(false);
     }
   };
+
+  // Auto-search when code comes from URL
+  useEffect(() => {
+    const codigoParam = searchParams.get("codigo");
+    if (codigoParam && !autoSearched) {
+      setCodigo(codigoParam);
+      setAutoSearched(true);
+      (async () => {
+        setLoading(true);
+        try {
+          const { data: result, error } = await supabase.rpc("get_os_by_tracking_code", { _codigo: codigoParam.trim() });
+          if (error) throw error;
+          const parsed = result as unknown as OSData;
+          if (!parsed || !parsed.ordem) {
+            toast.error("Código não encontrado.");
+            setData(null);
+          } else {
+            setData(parsed);
+            setCodigoUsado(codigoParam.trim());
+          }
+        } catch {
+          toast.error("Erro ao buscar ordem.");
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [searchParams, autoSearched]);
 
   const enviarFeedback = async () => {
     if (!data?.ordem?.id || !codigoUsado) return;

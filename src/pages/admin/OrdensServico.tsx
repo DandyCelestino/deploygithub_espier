@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, CheckCircle, Search, Eye, ClipboardCheck, AlertTriangle } from "lucide-react";
+import { Play, CheckCircle, Search, Eye, ClipboardCheck, AlertTriangle, Copy, Share2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -229,12 +229,50 @@ const OrdensServico = () => {
                 <p className="text-gray-600"><strong className="text-gray-900">Técnico:</strong> {viewOS.tecnico_nome || "Não atribuído"}</p>
                 <p className="text-gray-600"><strong className="text-gray-900">Status:</strong> <Badge className={statusColors[viewOS.status] || ""}>{statusLabels[viewOS.status] || viewOS.status}</Badge></p>
                 {!isTecnico && (
-                  <>
-                    <p className="text-gray-600"><strong className="text-gray-900">Valor Instalação:</strong> R$ {Number(viewOS.valor_instalacao || 0).toFixed(2)}</p>
-                    <p className="text-gray-600"><strong className="text-gray-900">Código Rastreio:</strong> <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">{viewOS.codigo_rastreio || "—"}</span></p>
-                  </>
+                  <p className="text-gray-600"><strong className="text-gray-900">Valor Instalação:</strong> R$ {Number(viewOS.valor_instalacao || 0).toFixed(2)}</p>
                 )}
               </div>
+
+              {/* Código de Rastreio - visível para todos */}
+              {viewOS.codigo_rastreio && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                    <Share2 className="h-4 w-4" />
+                    Código de Acompanhamento do Cliente
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-lg bg-white px-3 py-1 rounded border border-blue-300 text-blue-800 select-all">
+                      {viewOS.codigo_rastreio}
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1"
+                      onClick={() => {
+                        navigator.clipboard.writeText(viewOS.codigo_rastreio);
+                        toast.success("Código copiado!");
+                      }}
+                    >
+                      <Copy className="h-3 w-3" /> Copiar
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1"
+                      onClick={() => {
+                        const url = `${window.location.origin}/acompanhar?codigo=${viewOS.codigo_rastreio}`;
+                        navigator.clipboard.writeText(url);
+                        toast.success("Link de acompanhamento copiado! Envie ao cliente.");
+                      }}
+                    >
+                      <Share2 className="h-3 w-3" /> Copiar Link
+                    </Button>
+                  </div>
+                  <p className="text-xs text-blue-600 mt-2">
+                    Envie este código ou link ao cliente para que ele acompanhe o andamento da instalação em tempo real.
+                  </p>
+                </div>
+              )}
               {viewOS.observacoes && (
                 <p className="text-gray-600 text-sm"><strong className="text-gray-900">Observações:</strong> {viewOS.observacoes}</p>
               )}
