@@ -54,18 +54,15 @@ const RelatoriosDiarios = () => {
       if (!activeOS) throw new Error("Sem OS ativa");
       setUploading(true);
       
-      // Upload photos
-      const fotoUrls: string[] = [];
+      // Upload photos - store file paths (bucket is private, use signed URLs to view)
+      const fotoPaths: string[] = [];
       for (const foto of fotos) {
         const fileName = `${activeOS.id}/${Date.now()}_${foto.name}`;
         const { error: uploadError } = await supabase.storage
           .from("relatorios-fotos")
           .upload(fileName, foto);
         if (uploadError) throw uploadError;
-        const { data: urlData } = supabase.storage
-          .from("relatorios-fotos")
-          .getPublicUrl(fileName);
-        fotoUrls.push(urlData.publicUrl);
+        fotoPaths.push(fileName);
       }
 
       const { error } = await supabase.from("relatorios_diarios").insert({
@@ -73,7 +70,7 @@ const RelatoriosDiarios = () => {
         tecnico_id: user!.id,
         tecnico_nome: profile?.full_name || "",
         descricao,
-        fotos: fotoUrls,
+        fotos: fotoPaths,
       });
       if (error) throw error;
     },
