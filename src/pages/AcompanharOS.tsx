@@ -74,6 +74,34 @@ const AcompanharOS = () => {
     }
   };
 
+  // Auto-search when code comes from URL
+  useEffect(() => {
+    const codigoParam = searchParams.get("codigo");
+    if (codigoParam && !autoSearched) {
+      setCodigo(codigoParam);
+      setAutoSearched(true);
+      (async () => {
+        setLoading(true);
+        try {
+          const { data: result, error } = await supabase.rpc("get_os_by_tracking_code", { _codigo: codigoParam.trim() });
+          if (error) throw error;
+          const parsed = result as unknown as OSData;
+          if (!parsed || !parsed.ordem) {
+            toast.error("Código não encontrado.");
+            setData(null);
+          } else {
+            setData(parsed);
+            setCodigoUsado(codigoParam.trim());
+          }
+        } catch {
+          toast.error("Erro ao buscar ordem.");
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [searchParams, autoSearched]);
+
   const enviarFeedback = async () => {
     if (!data?.ordem?.id || !codigoUsado) return;
     setSubmitting(true);
