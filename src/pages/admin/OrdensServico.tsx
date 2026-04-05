@@ -273,7 +273,6 @@ const OrdensServico = () => {
                   </p>
                 </div>
               )}
-              </div>
               {viewOS.observacoes && (
                 <p className="text-gray-600 text-sm"><strong className="text-gray-900">Observações:</strong> {viewOS.observacoes}</p>
               )}
