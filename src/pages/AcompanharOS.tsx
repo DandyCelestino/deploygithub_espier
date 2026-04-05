@@ -220,11 +220,10 @@ const AcompanharOS = () => {
                         </div>
                         <p className="text-sm text-gray-700">{r.descricao}</p>
                         {r.fotos && r.fotos.length > 0 && (
-                          <div className="flex gap-2 mt-3 overflow-x-auto">
-                            {r.fotos.map((foto: string, i: number) => (
-                              <img key={i} src={foto} alt={`Foto ${i + 1}`} className="h-20 w-20 object-cover rounded border border-gray-200" />
-                            ))}
-                          </div>
+                          <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                            <Camera className="h-3 w-3" />
+                            {r.fotos.length} foto(s) registrada(s) pelo técnico
+                          </p>
                         )}
                       </div>
                     ))}
