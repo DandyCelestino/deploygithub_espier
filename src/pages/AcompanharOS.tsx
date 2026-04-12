@@ -15,6 +15,7 @@ const statusLabels: Record<string, string> = {
   em_andamento: "Em Andamento",
   aguardando_supervisao: "Aguardando Vistoria",
   concluida: "Concluída",
+  encerrada: "Encerrada",
   cancelada: "Cancelada",
 };
 
@@ -23,6 +24,7 @@ const statusColors: Record<string, string> = {
   em_andamento: "bg-yellow-100 text-yellow-700",
   aguardando_supervisao: "bg-purple-100 text-purple-700",
   concluida: "bg-green-100 text-green-700",
+  encerrada: "bg-gray-100 text-gray-500",
   cancelada: "bg-red-100 text-red-700",
 };
 

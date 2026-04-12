@@ -75,19 +75,7 @@ const Orcamentos = () => {
     mutationFn: async ({ id, valor_instalacao, prazo_termino }: { id: string; valor_instalacao: number; prazo_termino: string }) => {
       const { error } = await supabase.from("orcamentos").update({ status: "aprovado", valor_instalacao }).eq("id", id);
       if (error) throw error;
-      const orc = orcamentos.find((o) => o.id === id);
-      if (orc) {
-        const { error: osError } = await supabase.from("ordens_servico").insert({
-          orcamento_id: id,
-          cliente_nome: orc.cliente_nome,
-          endereco: orc.endereco,
-          cidade: orc.cidade,
-          servico_solicitado: orc.servico_solicitado,
-          valor_instalacao,
-          prazo_termino: prazo_termino || null,
-        });
-        if (osError) throw osError;
-      }
+      // OS is now created automatically by database trigger
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orcamentos"] });
