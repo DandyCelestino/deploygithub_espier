@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       cliente_feedbacks: {
         Row: {
           codigo_rastreio: string
@@ -52,6 +82,39 @@ export type Database = {
           },
         ]
       }
+      clientes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          document: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          document?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          document?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       configuracoes: {
         Row: {
           chave: string
@@ -75,6 +138,47 @@ export type Database = {
           valor?: string | null
         }
         Relationships: []
+      }
+      contratos: {
+        Row: {
+          client_id: string
+          commission_value: number
+          created_at: string
+          id: string
+          status: string
+          total_value: number
+          updated_at: string
+          vendedor_id: string
+        }
+        Insert: {
+          client_id: string
+          commission_value?: number
+          created_at?: string
+          id?: string
+          status?: string
+          total_value?: number
+          updated_at?: string
+          vendedor_id: string
+        }
+        Update: {
+          client_id?: string
+          commission_value?: number
+          created_at?: string
+          id?: string
+          status?: string
+          total_value?: number
+          updated_at?: string
+          vendedor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contratos_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       estoque_itens: {
         Row: {
@@ -207,6 +311,8 @@ export type Database = {
           cliente_email: string | null
           cliente_nome: string
           cliente_telefone: string | null
+          commission_value: number
+          contrato_id: string | null
           created_at: string
           criado_por: string
           descricao: string | null
@@ -224,6 +330,8 @@ export type Database = {
           cliente_email?: string | null
           cliente_nome: string
           cliente_telefone?: string | null
+          commission_value?: number
+          contrato_id?: string | null
           created_at?: string
           criado_por: string
           descricao?: string | null
@@ -241,6 +349,8 @@ export type Database = {
           cliente_email?: string | null
           cliente_nome?: string
           cliente_telefone?: string | null
+          commission_value?: number
+          contrato_id?: string | null
           created_at?: string
           criado_por?: string
           descricao?: string | null
@@ -253,7 +363,15 @@ export type Database = {
           valor_instalacao?: number
           valor_total?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orcamentos_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ordens_servico: {
         Row: {
@@ -457,6 +575,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      log_activity: {
+        Args: {
+          _action: string
+          _details?: Json
+          _entity_id: string
+          _entity_type: string
+          _user_id: string
+        }
+        Returns: undefined
       }
       validate_feedback_os: {
         Args: { _codigo_rastreio: string; _ordem_servico_id: string }
