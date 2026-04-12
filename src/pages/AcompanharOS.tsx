@@ -94,6 +94,9 @@ const AcompanharOS = () => {
           if (!parsed || !parsed.ordem) {
             toast.error("Código não encontrado.");
             setData(null);
+          } else if (parsed.ordem.status === "encerrada") {
+            toast.error("Esta ordem de serviço foi encerrada e não pode mais ser acompanhada.");
+            setData(null);
           } else {
             setData(parsed);
             setCodigoUsado(codigoParam.trim());
