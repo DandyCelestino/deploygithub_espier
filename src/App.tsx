@@ -21,6 +21,10 @@ import Administracao from "./pages/admin/Administracao.tsx";
 import Configuracoes from "./pages/admin/Configuracoes.tsx";
 import RelatoriosDiarios from "./components/admin/RelatoriosDiarios.tsx";
 import AcompanharOS from "./pages/AcompanharOS.tsx";
+import Clientes from "./pages/admin/Clientes.tsx";
+import Contratos from "./pages/admin/Contratos.tsx";
+import DashboardVendedor from "./pages/admin/DashboardVendedor.tsx";
+import Logs from "./pages/admin/Logs.tsx";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +59,10 @@ const App = () => (
               <Route path="administracao" element={<Administracao />} />
               <Route path="configuracoes" element={<Configuracoes />} />
               <Route path="relatorios" element={<RelatoriosDiarios />} />
+              <Route path="clientes" element={<Clientes />} />
+              <Route path="contratos" element={<Contratos />} />
+              <Route path="dashboard-vendedor" element={<DashboardVendedor />} />
+              <Route path="logs" element={<Logs />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

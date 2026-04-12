@@ -8,6 +8,10 @@ import {
   LayoutDashboard,
   LogOut,
   Camera,
+  Handshake,
+  UserCheck,
+  Activity,
+  TrendingUp,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,28 +29,53 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 
-const menuGroups = [
+type AppRole = "admin" | "gerente" | "tecnico" | "financeiro" | "vendedor";
+
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: any;
+  roles: AppRole[]; // empty = all roles
+}
+
+interface MenuGroup {
+  label: string;
+  items: MenuItem[];
+}
+
+const allRoles: AppRole[] = ["admin", "gerente", "tecnico", "financeiro", "vendedor"];
+
+const menuGroups: MenuGroup[] = [
   {
     label: "Principal",
     items: [
-      { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
+      { title: "Dashboard", url: "/admin", icon: LayoutDashboard, roles: ["admin", "gerente", "tecnico", "financeiro"] },
+      { title: "Dashboard Vendas", url: "/admin/dashboard-vendedor", icon: TrendingUp, roles: ["vendedor"] },
+    ],
+  },
+  {
+    label: "Comercial",
+    items: [
+      { title: "Clientes", url: "/admin/clientes", icon: UserCheck, roles: ["admin", "gerente", "vendedor"] },
+      { title: "Contratos", url: "/admin/contratos", icon: Handshake, roles: ["admin", "gerente", "vendedor", "financeiro"] },
     ],
   },
   {
     label: "Operacional",
     items: [
-      { title: "Ordens de Serviço", url: "/admin/ordens", icon: ClipboardList },
-      { title: "Orçamentos", url: "/admin/orcamentos", icon: FileText },
-      { title: "Relatórios Diários", url: "/admin/relatorios", icon: Camera },
-      { title: "Estoque", url: "/admin/estoque", icon: Package },
+      { title: "Ordens de Serviço", url: "/admin/ordens", icon: ClipboardList, roles: ["admin", "gerente", "tecnico"] },
+      { title: "Orçamentos", url: "/admin/orcamentos", icon: FileText, roles: ["admin", "gerente", "tecnico", "financeiro", "vendedor"] },
+      { title: "Relatórios Diários", url: "/admin/relatorios", icon: Camera, roles: ["admin", "gerente", "tecnico"] },
+      { title: "Estoque", url: "/admin/estoque", icon: Package, roles: ["admin", "gerente", "tecnico", "financeiro"] },
     ],
   },
   {
     label: "Gestão",
     items: [
-      { title: "Financeiro", url: "/admin/financeiro", icon: DollarSign },
-      { title: "Administração", url: "/admin/administracao", icon: Users },
-      { title: "Configurações", url: "/admin/configuracoes", icon: Settings },
+      { title: "Financeiro", url: "/admin/financeiro", icon: DollarSign, roles: ["admin", "gerente", "financeiro"] },
+      { title: "Logs de Atividade", url: "/admin/logs", icon: Activity, roles: ["admin", "gerente"] },
+      { title: "Administração", url: "/admin/administracao", icon: Users, roles: ["admin"] },
+      { title: "Configurações", url: "/admin/configuracoes", icon: Settings, roles: ["admin", "gerente"] },
     ],
   },
 ];
@@ -56,6 +85,17 @@ const AdminSidebar = () => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+
+  const userRoles = roles as AppRole[];
+
+  const visibleGroups = menuGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        item.roles.some((r) => userRoles.includes(r))
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <Sidebar collapsible="icon" className="border-r border-gray-200">
@@ -74,7 +114,7 @@ const AdminSidebar = () => {
           )}
         </div>
 
-        {menuGroups.map((group) => (
+        {visibleGroups.map((group) => (
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel className="text-gray-500 text-xs uppercase tracking-wider">
               {group.label}
