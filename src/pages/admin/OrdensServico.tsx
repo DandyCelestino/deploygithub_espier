@@ -82,7 +82,8 @@ const OrdensServico = () => {
 
   const checklistMutation = useMutation({
     mutationFn: async ({ id, field, value }: { id: string; field: string; value: boolean }) => {
-      const { error } = await supabase.from("ordens_servico").update({ [field]: value }).eq("id", id);
+      const updateData: Record<string, boolean> = { [field]: value };
+      const { error } = await supabase.from("ordens_servico").update(updateData as any).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
