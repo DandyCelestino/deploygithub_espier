@@ -163,9 +163,9 @@ const Orcamentos = () => {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={7} className="text-center text-gray-500">Carregando...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={isTecnico ? 7 : 8} className="text-center text-gray-500">Carregando...</TableCell></TableRow>
               ) : filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={7} className="text-center text-gray-500">Nenhum orçamento encontrado.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={isTecnico ? 7 : 8} className="text-center text-gray-500">Nenhum orçamento encontrado.</TableCell></TableRow>
               ) : filtered.map((orc) => (
                 <TableRow key={orc.id} className="border-gray-200">
                   <TableCell className="text-gray-900 font-medium">{orc.cliente_nome}</TableCell>
