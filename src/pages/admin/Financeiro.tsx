@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DollarSign, Plus, Search, TrendingUp, TrendingDown } from "lucide-react";
+import { DollarSign, Plus, Search, TrendingUp, TrendingDown, Pencil } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,7 +26,9 @@ const Financeiro = () => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [editItem, setEditItem] = useState<any>(null);
   const canManage = hasRole("admin") || hasRole("gerente") || hasRole("financeiro");
+  const isAdmin = hasRole("admin");
 
   const [form, setForm] = useState({
     tipo: "receber" as string,
@@ -34,7 +36,10 @@ const Financeiro = () => {
     valor: "",
     data_vencimento: "",
     categoria: "",
+    status: "pendente",
   });
+
+  const resetForm = () => setForm({ tipo: "receber", descricao: "", valor: "", data_vencimento: "", categoria: "", status: "pendente" });
 
   const { data: contas = [], isLoading } = useQuery({
     queryKey: ["financeiro_contas"],
@@ -61,9 +66,31 @@ const Financeiro = () => {
       queryClient.invalidateQueries({ queryKey: ["financeiro_contas"] });
       toast.success("Conta cadastrada!");
       setOpen(false);
-      setForm({ tipo: "receber", descricao: "", valor: "", data_vencimento: "", categoria: "" });
+      resetForm();
     },
     onError: () => toast.error("Erro ao cadastrar conta"),
+  });
+
+  const editMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("financeiro_contas").update({
+        tipo: form.tipo,
+        descricao: form.descricao,
+        valor: parseFloat(form.valor) || 0,
+        data_vencimento: form.data_vencimento,
+        categoria: form.categoria || null,
+        status: form.status,
+        data_pagamento: form.status === "pago" ? new Date().toISOString().split("T")[0] : null,
+      }).eq("id", editItem.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["financeiro_contas"] });
+      toast.success("Conta atualizada!");
+      setEditItem(null);
+      resetForm();
+    },
+    onError: () => toast.error("Erro ao atualizar conta"),
   });
 
   const updateStatusMutation = useMutation({
@@ -79,6 +106,18 @@ const Financeiro = () => {
     },
     onError: () => toast.error("Erro ao atualizar"),
   });
+
+  const openEdit = (conta: any) => {
+    setForm({
+      tipo: conta.tipo,
+      descricao: conta.descricao,
+      valor: String(conta.valor),
+      data_vencimento: conta.data_vencimento,
+      categoria: conta.categoria || "",
+      status: conta.status,
+    });
+    setEditItem(conta);
+  };
 
   const contasReceber = contas.filter((c) => c.tipo === "receber");
   const contasPagar = contas.filter((c) => c.tipo === "pagar");
@@ -100,7 +139,7 @@ const Financeiro = () => {
             <TableHead className="text-gray-600">Vencimento</TableHead>
             <TableHead className="text-gray-600">Pagamento</TableHead>
             <TableHead className="text-gray-600">Status</TableHead>
-            {canManage && <TableHead className="text-gray-600">Ações</TableHead>}
+            <TableHead className="text-gray-600">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -114,18 +153,19 @@ const Financeiro = () => {
               <TableCell className="text-gray-600">{new Date(conta.data_vencimento + "T12:00:00").toLocaleDateString("pt-BR")}</TableCell>
               <TableCell className="text-gray-600">{conta.data_pagamento ? new Date(conta.data_pagamento + "T12:00:00").toLocaleDateString("pt-BR") : "—"}</TableCell>
               <TableCell><Badge className={statusColors[conta.status]}>{conta.status.charAt(0).toUpperCase() + conta.status.slice(1)}</Badge></TableCell>
-              {canManage && (
-                <TableCell>
-                  <div className="flex gap-1">
-                    {conta.status === "pendente" && (
-                      <>
-                        <Button size="sm" variant="outline" className="text-green-600 border-green-300 text-xs" onClick={() => updateStatusMutation.mutate({ id: conta.id, status: "pago" })}>Pagar</Button>
-                        <Button size="sm" variant="ghost" className="text-red-500 text-xs" onClick={() => updateStatusMutation.mutate({ id: conta.id, status: "cancelado" })}>Cancelar</Button>
-                      </>
-                    )}
-                  </div>
-                </TableCell>
-              )}
+              <TableCell>
+                <div className="flex gap-1">
+                  {isAdmin && (
+                    <Button size="icon" variant="ghost" onClick={() => openEdit(conta)}><Pencil className="h-4 w-4 text-blue-500" /></Button>
+                  )}
+                  {canManage && conta.status === "pendente" && (
+                    <>
+                      <Button size="sm" variant="outline" className="text-green-600 border-green-300 text-xs" onClick={() => updateStatusMutation.mutate({ id: conta.id, status: "pago" })}>Pagar</Button>
+                      <Button size="sm" variant="ghost" className="text-red-500 text-xs" onClick={() => updateStatusMutation.mutate({ id: conta.id, status: "cancelado" })}>Cancelar</Button>
+                    </>
+                  )}
+                </div>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -143,7 +183,7 @@ const Financeiro = () => {
         {canManage && (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2"><Plus className="h-4 w-4" /> Nova Conta</Button>
+              <Button className="gap-2" onClick={resetForm}><Plus className="h-4 w-4" /> Nova Conta</Button>
             </DialogTrigger>
             <DialogContent className="bg-white border-gray-200">
               <DialogHeader><DialogTitle className="text-gray-900">Nova Conta</DialogTitle></DialogHeader>
@@ -221,6 +261,46 @@ const Financeiro = () => {
           <Card className="bg-white border-gray-200"><CardContent className="p-0">{renderTable(contasPagar)}</CardContent></Card>
         </TabsContent>
       </Tabs>
+
+      {/* Edit dialog - Admin only */}
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent className="bg-white border-gray-200">
+          <DialogHeader><DialogTitle className="text-gray-900">Editar Conta</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-gray-600">Tipo *</Label>
+              <Select value={form.tipo} onValueChange={(v) => setForm({ ...form, tipo: v })}>
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="receber">A Receber</SelectItem>
+                  <SelectItem value="pagar">A Pagar</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label className="text-gray-600">Descrição *</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><Label className="text-gray-600">Valor (R$) *</Label><Input type="number" className="bg-white border-gray-300 text-gray-900" value={form.valor} onChange={(e) => setForm({ ...form, valor: e.target.value })} /></div>
+              <div><Label className="text-gray-600">Vencimento *</Label><Input type="date" className="bg-white border-gray-300 text-gray-900" value={form.data_vencimento} onChange={(e) => setForm({ ...form, data_vencimento: e.target.value })} /></div>
+            </div>
+            <div><Label className="text-gray-600">Categoria</Label><Input className="bg-white border-gray-300 text-gray-900" value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })} /></div>
+            <div>
+              <Label className="text-gray-600">Status</Label>
+              <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pendente">Pendente</SelectItem>
+                  <SelectItem value="pago">Pago</SelectItem>
+                  <SelectItem value="vencido">Vencido</SelectItem>
+                  <SelectItem value="cancelado">Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button className="w-full" onClick={() => editMutation.mutate()} disabled={!form.descricao || !form.valor || editMutation.isPending}>
+              {editMutation.isPending ? "Salvando..." : "Atualizar Conta"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

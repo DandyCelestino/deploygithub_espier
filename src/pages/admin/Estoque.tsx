@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Package, Plus, Search, ArrowDown, ArrowUp } from "lucide-react";
+import { Package, Plus, Search, ArrowDown, ArrowUp, Pencil } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,10 +21,14 @@ const Estoque = () => {
   const [openMov, setOpenMov] = useState(false);
   const [movType, setMovType] = useState<"entrada" | "saida">("entrada");
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [editItem, setEditItem] = useState<any>(null);
   const canManage = hasRole("admin") || hasRole("gerente");
+  const isAdmin = hasRole("admin");
 
   const [formItem, setFormItem] = useState({ descricao: "", codigo: "", unidade: "un", quantidade: "0", quantidade_minima: "0", localizacao: "" });
   const [formMov, setFormMov] = useState({ quantidade: "", observacao: "" });
+
+  const resetFormItem = () => setFormItem({ descricao: "", codigo: "", unidade: "un", quantidade: "0", quantidade_minima: "0", localizacao: "" });
 
   const { data: itens = [], isLoading } = useQuery({
     queryKey: ["estoque_itens"],
@@ -60,9 +64,30 @@ const Estoque = () => {
       queryClient.invalidateQueries({ queryKey: ["estoque_itens"] });
       toast.success("Item cadastrado!");
       setOpenItem(false);
-      setFormItem({ descricao: "", codigo: "", unidade: "un", quantidade: "0", quantidade_minima: "0", localizacao: "" });
+      resetFormItem();
     },
     onError: () => toast.error("Erro ao cadastrar item"),
+  });
+
+  const editItemMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("estoque_itens").update({
+        descricao: formItem.descricao,
+        codigo: formItem.codigo || null,
+        unidade: formItem.unidade,
+        quantidade: parseInt(formItem.quantidade) || 0,
+        quantidade_minima: parseInt(formItem.quantidade_minima) || 0,
+        localizacao: formItem.localizacao || null,
+      }).eq("id", editItem.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["estoque_itens"] });
+      toast.success("Item atualizado!");
+      setEditItem(null);
+      resetFormItem();
+    },
+    onError: () => toast.error("Erro ao atualizar item"),
   });
 
   const movMutation = useMutation({
@@ -95,6 +120,18 @@ const Estoque = () => {
     onError: (e: any) => toast.error(e.message || "Erro ao registrar movimentação"),
   });
 
+  const openEditItem = (item: any) => {
+    setFormItem({
+      descricao: item.descricao,
+      codigo: item.codigo || "",
+      unidade: item.unidade,
+      quantidade: String(item.quantidade),
+      quantidade_minima: String(item.quantidade_minima),
+      localizacao: item.localizacao || "",
+    });
+    setEditItem(item);
+  };
+
   const filtered = itens.filter((i) =>
     i.descricao.toLowerCase().includes(search.toLowerCase()) ||
     (i.codigo && i.codigo.toLowerCase().includes(search.toLowerCase()))
@@ -112,7 +149,7 @@ const Estoque = () => {
         {canManage && (
           <Dialog open={openItem} onOpenChange={setOpenItem}>
             <DialogTrigger asChild>
-              <Button className="gap-2"><Plus className="h-4 w-4" /> Novo Item</Button>
+              <Button className="gap-2" onClick={resetFormItem}><Plus className="h-4 w-4" /> Novo Item</Button>
             </DialogTrigger>
             <DialogContent className="bg-white border-gray-200">
               <DialogHeader><DialogTitle className="text-gray-900">Cadastrar Item</DialogTitle></DialogHeader>
@@ -183,6 +220,11 @@ const Estoque = () => {
                       <TableCell className="text-gray-500 text-xs">{new Date(item.created_at).toLocaleDateString("pt-BR")}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
+                          {isAdmin && (
+                            <Button size="icon" variant="ghost" onClick={() => openEditItem(item)}>
+                              <Pencil className="h-4 w-4 text-blue-500" />
+                            </Button>
+                          )}
                           {canManage && (
                             <Button size="icon" variant="ghost" onClick={() => { setSelectedItem(item); setMovType("entrada"); setOpenMov(true); }}>
                               <ArrowDown className="h-4 w-4 text-green-600" />
@@ -239,6 +281,7 @@ const Estoque = () => {
         </TabsContent>
       </Tabs>
 
+      {/* Movimentação dialog */}
       <Dialog open={openMov} onOpenChange={setOpenMov}>
         <DialogContent className="bg-white border-gray-200">
           <DialogHeader>
@@ -253,6 +296,28 @@ const Estoque = () => {
             <div><Label className="text-gray-600">Observação</Label><Input className="bg-white border-gray-300 text-gray-900" value={formMov.observacao} onChange={(e) => setFormMov({ ...formMov, observacao: e.target.value })} /></div>
             <Button className="w-full" onClick={() => movMutation.mutate()} disabled={!formMov.quantidade || movMutation.isPending}>
               {movMutation.isPending ? "Salvando..." : "Confirmar"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit item dialog - Admin only */}
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent className="bg-white border-gray-200">
+          <DialogHeader><DialogTitle className="text-gray-900">Editar Item</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div><Label className="text-gray-600">Descrição *</Label><Input className="bg-white border-gray-300 text-gray-900" value={formItem.descricao} onChange={(e) => setFormItem({ ...formItem, descricao: e.target.value })} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><Label className="text-gray-600">Código</Label><Input className="bg-white border-gray-300 text-gray-900" value={formItem.codigo} onChange={(e) => setFormItem({ ...formItem, codigo: e.target.value })} /></div>
+              <div><Label className="text-gray-600">Unidade</Label><Input className="bg-white border-gray-300 text-gray-900" value={formItem.unidade} onChange={(e) => setFormItem({ ...formItem, unidade: e.target.value })} /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><Label className="text-gray-600">Quantidade</Label><Input type="number" className="bg-white border-gray-300 text-gray-900" value={formItem.quantidade} onChange={(e) => setFormItem({ ...formItem, quantidade: e.target.value })} /></div>
+              <div><Label className="text-gray-600">Qtd. Mínima</Label><Input type="number" className="bg-white border-gray-300 text-gray-900" value={formItem.quantidade_minima} onChange={(e) => setFormItem({ ...formItem, quantidade_minima: e.target.value })} /></div>
+            </div>
+            <div><Label className="text-gray-600">Localização</Label><Input className="bg-white border-gray-300 text-gray-900" value={formItem.localizacao} onChange={(e) => setFormItem({ ...formItem, localizacao: e.target.value })} /></div>
+            <Button className="w-full" onClick={() => editItemMutation.mutate()} disabled={!formItem.descricao || editItemMutation.isPending}>
+              {editItemMutation.isPending ? "Salvando..." : "Atualizar Item"}
             </Button>
           </div>
         </DialogContent>
