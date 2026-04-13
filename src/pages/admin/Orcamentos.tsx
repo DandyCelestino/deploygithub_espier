@@ -37,6 +37,7 @@ const Orcamentos = () => {
   const [valorInstalacao, setValorInstalacao] = useState("");
   const [prazoTermino, setPrazoTermino] = useState("");
   const canManage = hasRole("admin") || hasRole("gerente");
+  const isTecnico = hasRole("tecnico");
 
   const [form, setForm] = useState({
     cliente_nome: "", cliente_telefone: "", cliente_email: "",
@@ -153,7 +154,8 @@ const Orcamentos = () => {
                 <TableHead className="text-gray-600">Cliente</TableHead>
                 <TableHead className="text-gray-600">Serviço</TableHead>
                 <TableHead className="text-gray-600">Cidade</TableHead>
-                <TableHead className="text-gray-600">Valor</TableHead>
+                {!isTecnico && <TableHead className="text-gray-600">Valor</TableHead>}
+                <TableHead className="text-gray-600">Valor Instalação</TableHead>
                 <TableHead className="text-gray-600">Status</TableHead>
                 <TableHead className="text-gray-600">Data</TableHead>
                 <TableHead className="text-gray-600">Ações</TableHead>
@@ -161,15 +163,16 @@ const Orcamentos = () => {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow><TableCell colSpan={7} className="text-center text-gray-500">Carregando...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={isTecnico ? 7 : 8} className="text-center text-gray-500">Carregando...</TableCell></TableRow>
               ) : filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={7} className="text-center text-gray-500">Nenhum orçamento encontrado.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={isTecnico ? 7 : 8} className="text-center text-gray-500">Nenhum orçamento encontrado.</TableCell></TableRow>
               ) : filtered.map((orc) => (
                 <TableRow key={orc.id} className="border-gray-200">
                   <TableCell className="text-gray-900 font-medium">{orc.cliente_nome}</TableCell>
                   <TableCell className="text-gray-600">{orc.servico_solicitado}</TableCell>
                   <TableCell className="text-gray-600">{orc.cidade}/{orc.estado}</TableCell>
-                  <TableCell className="text-gray-900">R$ {Number(orc.valor_total).toFixed(2)}</TableCell>
+                  {!isTecnico && <TableCell className="text-gray-900">R$ {Number(orc.valor_total).toFixed(2)}</TableCell>}
+                  <TableCell className="text-gray-900">R$ {Number(orc.valor_instalacao || 0).toFixed(2)}</TableCell>
                   <TableCell><Badge className={statusColors[orc.status]}>{statusLabels[orc.status]}</Badge></TableCell>
                   <TableCell className="text-gray-500 text-xs">{new Date(orc.created_at).toLocaleDateString("pt-BR")}</TableCell>
                   <TableCell>
@@ -205,7 +208,7 @@ const Orcamentos = () => {
               <p className="text-gray-600"><strong className="text-gray-900">Cidade:</strong> {viewItem.cidade}/{viewItem.estado}</p>
               <p className="text-gray-600"><strong className="text-gray-900">Serviço:</strong> {viewItem.servico_solicitado}</p>
               <p className="text-gray-600"><strong className="text-gray-900">Descrição:</strong> {viewItem.descricao || "-"}</p>
-              <p className="text-gray-600"><strong className="text-gray-900">Valor:</strong> R$ {Number(viewItem.valor_total).toFixed(2)}</p>
+              {!isTecnico && <p className="text-gray-600"><strong className="text-gray-900">Valor:</strong> R$ {Number(viewItem.valor_total).toFixed(2)}</p>}
               <p className="text-gray-600"><strong className="text-gray-900">Valor Instalação:</strong> R$ {Number(viewItem.valor_instalacao || 0).toFixed(2)}</p>
               <p className="text-gray-600"><strong className="text-gray-900">Status:</strong> <Badge className={statusColors[viewItem.status]}>{statusLabels[viewItem.status]}</Badge></p>
             </div>
