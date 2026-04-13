@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, CheckCircle, Search, Eye, ClipboardCheck, AlertTriangle, Copy, Share2 } from "lucide-react";
+import { Play, CheckCircle, Search, Eye, ClipboardCheck, AlertTriangle, Copy, Share2, Pencil } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,6 +22,7 @@ const statusColors: Record<string, string> = {
   supervisionada: "bg-emerald-100 text-emerald-700 border-emerald-300",
   concluida: "bg-green-100 text-green-700 border-green-300",
   cancelada: "bg-red-100 text-red-700 border-red-300",
+  encerrada: "bg-gray-100 text-gray-700 border-gray-300",
 };
 
 const statusLabels: Record<string, string> = {
@@ -30,6 +32,7 @@ const statusLabels: Record<string, string> = {
   supervisionada: "Supervisionada",
   concluida: "Concluída",
   cancelada: "Cancelada",
+  encerrada: "Encerrada",
 };
 
 const checklistItems = [
@@ -47,9 +50,16 @@ const OrdensServico = () => {
   const [search, setSearch] = useState("");
   const [viewOS, setViewOS] = useState<any>(null);
   const [selectedOS, setSelectedOS] = useState<any>(null);
+  const [editOS, setEditOS] = useState<any>(null);
   const [obs, setObs] = useState("");
   const canManage = hasRole("admin") || hasRole("gerente");
+  const isAdmin = hasRole("admin");
   const isTecnico = hasRole("tecnico");
+
+  const [editForm, setEditForm] = useState({
+    cliente_nome: "", endereco: "", cidade: "", servico_solicitado: "",
+    tecnico_nome: "", status: "", valor_instalacao: "", prazo_termino: "", observacoes: "",
+  });
 
   const { data: ordens = [], isLoading } = useQuery({
     queryKey: ["ordens_servico"],
@@ -140,6 +150,44 @@ const OrdensServico = () => {
     onError: () => toast.error("Erro ao cancelar ordem"),
   });
 
+  const editMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("ordens_servico").update({
+        cliente_nome: editForm.cliente_nome,
+        endereco: editForm.endereco,
+        cidade: editForm.cidade,
+        servico_solicitado: editForm.servico_solicitado,
+        tecnico_nome: editForm.tecnico_nome,
+        status: editForm.status,
+        valor_instalacao: parseFloat(editForm.valor_instalacao) || 0,
+        prazo_termino: editForm.prazo_termino || null,
+        observacoes: editForm.observacoes || null,
+      }).eq("id", editOS.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ordens_servico"] });
+      toast.success("Ordem atualizada!");
+      setEditOS(null);
+    },
+    onError: () => toast.error("Erro ao atualizar ordem"),
+  });
+
+  const openEditOS = (os: any) => {
+    setEditForm({
+      cliente_nome: os.cliente_nome || "",
+      endereco: os.endereco || "",
+      cidade: os.cidade || "",
+      servico_solicitado: os.servico_solicitado || "",
+      tecnico_nome: os.tecnico_nome || "",
+      status: os.status || "",
+      valor_instalacao: String(os.valor_instalacao || 0),
+      prazo_termino: os.prazo_termino || "",
+      observacoes: os.observacoes || "",
+    });
+    setEditOS(os);
+  };
+
   const isChecklistComplete = (os: any) =>
     checklistItems.every((item) => os[item.key] === true);
 
@@ -197,6 +245,11 @@ const OrdensServico = () => {
                       <Button size="icon" variant="ghost" onClick={() => setViewOS(os)}>
                         <Eye className="h-4 w-4 text-gray-500" />
                       </Button>
+                      {isAdmin && (
+                        <Button size="icon" variant="ghost" onClick={() => openEditOS(os)}>
+                          <Pencil className="h-4 w-4 text-blue-500" />
+                        </Button>
+                      )}
                       {canManage && os.status === "aguardando_supervisao" && (
                         <Button size="sm" variant="outline" className="gap-1 text-emerald-600 border-emerald-300" onClick={() => approveSupervisionMutation.mutate(os.id)}>
                           <ClipboardCheck className="h-3 w-3" /> Aprovar
@@ -234,7 +287,6 @@ const OrdensServico = () => {
                 )}
               </div>
 
-              {/* Código de Rastreio - visível para todos */}
               {viewOS.codigo_rastreio && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <p className="text-sm font-semibold text-blue-900 mb-2 flex items-center gap-2">
@@ -245,40 +297,20 @@ const OrdensServico = () => {
                     <span className="font-mono text-lg bg-white px-3 py-1 rounded border border-blue-300 text-blue-800 select-all">
                       {viewOS.codigo_rastreio}
                     </span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="gap-1"
-                      onClick={() => {
-                        navigator.clipboard.writeText(viewOS.codigo_rastreio);
-                        toast.success("Código copiado!");
-                      }}
-                    >
+                    <Button size="sm" variant="outline" className="gap-1" onClick={() => { navigator.clipboard.writeText(viewOS.codigo_rastreio); toast.success("Código copiado!"); }}>
                       <Copy className="h-3 w-3" /> Copiar
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="gap-1"
-                      onClick={() => {
-                        const url = `${window.location.origin}/acompanhar?codigo=${viewOS.codigo_rastreio}`;
-                        navigator.clipboard.writeText(url);
-                        toast.success("Link de acompanhamento copiado! Envie ao cliente.");
-                      }}
-                    >
+                    <Button size="sm" variant="outline" className="gap-1" onClick={() => { const url = `${window.location.origin}/acompanhar?codigo=${viewOS.codigo_rastreio}`; navigator.clipboard.writeText(url); toast.success("Link de acompanhamento copiado!"); }}>
                       <Share2 className="h-3 w-3" /> Copiar Link
                     </Button>
                   </div>
-                  <p className="text-xs text-blue-600 mt-2">
-                    Envie este código ou link ao cliente para que ele acompanhe o andamento da instalação em tempo real.
-                  </p>
+                  <p className="text-xs text-blue-600 mt-2">Envie este código ou link ao cliente para que ele acompanhe o andamento da instalação em tempo real.</p>
                 </div>
               )}
               {viewOS.observacoes && (
                 <p className="text-gray-600 text-sm"><strong className="text-gray-900">Observações:</strong> {viewOS.observacoes}</p>
               )}
 
-              {/* Checklist for tecnico on active OS */}
               {isTecnico && viewOS.tecnico_id === user?.id && viewOS.status === "em_andamento" && (
                 <div className="border-t pt-4 space-y-3">
                   <h3 className="font-semibold text-gray-900 flex items-center gap-2"><ClipboardCheck className="h-4 w-4" /> Checklist de Finalização</h3>
@@ -295,17 +327,13 @@ const OrdensServico = () => {
                     </div>
                   ))}
                   {isChecklistComplete(viewOS) && (
-                    <Button
-                      className="w-full mt-2 bg-purple-600 hover:bg-purple-700"
-                      onClick={() => { setSelectedOS(viewOS); setViewOS(null); }}
-                    >
+                    <Button className="w-full mt-2 bg-purple-600 hover:bg-purple-700" onClick={() => { setSelectedOS(viewOS); setViewOS(null); }}>
                       <AlertTriangle className="h-4 w-4 mr-2" /> Finalizar e Solicitar Supervisão
                     </Button>
                   )}
                 </div>
               )}
 
-              {/* Accept button for tecnico */}
               {isTecnico && viewOS.status === "aberta" && !activeOrder && (
                 <Button className="w-full gap-2" onClick={() => assignMutation.mutate(viewOS.id)} disabled={assignMutation.isPending}>
                   <Play className="h-4 w-4" /> {assignMutation.isPending ? "Atribuindo..." : "Aceitar Ordem"}
@@ -313,6 +341,37 @@ const OrdensServico = () => {
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit OS Dialog - Admin only */}
+      <Dialog open={!!editOS} onOpenChange={() => setEditOS(null)}>
+        <DialogContent className="max-w-2xl bg-white border-gray-200 max-h-[90vh] overflow-y-auto">
+          <DialogHeader><DialogTitle className="text-gray-900">Editar Ordem de Serviço</DialogTitle></DialogHeader>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><Label className="text-gray-600">Cliente *</Label><Input className="bg-white border-gray-300 text-gray-900" value={editForm.cliente_nome} onChange={(e) => setEditForm({ ...editForm, cliente_nome: e.target.value })} /></div>
+            <div><Label className="text-gray-600">Serviço *</Label><Input className="bg-white border-gray-300 text-gray-900" value={editForm.servico_solicitado} onChange={(e) => setEditForm({ ...editForm, servico_solicitado: e.target.value })} /></div>
+            <div><Label className="text-gray-600">Endereço</Label><Input className="bg-white border-gray-300 text-gray-900" value={editForm.endereco} onChange={(e) => setEditForm({ ...editForm, endereco: e.target.value })} /></div>
+            <div><Label className="text-gray-600">Cidade</Label><Input className="bg-white border-gray-300 text-gray-900" value={editForm.cidade} onChange={(e) => setEditForm({ ...editForm, cidade: e.target.value })} /></div>
+            <div><Label className="text-gray-600">Técnico</Label><Input className="bg-white border-gray-300 text-gray-900" value={editForm.tecnico_nome} onChange={(e) => setEditForm({ ...editForm, tecnico_nome: e.target.value })} /></div>
+            <div>
+              <Label className="text-gray-600">Status</Label>
+              <Select value={editForm.status} onValueChange={(v) => setEditForm({ ...editForm, status: v })}>
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900"><SelectValue /></SelectTrigger>
+                <SelectContent className="bg-white border-gray-200">
+                  {Object.entries(statusLabels).map(([k, v]) => (
+                    <SelectItem key={k} value={k}>{v}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label className="text-gray-600">Valor Instalação (R$)</Label><Input type="number" className="bg-white border-gray-300 text-gray-900" value={editForm.valor_instalacao} onChange={(e) => setEditForm({ ...editForm, valor_instalacao: e.target.value })} /></div>
+            <div><Label className="text-gray-600">Prazo de Término</Label><Input type="date" className="bg-white border-gray-300 text-gray-900" value={editForm.prazo_termino} onChange={(e) => setEditForm({ ...editForm, prazo_termino: e.target.value })} /></div>
+            <div className="md:col-span-2"><Label className="text-gray-600">Observações</Label><Textarea className="bg-white border-gray-300 text-gray-900" value={editForm.observacoes} onChange={(e) => setEditForm({ ...editForm, observacoes: e.target.value })} /></div>
+          </div>
+          <Button className="w-full mt-4" onClick={() => editMutation.mutate()} disabled={!editForm.cliente_nome || editMutation.isPending}>
+            {editMutation.isPending ? "Salvando..." : "Atualizar Ordem"}
+          </Button>
         </DialogContent>
       </Dialog>
 

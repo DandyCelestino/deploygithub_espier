@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileText, Plus, Search, Eye } from "lucide-react";
+import { FileText, Plus, Search, Eye, Pencil } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,10 +31,12 @@ const Contratos = () => {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [viewItem, setViewItem] = useState<any>(null);
+  const [editItem, setEditItem] = useState<any>(null);
   const canManage = hasRole("admin") || hasRole("gerente");
+  const isAdmin = hasRole("admin");
   const isVendedor = hasRole("vendedor");
 
-  const [form, setForm] = useState({ client_id: "", total_value: "", commission_value: "" });
+  const [form, setForm] = useState({ client_id: "", total_value: "", commission_value: "", status: "em_negociacao" });
 
   const { data: clientes = [] } = useQuery({
     queryKey: ["clientes"],
@@ -68,9 +70,29 @@ const Contratos = () => {
       queryClient.invalidateQueries({ queryKey: ["contratos"] });
       toast.success("Contrato criado!");
       setOpen(false);
-      setForm({ client_id: "", total_value: "", commission_value: "" });
+      setForm({ client_id: "", total_value: "", commission_value: "", status: "em_negociacao" });
     },
     onError: () => toast.error("Erro ao criar contrato"),
+  });
+
+  const editMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("contratos").update({
+        client_id: form.client_id,
+        total_value: parseFloat(form.total_value) || 0,
+        commission_value: parseFloat(form.commission_value) || 0,
+        status: form.status,
+      }).eq("id", editItem.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["contratos"] });
+      queryClient.invalidateQueries({ queryKey: ["orcamentos"] });
+      toast.success("Contrato atualizado!");
+      setEditItem(null);
+      setForm({ client_id: "", total_value: "", commission_value: "", status: "em_negociacao" });
+    },
+    onError: () => toast.error("Erro ao atualizar contrato"),
   });
 
   const updateStatusMutation = useMutation({
@@ -85,6 +107,16 @@ const Contratos = () => {
     },
     onError: () => toast.error("Erro ao atualizar status"),
   });
+
+  const openEdit = (c: any) => {
+    setForm({
+      client_id: c.client_id,
+      total_value: String(c.total_value || 0),
+      commission_value: String(c.commission_value || 0),
+      status: c.status,
+    });
+    setEditItem(c);
+  };
 
   const filtered = contratos.filter((c: any) =>
     (c.clientes?.name || "").toLowerCase().includes(search.toLowerCase())
@@ -162,6 +194,9 @@ const Contratos = () => {
                   <TableCell>
                     <div className="flex gap-1">
                       <Button size="icon" variant="ghost" onClick={() => setViewItem(c)}><Eye className="h-4 w-4 text-gray-500" /></Button>
+                      {isAdmin && (
+                        <Button size="icon" variant="ghost" onClick={() => openEdit(c)}><Pencil className="h-4 w-4 text-blue-500" /></Button>
+                      )}
                       {c.status === "em_negociacao" && (canManage || isVendedor) && (
                         <>
                           <Button size="sm" variant="outline" className="text-green-600 border-green-300 text-xs" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "fechado" })}>Fechar</Button>
@@ -177,6 +212,7 @@ const Contratos = () => {
         </CardContent>
       </Card>
 
+      {/* View dialog */}
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent className="bg-white border-gray-200">
           <DialogHeader><DialogTitle className="text-gray-900">Detalhes do Contrato</DialogTitle></DialogHeader>
@@ -191,6 +227,42 @@ const Contratos = () => {
               <p className="text-gray-600"><strong className="text-gray-900">Criado em:</strong> {new Date(viewItem.created_at).toLocaleDateString("pt-BR")}</p>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit dialog - Admin only */}
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent className="bg-white border-gray-200">
+          <DialogHeader><DialogTitle className="text-gray-900">Editar Contrato</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-gray-600">Cliente *</Label>
+              <Select value={form.client_id} onValueChange={(v) => setForm({ ...form, client_id: v })}>
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900"><SelectValue placeholder="Selecione um cliente" /></SelectTrigger>
+                <SelectContent className="bg-white border-gray-200">
+                  {clientes.map((c: any) => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label className="text-gray-600">Valor Total (R$) *</Label><Input type="number" className="bg-white border-gray-300 text-gray-900" value={form.total_value} onChange={(e) => setForm({ ...form, total_value: e.target.value })} /></div>
+            <div><Label className="text-gray-600">Comissão (R$)</Label><Input type="number" className="bg-white border-gray-300 text-gray-900" value={form.commission_value} onChange={(e) => setForm({ ...form, commission_value: e.target.value })} /></div>
+            <div>
+              <Label className="text-gray-600">Status</Label>
+              <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
+                <SelectTrigger className="bg-white border-gray-300 text-gray-900"><SelectValue /></SelectTrigger>
+                <SelectContent className="bg-white border-gray-200">
+                  <SelectItem value="em_negociacao">Em Negociação</SelectItem>
+                  <SelectItem value="fechado">Fechado</SelectItem>
+                  <SelectItem value="cancelado">Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button className="w-full" onClick={() => editMutation.mutate()} disabled={!form.client_id || editMutation.isPending}>
+              {editMutation.isPending ? "Salvando..." : "Atualizar Contrato"}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
