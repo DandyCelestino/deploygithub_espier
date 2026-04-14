@@ -3,28 +3,11 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/contexts/AuthContext";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Alarmes from "./pages/Alarmes.tsx";
 import CFTV from "./pages/CFTV.tsx";
 import ControleAcesso from "./pages/ControleAcesso.tsx";
-import Login from "./pages/Login.tsx";
-import AdminLayout from "./components/admin/AdminLayout.tsx";
-import AdminDashboard from "./pages/admin/Dashboard.tsx";
-import OrdensServico from "./pages/admin/OrdensServico.tsx";
-import Orcamentos from "./pages/admin/Orcamentos.tsx";
-import Estoque from "./pages/admin/Estoque.tsx";
-import Financeiro from "./pages/admin/Financeiro.tsx";
-import Administracao from "./pages/admin/Administracao.tsx";
-import Configuracoes from "./pages/admin/Configuracoes.tsx";
-import RelatoriosDiarios from "./components/admin/RelatoriosDiarios.tsx";
-import AcompanharOS from "./pages/AcompanharOS.tsx";
-import Clientes from "./pages/admin/Clientes.tsx";
-import Contratos from "./pages/admin/Contratos.tsx";
-import DashboardVendedor from "./pages/admin/DashboardVendedor.tsx";
-import Logs from "./pages/admin/Logs.tsx";
 
 const queryClient = new QueryClient();
 
@@ -34,40 +17,13 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/seguranca/alarmes" element={<Alarmes />} />
-            <Route path="/seguranca/cftv" element={<CFTV />} />
-            <Route path="/seguranca/controle-de-acesso" element={<ControleAcesso />} />
-            <Route path="/acompanhar" element={<AcompanharOS />} />
-            {/* Área Restrita */}
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <AdminLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<AdminDashboard />} />
-              <Route path="ordens" element={<OrdensServico />} />
-              <Route path="orcamentos" element={<Orcamentos />} />
-              <Route path="estoque" element={<Estoque />} />
-              <Route path="financeiro" element={<Financeiro />} />
-              <Route path="administracao" element={<Administracao />} />
-              <Route path="configuracoes" element={<Configuracoes />} />
-              <Route path="relatorios" element={<RelatoriosDiarios />} />
-              <Route path="clientes" element={<Clientes />} />
-              <Route path="contratos" element={<Contratos />} />
-              <Route path="dashboard-vendedor" element={<DashboardVendedor />} />
-              <Route path="logs" element={<Logs />} />
-            </Route>
-
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/seguranca/alarmes" element={<Alarmes />} />
+          <Route path="/seguranca/cftv" element={<CFTV />} />
+          <Route path="/seguranca/controle-de-acesso" element={<ControleAcesso />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const navLinks = [
   { label: "Home", href: "#home" },
   { label: "Sobre", href: "#sobre" },
-  { label: "Serviços TI", href: "#servicos" },
+  { label: "Serviços", href: "#servicos" },
   {
     label: "Segurança",
     href: "#seguranca",
@@ -19,14 +19,20 @@ const navLinks = [
   { label: "Portfólio", href: "#portfolio" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Contato", href: "#contato" },
-  { label: "Área Restrita", href: "/login", isRoute: true },
 ];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileSubOpen, setMobileSubOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -39,10 +45,10 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur-xl border-b border-primary/10 shadow-lg shadow-primary/5" : "bg-transparent"}`}>
       <div className="section-container flex items-center justify-between h-16 lg:h-20">
-        <a href="#home" className="flex items-center gap-2">
-          <Shield className="w-8 h-8 text-primary" />
+        <a href="#home" className="flex items-center gap-2 group">
+          <Shield className="w-8 h-8 text-primary group-hover:drop-shadow-[0_0_8px_hsl(0_85%_55%/0.5)] transition-all" />
           <span className="text-xl font-bold tracking-tight">
             Espier.<span className="text-primary">Telecom</span>
           </span>
@@ -61,22 +67,21 @@ const Navbar = () => {
                   <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-52 bg-popover border border-border rounded-lg shadow-lg py-2 z-50">
-                    {/* Link principal da seção */}
+                  <div className="absolute top-full left-0 mt-3 w-52 glass-card rounded-xl shadow-2xl shadow-primary/10 py-2 z-50">
                     <a
                       href={link.href}
                       onClick={() => setDropdownOpen(false)}
-                      className="block px-4 py-2 text-sm text-popover-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                      className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                     >
                       Visão Geral
                     </a>
-                    <div className="border-t border-border my-1" />
+                    <div className="border-t border-border/50 my-1" />
                     {link.subLinks.map((sub) => (
                       <Link
                         key={sub.to}
                         to={sub.to}
                         onClick={() => setDropdownOpen(false)}
-                        className="block px-4 py-2 text-sm text-popover-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                        className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         {sub.label}
                       </Link>
@@ -84,19 +89,11 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-            ) : (link as any).isRoute ? (
-              <Link
-                key={link.href}
-                to={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-              >
-                {link.label}
-              </Link>
             ) : (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full"
               >
                 {link.label}
               </a>
@@ -123,24 +120,24 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="lg:hidden bg-background border-b border-border pb-4">
-          <div className="section-container flex flex-col gap-3">
+        <div className="lg:hidden bg-background/98 backdrop-blur-xl border-b border-border pb-6">
+          <div className="section-container flex flex-col gap-1 pt-2">
             {navLinks.map((link) =>
               link.subLinks ? (
                 <div key={link.href}>
                   <button
-                    className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2 w-full text-left"
+                    className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-3 w-full text-left"
                     onClick={() => setMobileSubOpen(!mobileSubOpen)}
                   >
                     {link.label}
                     <ChevronDown className={`w-4 h-4 transition-transform ${mobileSubOpen ? "rotate-180" : ""}`} />
                   </button>
                   {mobileSubOpen && (
-                    <div className="pl-4 flex flex-col gap-1">
+                    <div className="pl-4 flex flex-col gap-1 border-l border-primary/20 ml-2">
                       <a
                         href={link.href}
                         onClick={() => { setOpen(false); setMobileSubOpen(false); }}
-                        className="text-sm text-muted-foreground hover:text-primary py-1"
+                        className="text-sm text-muted-foreground hover:text-primary py-2"
                       >
                         Visão Geral
                       </a>
@@ -149,7 +146,7 @@ const Navbar = () => {
                           key={sub.to}
                           to={sub.to}
                           onClick={() => { setOpen(false); setMobileSubOpen(false); }}
-                          className="text-sm text-muted-foreground hover:text-primary py-1"
+                          className="text-sm text-muted-foreground hover:text-primary py-2"
                         >
                           {sub.label}
                         </Link>
@@ -157,21 +154,12 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
-              ) : (link as any).isRoute ? (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
-                >
-                  {link.label}
-                </Link>
               ) : (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-2"
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-3"
                 >
                   {link.label}
                 </a>
@@ -180,7 +168,7 @@ const Navbar = () => {
             <Button
               asChild
               size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 w-fit"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 w-fit mt-2"
             >
               <a href="#contato" onClick={() => setOpen(false)}>Solicitar Orçamento</a>
             </Button>
