@@ -3,29 +3,29 @@ import {
   Brain, Monitor, Users, Cable, CheckSquare, Activity, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import cablingImg from "@/assets/serverroom.png";
 
 const services = [
-  { icon: Wrench, title: "Manutenção e Suporte Técnico", desc: "Atendimento presencial e remoto para manutenção preventiva e corretiva de computadores, notebooks e periféricos.", benefits: ["Redução de downtime", "Maior vida útil dos equipamentos"] },
-  { icon: Network, title: "Redes e Infraestrutura", desc: "Projeto, implantação e gerenciamento de redes corporativas com alta disponibilidade e desempenho.", benefits: ["Conectividade estável", "Escalabilidade garantida"] },
-  { icon: Server, title: "Servidores e Cloud Computing", desc: "Configuração de servidores físicos e migração para nuvem, garantindo segurança e acesso remoto.", benefits: ["Disponibilidade 24/7", "Backup automático"] },
-  { icon: ShieldCheck, title: "Segurança da Informação", desc: "Implementação de firewalls, antivírus corporativo, políticas de segurança e compliance.", benefits: ["Proteção contra ameaças", "Conformidade regulatória"] },
-  { icon: Database, title: "Backup e Recuperação de Dados", desc: "Estratégias de backup local e em nuvem com planos de recuperação de desastres.", benefits: ["Zero perda de dados", "Recuperação rápida"] },
-  { icon: Code2, title: "Desenvolvimento e Automação", desc: "Sistemas sob medida, automação de processos e integrações entre plataformas.", benefits: ["Processos otimizados", "Maior produtividade"] },
-  { icon: Brain, title: "Consultoria em TI", desc: "Análise completa da infraestrutura com planos estratégicos de evolução tecnológica.", benefits: ["Planejamento inteligente", "ROI maximizado"] },
-  { icon: Monitor, title: "Venda e Instalação de Equipamentos", desc: "Fornecimento de hardware de qualidade com instalação e configuração profissional.", benefits: ["Equipamentos homologados", "Suporte incluso"] },
-  { icon: Users, title: "Terceirização de TI", desc: "Outsourcing completo de TI com equipe dedicada e gerenciamento proativo.", benefits: ["Foco no core business", "Custos previsíveis"] },
+  { icon: Wrench, title: "Manutenção e Suporte", desc: "Atendimento presencial e remoto para manutenção preventiva e corretiva de computadores e periféricos.", benefits: ["Redução de downtime", "Maior vida útil"] },
+  { icon: Network, title: "Redes e Infraestrutura", desc: "Projeto, implantação e gerenciamento de redes corporativas com alta disponibilidade.", benefits: ["Conectividade estável", "Escalabilidade"] },
+  { icon: Server, title: "Servidores e Cloud", desc: "Configuração de servidores físicos e migração para nuvem com segurança e acesso remoto.", benefits: ["Disponibilidade 24/7", "Backup automático"] },
+  { icon: ShieldCheck, title: "Segurança da Informação", desc: "Firewalls, antivírus corporativo, políticas de segurança e compliance.", benefits: ["Proteção total", "Conformidade"] },
+  { icon: Database, title: "Backup e Recuperação", desc: "Estratégias de backup local e em nuvem com planos de recuperação de desastres.", benefits: ["Zero perda de dados", "Recuperação rápida"] },
+  { icon: Code2, title: "Automação e Sistemas", desc: "Sistemas sob medida, automação de processos e integrações entre plataformas.", benefits: ["Processos otimizados", "Produtividade"] },
+  { icon: Brain, title: "Consultoria em TI", desc: "Análise completa da infraestrutura com planos estratégicos de evolução tecnológica.", benefits: ["ROI maximizado", "Planejamento"] },
+  { icon: Monitor, title: "Venda de Equipamentos", desc: "Fornecimento de hardware de qualidade com instalação e configuração profissional.", benefits: ["Homologados", "Suporte incluso"] },
+  { icon: Users, title: "Terceirização de TI", desc: "Outsourcing completo de TI com equipe dedicada e gerenciamento proativo.", benefits: ["Foco no negócio", "Custos previsíveis"] },
 ];
 
 const cablingServices = [
-  { icon: Cable, title: "Cabeamento Estruturado", desc: "Projetos completos de rede com cabeamento Cat5e, Cat6 e fibra óptica." },
-  { icon: CheckSquare, title: "Organização e Padronização", desc: "Rack, patch panel, identificação de pontos e limpeza técnica profissional." },
-  { icon: Activity, title: "Certificação de Rede", desc: "Testes de desempenho, certificação de pontos e relatórios detalhados." },
+  { icon: Cable, title: "Cabeamento Estruturado", desc: "Projetos completos com Cat5e, Cat6 e fibra óptica." },
+  { icon: CheckSquare, title: "Organização e Padronização", desc: "Rack, patch panel, identificação e limpeza técnica." },
+  { icon: Activity, title: "Certificação de Rede", desc: "Testes de desempenho e relatórios detalhados." },
 ];
 
 const Services = () => (
-  <section id="servicos" className="py-20 lg:py-32 bg-secondary/30">
-    <div className="section-container">
+  <section id="servicos" className="py-20 lg:py-32 relative">
+    <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-transparent to-secondary/30" />
+    <div className="section-container relative">
       <div className="text-center max-w-3xl mx-auto mb-16">
         <span className="text-sm font-mono text-accent uppercase tracking-widest">Serviços</span>
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3">
@@ -37,18 +37,20 @@ const Services = () => (
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-20">
         {services.map((s) => (
           <div
             key={s.title}
-            className="group bg-card text-card-foreground border border-border rounded-lg p-6 hover:border-primary/40 transition-all hover:-translate-y-1"
+            className="group glass-card rounded-xl p-6 hover:border-primary/30 transition-all hover:-translate-y-1"
           >
-            <s.icon className="w-9 h-9 text-primary mb-4 group-hover:scale-110 transition-transform" />
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/10 transition-all">
+              <s.icon className="w-6 h-6 text-primary" />
+            </div>
             <h3 className="text-lg font-bold mb-2">{s.title}</h3>
-            <p className="text-sm text-card-foreground/70 mb-4">{s.desc}</p>
+            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{s.desc}</p>
             <div className="flex flex-wrap gap-2">
               {s.benefits.map((b) => (
-                <span key={b} className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent border border-accent/20">
+                <span key={b} className="text-xs px-3 py-1 rounded-full bg-accent/10 text-accent border border-accent/20">
                   {b}
                 </span>
               ))}
@@ -58,11 +60,9 @@ const Services = () => (
       </div>
 
       {/* Cabling highlight */}
-      <div className="relative rounded-xl overflow-hidden border border-primary/30 glow-red">
-        <div className="absolute inset-0 z-0">
-          <img src={cablingImg} alt="Cabeamento estruturado" className="w-full h-full object-cover opacity-20" loading="lazy" width={1280} height={720} />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80" />
-        </div>
+      <div className="relative rounded-2xl overflow-hidden border border-primary/20 glow-red">
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-background via-background/95 to-primary/5" />
+        <div className="absolute inset-0 grid-bg opacity-10" />
         <div className="relative z-10 p-8 lg:p-12">
           <span className="text-sm font-mono text-primary uppercase tracking-widest">Destaque</span>
           <h3 className="text-2xl lg:text-3xl font-bold mt-2 mb-8">
@@ -70,14 +70,14 @@ const Services = () => (
           </h3>
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             {cablingServices.map((c) => (
-              <div key={c.title} className="bg-background/50 border border-border rounded-lg p-6">
+              <div key={c.title} className="glass-card rounded-xl p-6">
                 <c.icon className="w-8 h-8 text-accent mb-3" />
                 <h4 className="font-bold mb-2">{c.title}</h4>
                 <p className="text-sm text-muted-foreground">{c.desc}</p>
               </div>
             ))}
           </div>
-          <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red">
             <a href="#contato">
               Solicitar Projeto <ArrowRight className="w-4 h-4 ml-2" />
             </a>

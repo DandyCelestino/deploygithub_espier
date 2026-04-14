@@ -10,12 +10,13 @@ const projects: { icon: LucideIcon; title: string; category: string; desc: strin
 ];
 
 const Portfolio = () => (
-  <section id="portfolio" className="py-20 lg:py-32 bg-secondary/30">
-    <div className="section-container">
+  <section id="portfolio" className="py-20 lg:py-32 relative">
+    <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-transparent to-secondary/30" />
+    <div className="section-container relative">
       <div className="text-center max-w-3xl mx-auto mb-16">
         <span className="text-sm font-mono text-accent uppercase tracking-widest">Portfólio</span>
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3">
-          Projetos que <span className="text-primary">comprovam</span> nossa qualidade
+          Projetos que <span className="gradient-text">comprovam</span> nossa qualidade
         </h2>
         <p className="mt-4 text-muted-foreground text-lg">
           Conheça alguns dos projetos que realizamos com excelência técnica.
@@ -24,14 +25,15 @@ const Portfolio = () => (
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((p, i) => (
-          <div key={i} className="group bg-card text-card-foreground border border-border rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-1">
-            <div className="h-48 flex items-center justify-center bg-secondary/50">
-              <p.icon className="w-16 h-16 text-primary group-hover:scale-110 transition-transform duration-500" />
+          <div key={i} className="group glass-card rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:-translate-y-1">
+            <div className="h-48 flex items-center justify-center bg-gradient-to-br from-secondary/50 to-primary/5 relative">
+              <div className="grid-bg absolute inset-0 opacity-20" />
+              <p.icon className="w-16 h-16 text-primary/40 group-hover:text-primary/60 group-hover:scale-110 transition-all duration-500" />
             </div>
             <div className="p-6">
-              <span className="text-xs font-mono text-accent uppercase">{p.category}</span>
+              <span className="text-xs font-mono text-accent uppercase tracking-wider">{p.category}</span>
               <h3 className="text-lg font-bold mt-1 mb-2">{p.title}</h3>
-              <p className="text-sm text-card-foreground/70">{p.desc}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
             </div>
           </div>
         ))}
