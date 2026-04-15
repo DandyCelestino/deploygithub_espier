@@ -12,29 +12,27 @@ const securityServices = [
 ];
 
 const Security = () => (
-  <section id="seguranca" className="py-20 lg:py-32 relative">
-    <div className="absolute inset-0 grid-bg opacity-10" />
+  <section id="seguranca" className="py-20 lg:py-32 relative bg-secondary/30">
     <div className="section-container relative">
       <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
         <div>
-          <span className="text-sm font-mono text-primary uppercase tracking-widest">Segurança Eletrônica</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3">
+          <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Segurança Eletrônica</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
             Proteção <span className="gradient-text">total</span> para seu patrimônio
           </h2>
           <p className="mt-4 text-muted-foreground text-lg leading-relaxed">
             Soluções completas de segurança eletrônica com tecnologia de ponta,
             instalação profissional e suporte contínuo.
           </p>
-          <Button asChild size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90 glow-red">
+          <Button asChild size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90 glow-green">
             <a href="#contato">
               Proteja seu negócio <ArrowRight className="w-5 h-5 ml-2" />
             </a>
           </Button>
         </div>
-        <div className="rounded-2xl overflow-hidden border border-primary/20 relative aspect-video flex items-center justify-center bg-gradient-to-br from-card to-primary/5">
-          <div className="grid-bg absolute inset-0 opacity-20" />
+        <div className="rounded-2xl overflow-hidden border border-primary/20 relative aspect-video flex items-center justify-center bg-gradient-to-br from-white to-primary/10">
           <Camera className="w-24 h-24 text-primary/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
         </div>
       </div>
 
@@ -42,12 +40,12 @@ const Security = () => (
         {securityServices.map((s) => (
           <div
             key={s.title}
-            className="group glass-card rounded-xl p-6 hover:border-primary/30 transition-all hover:-translate-y-1"
+            className="group glass-card rounded-xl p-6 hover:border-primary/30 transition-all hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/10 transition-all">
               <s.icon className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="font-bold mb-2">{s.title}</h3>
+            <h3 className="font-bold mb-2 text-foreground">{s.title}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
           </div>
         ))}

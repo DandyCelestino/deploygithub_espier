@@ -8,24 +8,23 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-  <section id="depoimentos" className="py-20 lg:py-32 relative">
-    <div className="absolute inset-0 grid-bg opacity-10" />
+  <section id="depoimentos" className="py-20 lg:py-32 relative bg-secondary/30">
     <div className="section-container relative">
       <div className="text-center max-w-3xl mx-auto mb-16">
-        <span className="text-sm font-mono text-accent uppercase tracking-widest">Depoimentos</span>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3">
-          O que nossos <span className="text-primary">clientes</span> dizem
+        <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Depoimentos</span>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
+          O que nossos <span className="gradient-text">clientes</span> dizem
         </h2>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         {testimonials.map((t, i) => (
-          <div key={i} className="glass-card rounded-2xl p-8 hover:border-primary/20 transition-all group">
+          <div key={i} className="glass-card rounded-2xl p-8 hover:border-primary/20 transition-all group hover:shadow-lg">
             <Quote className="w-8 h-8 text-primary/20 mb-4 group-hover:text-primary/40 transition-colors" />
             <p className="text-foreground/80 mb-6 leading-relaxed text-lg">{t.text}</p>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-bold">{t.name}</p>
+                <p className="font-bold text-foreground">{t.name}</p>
                 <p className="text-sm text-muted-foreground">{t.role}</p>
               </div>
               <div className="flex gap-1">

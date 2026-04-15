@@ -1,29 +1,33 @@
 import { ArrowRight, PhoneCall, Wrench, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-      {/* Animated background */}
+      {/* Background image with gradient overlay */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-primary/5" />
-        <div className="absolute inset-0 grid-bg opacity-30" />
-        {/* Floating orbs */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-1/3 left-1/3 w-72 h-72 bg-accent/8 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-primary/5 rounded-full blur-[80px]" style={{ animation: "float 6s ease-in-out infinite" }} />
+        <img
+          src={heroBg}
+          alt="Infraestrutura de TI e Segurança"
+          className="absolute inset-0 w-full h-full object-cover"
+          width={1920}
+          height={1080}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/90" />
       </div>
 
       <div className="section-container relative z-10 py-20">
         <div className="max-w-3xl">
           <div className="animate-fade-up">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card text-primary text-sm font-medium mb-6 border-primary/20">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 border border-primary/20">
               <Zap className="w-3.5 h-3.5" />
               Soluções completas em TI & Segurança
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight animate-fade-up-delay-1 font-heading">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight animate-fade-up-delay-1 font-heading text-foreground">
             Tecnologia que{" "}
             <span className="gradient-text">Protege</span>
           </h1>
@@ -38,7 +42,7 @@ const Hero = () => {
             <Button
               asChild
               size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red text-base animate-glow-pulse"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-green text-base animate-glow-pulse"
             >
               <a href="#contato">
                 Solicitar Orçamento <ArrowRight className="w-5 h-5 ml-2" />
@@ -48,7 +52,7 @@ const Hero = () => {
               asChild
               variant="outline"
               size="lg"
-              className="border-border/50 text-foreground hover:bg-secondary hover:border-primary/30 text-base backdrop-blur-sm"
+              className="border-border text-foreground hover:bg-secondary hover:border-primary/30 text-base backdrop-blur-sm"
             >
               <a href="https://wa.me/5521960001439" target="_blank" rel="noopener noreferrer">
                 <PhoneCall className="w-5 h-5 mr-2" /> Fale Conosco
@@ -58,7 +62,7 @@ const Hero = () => {
               asChild
               variant="outline"
               size="lg"
-              className="border-accent/30 text-accent hover:bg-accent/10 hover:border-accent/50 text-base"
+              className="border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50 text-base"
             >
               <a href="#servicos">
                 <Wrench className="w-5 h-5 mr-2" /> Nossos Serviços
@@ -75,7 +79,7 @@ const Hero = () => {
               { value: "99.9%", label: "Uptime garantido" },
             ].map((stat) => (
               <div key={stat.label} className="text-center sm:text-left group">
-                <div className="text-2xl sm:text-3xl font-bold text-primary group-hover:drop-shadow-[0_0_12px_hsl(0_85%_55%/0.5)] transition-all">{stat.value}</div>
+                <div className="text-2xl sm:text-3xl font-bold text-primary group-hover:drop-shadow-[0_0_12px_hsl(145_70%_40%/0.5)] transition-all">{stat.value}</div>
                 <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
               </div>
             ))}
