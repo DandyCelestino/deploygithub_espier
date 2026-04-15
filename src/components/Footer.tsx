@@ -1,13 +1,12 @@
 import { Shield } from "lucide-react";
 
 const Footer = () => (
-  <footer className="border-t border-border/30 py-12 relative">
-    <div className="absolute inset-0 bg-gradient-to-t from-primary/3 to-transparent" />
+  <footer className="border-t border-border py-12 relative bg-secondary/30">
     <div className="section-container relative">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-2">
           <Shield className="w-6 h-6 text-primary" />
-          <span className="text-lg font-bold">
+          <span className="text-lg font-bold text-foreground">
             Espier.<span className="text-primary">Telecom</span>
           </span>
         </div>

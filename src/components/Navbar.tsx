@@ -45,11 +45,11 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur-xl border-b border-primary/10 shadow-lg shadow-primary/5" : "bg-transparent"}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-xl border-b border-border shadow-sm" : "bg-white/60 backdrop-blur-sm"}`}>
       <div className="section-container flex items-center justify-between h-16 lg:h-20">
         <a href="#home" className="flex items-center gap-2 group">
-          <Shield className="w-8 h-8 text-primary group-hover:drop-shadow-[0_0_8px_hsl(0_85%_55%/0.5)] transition-all" />
-          <span className="text-xl font-bold tracking-tight">
+          <Shield className="w-8 h-8 text-primary group-hover:drop-shadow-[0_0_8px_hsl(145_70%_40%/0.5)] transition-all" />
+          <span className="text-xl font-bold tracking-tight text-foreground">
             Espier.<span className="text-primary">Telecom</span>
           </span>
         </a>
@@ -67,11 +67,11 @@ const Navbar = () => {
                   <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute top-full left-0 mt-3 w-52 glass-card rounded-xl shadow-2xl shadow-primary/10 py-2 z-50">
+                  <div className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-xl border border-border py-2 z-50">
                     <a
                       href={link.href}
                       onClick={() => setDropdownOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                      className="block px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                     >
                       Visão Geral
                     </a>
@@ -81,7 +81,7 @@ const Navbar = () => {
                         key={sub.to}
                         to={sub.to}
                         onClick={() => setDropdownOpen(false)}
-                        className="block px-4 py-2.5 text-sm text-popover-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                        className="block px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         {sub.label}
                       </Link>
@@ -102,7 +102,7 @@ const Navbar = () => {
           <Button
             asChild
             size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 glow-green"
           >
             <a href="#contato">Solicitar Orçamento</a>
           </Button>
@@ -120,7 +120,7 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="lg:hidden bg-background/98 backdrop-blur-xl border-b border-border pb-6">
+        <div className="lg:hidden bg-white/98 backdrop-blur-xl border-b border-border pb-6">
           <div className="section-container flex flex-col gap-1 pt-2">
             {navLinks.map((link) =>
               link.subLinks ? (
@@ -133,7 +133,7 @@ const Navbar = () => {
                     <ChevronDown className={`w-4 h-4 transition-transform ${mobileSubOpen ? "rotate-180" : ""}`} />
                   </button>
                   {mobileSubOpen && (
-                    <div className="pl-4 flex flex-col gap-1 border-l border-primary/20 ml-2">
+                    <div className="pl-4 flex flex-col gap-1 border-l-2 border-primary/30 ml-2">
                       <a
                         href={link.href}
                         onClick={() => { setOpen(false); setMobileSubOpen(false); }}

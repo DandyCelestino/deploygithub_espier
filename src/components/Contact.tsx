@@ -22,11 +22,10 @@ const Contact = () => {
 
   return (
     <section id="contato" className="py-20 lg:py-32 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-transparent to-secondary/30" />
       <div className="section-container relative">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-sm font-mono text-accent uppercase tracking-widest">Contato</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3">
+          <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Contato</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
             Fale <span className="gradient-text">conosco</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
@@ -35,14 +34,13 @@ const Contact = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Form */}
           <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-5">
             <Input
               placeholder="Seu nome"
               value={form.nome}
               onChange={(e) => setForm({ ...form, nome: e.target.value })}
               required
-              className="bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20"
+              className="bg-white border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
             />
             <Input
               type="email"
@@ -50,13 +48,13 @@ const Contact = () => {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
-              className="bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20"
+              className="bg-white border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
             />
             <Input
               placeholder="Seu telefone"
               value={form.telefone}
               onChange={(e) => setForm({ ...form, telefone: e.target.value })}
-              className="bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20"
+              className="bg-white border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
             />
             <Textarea
               placeholder="Sua mensagem"
@@ -64,14 +62,13 @@ const Contact = () => {
               onChange={(e) => setForm({ ...form, mensagem: e.target.value })}
               required
               rows={5}
-              className="bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20"
+              className="bg-white border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
             />
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-red">
+            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-green">
               <Send className="w-4 h-4 mr-2" /> Enviar Mensagem
             </Button>
           </form>
 
-          {/* Info */}
           <div className="space-y-8">
             {[
               { icon: Phone, title: "Telefone / WhatsApp", info: "(21) 96000-1439" },
@@ -83,13 +80,13 @@ const Contact = () => {
                   <item.icon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-bold mb-1">{item.title}</h4>
+                  <h4 className="font-bold mb-1 text-foreground">{item.title}</h4>
                   <p className="text-muted-foreground">{item.info}</p>
                 </div>
               </div>
             ))}
 
-            <div className="rounded-2xl overflow-hidden border border-border/50 h-56">
+            <div className="rounded-2xl overflow-hidden border border-border h-56">
               <iframe
                 title="Localização"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1976509870974!2d-46.65432058502168!3d-23.56390938468053!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f2c9776a!2sAv.%20Paulista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1609459200000!5m2!1spt-BR!2sbr"
