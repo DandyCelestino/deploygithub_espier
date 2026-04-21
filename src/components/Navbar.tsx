@@ -102,9 +102,9 @@ const Navbar = () => {
           <Button
             asChild
             size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 glow-green"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red"
           >
-            <a href="#contato">Solicitar Orçamento</a>
+            <a href="/#contato">Solicitar Orçamento</a>
           </Button>
         </div>
 
@@ -168,9 +168,9 @@ const Navbar = () => {
             <Button
               asChild
               size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 w-fit mt-2"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red w-fit mt-2"
             >
-              <a href="#contato" onClick={() => setOpen(false)}>Solicitar Orçamento</a>
+              <a href="/#contato" onClick={() => setOpen(false)}>Solicitar Orçamento</a>
             </Button>
           </div>
         </div>
