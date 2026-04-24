@@ -75,8 +75,8 @@ const Hero = () => {
           {/* Stats — duas colunas no mobile */}
           <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 animate-fade-up-delay-3">
             {[
-              { value: "500+", label: "Clientes atendidos" },
-              { value: "10+", label: "Anos de experiência" },
+              { value: "5000+", label: "Clientes atendidos" },
+              { value: "15+", label: "Anos de experiência" },
               { value: "24/7", label: "Suporte disponível" },
               { value: "99.9%", label: "Uptime garantido" },
             ].map((stat) => (
