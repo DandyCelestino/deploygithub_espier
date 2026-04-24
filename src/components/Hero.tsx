@@ -29,7 +29,7 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight animate-fade-up-delay-1 font-heading text-white drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight animate-fade-up-delay-1 text-white drop-shadow-lg font-sans text-center">
             Tecnologia que{" "}
             <span className="gradient-text-green">Protege</span>
           </h1>

@@ -72,8 +72,8 @@ const Contact = () => {
           <div className="space-y-8">
             {[
               { icon: Phone, title: "Telefone / WhatsApp", info: "(21) 96000-1439" },
-              { icon: Mail, title: "E-mail", info: "espier.telecom@gmail.com" },
-              { icon: MapPin, title: "Endereço", info: "Cachoeiras de Macacu — RJ" },
+              { icon: Mail, title: "E-mail", info: "contato@espier.com.br /espier.telecom@gmail.com" },
+              { icon: MapPin, title: "Endereço", info: "Cachoeiras de Macacu — RJ / Petropolis / Nova Frinurgo / Barra da tijuca / Macaé / teresopolis / Angra dos Reis" },
             ].map((item) => (
               <div key={item.title} className="flex items-start gap-4 group">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/10 transition-all">
