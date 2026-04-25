@@ -78,9 +78,9 @@ const SecurityLanding = ({
             <span className="inline-block text-xs sm:text-sm font-mono text-accent uppercase tracking-[0.3em] mb-6 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/5">
               {eyebrow}
             </span>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-white">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-white opacity-100">
               {title}{" "}
-              <span className="bg-gradient-to-r from-primary via-red-500 to-accent bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-red-500 to-accent bg-clip-text text-transparent text-4xl">
                 {highlight}
               </span>
             </h1>
@@ -293,7 +293,7 @@ const SecurityLanding = ({
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-red-700 to-black" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
         <div className="section-container relative text-center">
-          <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white max-w-3xl mx-auto leading-[1.05]">
+          <h2 className="text-4xl font-extrabold tracking-tight text-white max-w-3xl mx-auto leading-[1.05] sm:text-6xl">
             {ctaTitle}
           </h2>
           <p className="mt-6 text-lg sm:text-xl text-white/85 max-w-2xl mx-auto">{ctaSubtitle}</p>
