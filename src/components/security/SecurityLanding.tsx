@@ -325,7 +325,7 @@ const SecurityLanding = ({
             <div className="rounded-xl p-5 bg-white/10 border border-white/20 backdrop-blur">
               <MapPin className="w-5 h-5 text-white mx-auto mb-2" />
               <p className="text-xs text-white/70 uppercase tracking-wider">Atendimento</p>
-              <p className="font-bold text-white text-sm">Cachoeiras de Macacu • RJ e região</p>
+              <p className="font-bold text-white text-sm">Friburgo/Teresopolis/</p>
             </div>
           </div>
         </div>
