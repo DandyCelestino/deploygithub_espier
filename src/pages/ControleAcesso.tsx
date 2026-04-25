@@ -11,8 +11,8 @@ const ControleAcesso = () => (
     <main className="pt-16 lg:pt-20">
       <SecurityLanding
         eyebrow="Segurança Eletrônica"
-        title="Controle de acesso"
-        highlight="sem fronteiras."
+        title="Controle de acesso "
+        highlight={"\nsem fronteiras."}
         subtitle="Biometria, RFID e fechaduras eletrônicas integradas. Saiba quem entra, quando e onde — em tempo real."
         heroImage={imgAcesso}
         features={[
