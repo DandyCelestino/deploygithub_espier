@@ -1,12 +1,24 @@
-import { ArrowRight, MessageCircle, Phone, Globe, MapPin, CheckCircle2, Wrench, Package, Settings, FileText, Star, Quote, Shield } from "lucide-react";
+import { ArrowRight, MessageCircle, Phone, Globe, MapPin, CheckCircle2, Wrench, Package, Settings, FileText, Star, Quote, Shield, ThumbsUp, ThumbsDown, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { LucideIcon } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export interface SecurityFeature {
   icon: LucideIcon;
   title: string;
   desc: string;
+}
+
+export interface GalleryItem {
+  src: string;
+  alt: string;
+  caption: string;
+}
+
+export interface FaqItem {
+  q: string;
+  a: string;
 }
 
 export interface SecurityLandingProps {
@@ -19,6 +31,10 @@ export interface SecurityLandingProps {
   services: string[];
   benefits: { icon: LucideIcon; title: string; desc: string }[];
   testimonials: { name: string; role: string; text: string }[];
+  pros: string[];
+  cons: string[];
+  gallery: GalleryItem[];
+  faqs: FaqItem[];
   ctaTitle: string;
   ctaSubtitle: string;
   whatsappMessage: string;
