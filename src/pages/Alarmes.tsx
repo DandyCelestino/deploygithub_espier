@@ -11,8 +11,8 @@ const Alarmes = () => (
     <main className="pt-16 lg:pt-20">
       <SecurityLanding
         eyebrow="Segurança Eletrônica"
-        title="Alarmes que protegem"
-        highlight="o que importa."
+        title="Alarmes que protegem "
+        highlight={"\no que importa."}
         subtitle="Sistemas de alarme inteligentes com monitoramento 24h, sensores de alta precisão e controle total pelo seu smartphone."
         heroImage={imgAlarmes}
         features={[
