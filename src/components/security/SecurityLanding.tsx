@@ -80,7 +80,7 @@ const SecurityLanding = ({
             </span>
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight text-white opacity-100">
               {title}{" "}
-              <span className="bg-gradient-to-r from-primary via-red-500 to-accent bg-clip-text text-transparent text-4xl">
+              <span className="bg-gradient-to-r from-primary via-red-500 to-accent bg-clip-text text-transparent text-4xl whitespace-pre-line">
                 {highlight}
               </span>
             </h1>
