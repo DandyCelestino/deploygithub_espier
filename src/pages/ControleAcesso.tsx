@@ -35,6 +35,11 @@ const ControleAcesso = () => (
         "Manutenção preventiva e corretiva",
         "Treinamento de operadores e suporte contínuo",
       ]}
+      testimonials={[
+        { name: "Mariana Costa", role: "Diretora de RH — Indústria Polar", text: "Substituímos 5 sistemas distintos por uma solução única. Eficiência multiplicada." },
+        { name: "Felipe Andrade", role: "Síndico — Edifício Atlantis", text: "Controle por biometria facial. Os moradores adoraram a praticidade e segurança." },
+        { name: "Juliana Reis", role: "Gerente Administrativa — Hospital VL", text: "Setores restritos protegidos com excelência. Time técnico Espier é nota 10." },
+      ]}
       pros={[
         "Elimina o uso de chaves físicas — sem custo de cópia ou perda",
         "Histórico completo: quem entrou, quando e por onde",

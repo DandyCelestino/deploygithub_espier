@@ -35,6 +35,11 @@ const Alarmes = () => (
         "Integração com CFTV e controle de acesso",
         "Manutenção preventiva e corretiva especializada",
       ]}
+      testimonials={[
+        { name: "Eduardo Lima", role: "Proprietário — Joalheria Aurum", text: "Alarme integrado com CFTV salvou minha loja em duas tentativas de invasão. Profissionais excepcionais." },
+        { name: "Patrícia Souza", role: "Moradora — Condomínio Atlanta", text: "Tranquilidade absoluta. Quando viajo, sei que minha casa está protegida." },
+        { name: "Marcos Vinícius", role: "Diretor — Distribuidora MV", text: "Instalação rápida, suporte ágil. Já indiquei a Espier para vários parceiros." },
+      ]}
       pros={[
         "Inibe invasões antes mesmo de qualquer tentativa",
         "Notificação instantânea no celular em caso de disparo",

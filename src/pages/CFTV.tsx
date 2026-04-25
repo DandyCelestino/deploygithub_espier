@@ -35,6 +35,11 @@ const CFTV = () => (
         "Análise de imagens com inteligência artificial",
         "Suporte técnico 24/7 para clientes contratuais",
       ]}
+      testimonials={[
+        { name: "Carlos Mendes", role: "Diretor — Logística JCM", text: "Instalaram 32 câmeras em nosso galpão. Qualidade impecável e suporte sempre rápido." },
+        { name: "Ana Beatriz", role: "Gerente — Condomínio Vista Mar", text: "Sistema completo entregue no prazo. Recomendo a Espier de olhos fechados." },
+        { name: "Roberto Silva", role: "Proprietário — Rede de Postos", text: "Há 6 anos com contrato de manutenção. Profissionalismo é a palavra." },
+      ]}
       pros={[
         "Inibição comprovada de furtos, vandalismo e invasões",
         "Imagens em 4K com visão noturna até 50 metros",
