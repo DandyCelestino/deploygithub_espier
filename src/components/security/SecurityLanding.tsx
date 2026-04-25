@@ -308,6 +308,158 @@ const SecurityLanding = ({
         </div>
       </section>
 
+      {/* GALERIA — Equipamentos em funcionamento e acessórios */}
+      {gallery.length > 0 && (
+        <section className="py-20 lg:py-32 relative bg-black overflow-hidden">
+          <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[140px]" />
+          <div className="section-container relative">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Equipamentos & Acessórios</span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold mt-3 tracking-tight text-white">
+                Tecnologia de ponta{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  em ação
+                </span>
+              </h2>
+              <p className="mt-4 text-white/60">Conheça os equipamentos e acessórios que utilizamos em nossos projetos.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              {gallery.map((g) => (
+                <figure key={g.alt} className="group relative rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-primary/40 transition-all">
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <img
+                      src={g.src}
+                      alt={g.alt}
+                      loading="lazy"
+                      width={1280}
+                      height={832}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
+                  <figcaption className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
+                    <p className="text-xs font-mono text-accent uppercase tracking-[0.25em] mb-1">{g.alt}</p>
+                    <p className="text-white font-bold text-base sm:text-lg leading-snug">{g.caption}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* VANTAGENS / DESVANTAGENS */}
+      {(pros.length > 0 || cons.length > 0) && (
+        <section className="py-20 lg:py-32 relative bg-gradient-to-b from-black via-zinc-950 to-black">
+          <div className="section-container">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Análise honesta</span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold mt-3 tracking-tight text-white">
+                Vantagens &{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  desvantagens
+                </span>
+              </h2>
+              <p className="mt-4 text-white/60">Decida com clareza. Mostramos o que ganhar — e o que considerar.</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Vantagens */}
+              <div className="rounded-2xl p-7 sm:p-8 bg-gradient-to-b from-accent/10 to-transparent border border-accent/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center glow-green">
+                    <ThumbsUp className="w-6 h-6 text-accent" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white">Vantagens</h3>
+                </div>
+                <ul className="space-y-3">
+                  {pros.map((p) => (
+                    <li key={p} className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                      <span className="text-white/85 leading-relaxed">{p}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Desvantagens / Pontos de atenção */}
+              <div className="rounded-2xl p-7 sm:p-8 bg-gradient-to-b from-primary/10 to-transparent border border-primary/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center glow-red">
+                    <ThumbsDown className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white">Pontos de atenção</h3>
+                </div>
+                <ul className="space-y-3">
+                  {cons.map((c) => (
+                    <li key={c} className="flex items-start gap-3">
+                      <span className="w-5 h-5 rounded-full border-2 border-primary/60 shrink-0 mt-0.5 flex items-center justify-center">
+                        <span className="w-2 h-2 rounded-full bg-primary" />
+                      </span>
+                      <span className="text-white/85 leading-relaxed">{c}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-6 text-xs text-white/50 italic">
+                  Nossa equipe te orienta para mitigar cada um destes pontos com a solução ideal.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {faqs.length > 0 && (
+        <section className="py-20 lg:py-32 relative bg-black">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent/10 blur-[120px]" />
+          <div className="section-container relative">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Dúvidas frequentes</span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold mt-3 tracking-tight text-white">
+                Perguntas{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  frequentes
+                </span>
+              </h2>
+              <p className="mt-4 text-white/60">As respostas que nossos clientes mais buscam antes de contratar.</p>
+            </div>
+
+            <div className="max-w-3xl mx-auto">
+              <Accordion type="single" collapsible className="space-y-3">
+                {faqs.map((f, i) => (
+                  <AccordionItem
+                    key={f.q}
+                    value={`item-${i}`}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 sm:px-6 hover:border-accent/30 transition-colors"
+                  >
+                    <AccordionTrigger className="text-left text-white font-semibold hover:no-underline py-5 gap-4">
+                      <span className="flex items-start gap-3">
+                        <HelpCircle className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                        <span>{f.q}</span>
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-white/70 leading-relaxed pl-8 pr-2 pb-5">
+                      {f.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+
+            <div className="mt-12 text-center">
+              <p className="text-white/60 mb-4">Não encontrou sua dúvida? Fale agora mesmo conosco.</p>
+              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white glow-red">
+                <a href={waLink} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="w-5 h-5 mr-2" /> Falar com especialista
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* CTA FINAL */}
       <section className="py-24 lg:py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-red-700 to-black" />
