@@ -19,10 +19,10 @@ const Security = () => (
         <div>
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Segurança Eletrônica</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
-            Proteção <span className="gradient-text">total</span> para seu patrimônio
+            Equipes treinadas para soluções em TI e segurança patrimonial
           </h2>
           <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
-            Soluções completas de segurança eletrônica com tecnologia de ponta,
+            Soluções completas de segurança eletrônica com TI de ponta,
             instalação profissional e suporte contínuo — padrão de empresas de grande porte.
           </p>
           <Button asChild size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90 glow-red">

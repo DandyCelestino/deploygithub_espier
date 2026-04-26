@@ -68,7 +68,7 @@ const Alarmes = () => (
         { q: "Como funciona o monitoramento 24h?", a: "Quando o alarme dispara, a central recebe o sinal em segundos. Operadores tentam contato imediato, validam o evento e acionam a equipe de pronta-resposta e/ou polícia conforme protocolo." },
         { q: "Consigo armar e desarmar pelo celular?", a: "Sim! Pelo aplicativo gratuito você arma, desarma, recebe notificações em tempo real e visualiza o histórico de eventos de qualquer lugar com internet." },
         { q: "Quantos sensores eu preciso?", a: "Depende do imóvel. Em média, residências usam de 4 a 10 sensores (portas, janelas e ambientes principais). Fazemos visita técnica gratuita para dimensionar a quantidade ideal." },
-        { q: "A instalação quebra paredes?", a: "Não, na maioria dos casos. Trabalhamos com tecnologia wireless que dispensa cabeamento — instalação limpa, rápida e sem sujeira na sua casa ou empresa." },
+        { q: "A instalação quebra paredes?", a: "Não, na maioria dos casos. Trabalhamos com TI wireless que dispensa cabeamento — instalação limpa, rápida e sem sujeira na sua casa ou empresa." },
         { q: "Posso integrar com câmeras de segurança?", a: "Sim. A integração entre alarme e CFTV é uma de nossas especialidades — quando o alarme dispara, você recebe a imagem ao vivo do local exato do evento." },
         { q: "Vocês oferecem contrato de manutenção?", a: "Sim. Temos planos de manutenção preventiva e corretiva com troca de baterias, testes periódicos e atendimento prioritário em caso de qualquer ocorrência." },
       ]}
