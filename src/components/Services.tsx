@@ -27,7 +27,6 @@ const cablingServices = [
 const Services = () => (
   <section id="servicos" className="py-20 lg:py-32 relative">
     <div className="section-container relative">
-      {/* Hero da seção com imagem de TI */}
       <div className="grid lg:grid-cols-2 gap-10 items-center mb-16">
         <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl aspect-[4/3] order-2 lg:order-1">
           <img
@@ -55,7 +54,32 @@ const Services = () => (
           </p>
         </div>
       </div>
-...
+
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 mb-20">
+        {services.map((s) => (
+          <div
+            key={s.title}
+            className="group glass-card rounded-xl p-4 sm:p-6 hover:border-primary/30 transition-all hover:-translate-y-1 hover:shadow-lg"
+          >
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-primary/20 transition-all">
+              <s.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            </div>
+            <h3 className="text-sm sm:text-lg font-bold mb-1 sm:mb-2 text-foreground">{s.title}</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4 leading-relaxed">{s.desc}</p>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              {s.benefits.map((b) => (
+                <span key={b} className="text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-accent/10 text-accent border border-accent/20 font-medium">
+                  {b}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="relative rounded-2xl overflow-hidden border border-primary/20 shadow-xl">
+        <div className="grid lg:grid-cols-2">
+          <div className="relative min-h-[280px] lg:min-h-full">
             <img
               src={imgTelecom}
               alt="Unidade Espier Telecom com atendimento exclusivo e operação comercial estruturada"

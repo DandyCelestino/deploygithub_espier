@@ -1,10 +1,10 @@
 import { Fingerprint, DoorOpen, CreditCard, Users, Clock, BarChart3, Smartphone } from "lucide-react";
 import SecurityLanding from "@/components/security/SecurityLanding";
-import imgAcesso from "@/assets/img-acesso.jpg";
+import imgAcesso from "@/assets/espier-recepcao-macae.png";
 import imgAcessoEquip from "@/assets/acesso-equipamentos.jpg";
 import imgAcessoAcess from "@/assets/acesso-acessorios.jpg";
-import imgReception from "@/assets/reception.png";
-import imgInstall from "@/assets/installation.png";
+import imgReception from "@/assets/espier-recepcao-petropolis.png";
+import imgInstall from "@/assets/espier-campo-barra.png";
 
 const ControleAcesso = () => (
   <main>
@@ -14,53 +14,12 @@ const ControleAcesso = () => (
       highlight={"\nsem fronteiras."}
       subtitle="Biometria, RFID e fechaduras eletrônicas integradas. Saiba quem entra, quando e onde — em tempo real."
       heroImage={imgAcesso}
-      features={[
-        { icon: Fingerprint, title: "Biometria Avançada", desc: "Leitores digitais e faciais com altíssima precisão." },
-        { icon: CreditCard, title: "Cartões RFID", desc: "Acesso rápido por proximidade, NFC e mobile credentials." },
-        { icon: DoorOpen, title: "Fechaduras Eletrônicas", desc: "Senha, biometria, cartão ou comando remoto via app." },
-        { icon: Users, title: "Gestão Centralizada", desc: "Software web para horários, permissões e auditoria." },
-      ]}
-      benefits={[
-        { icon: Clock, title: "Controle de Jornada", desc: "Integração com folha de ponto e relatórios automáticos para o RH." },
-        { icon: BarChart3, title: "Relatórios Inteligentes", desc: "Dashboards completos com histórico de acessos e auditoria de eventos." },
-        { icon: Smartphone, title: "App Mobile", desc: "Abra portas, libere visitantes e gerencie acessos pelo celular." },
-      ]}
-      services={[
-        "Projeto e dimensionamento de sistemas de controle de acesso",
-        "Instalação de catracas, torniquetes e cancelas",
-        "Fechaduras eletrônicas, biométricas e magnéticas",
-        "Configuração de software de gestão e relatórios",
-        "Integração com câmeras CFTV e alarmes",
-        "Cadastro de usuários e definição de níveis de acesso",
-        "Manutenção preventiva e corretiva",
-        "Treinamento de operadores e suporte contínuo",
-      ]}
-      testimonials={[
-        { name: "Mariana Costa", role: "Diretora de RH — Indústria Polar", text: "Substituímos 5 sistemas distintos por uma solução única. Eficiência multiplicada." },
-        { name: "Felipe Andrade", role: "Síndico — Edifício Atlantis", text: "Controle por biometria facial. Os moradores adoraram a praticidade e segurança." },
-        { name: "Juliana Reis", role: "Gerente Administrativa — Hospital VL", text: "Setores restritos protegidos com excelência. Time técnico Espier é nota 10." },
-      ]}
-      pros={[
-        "Elimina o uso de chaves físicas — sem custo de cópia ou perda",
-        "Histórico completo: quem entrou, quando e por onde",
-        "Bloqueio instantâneo de credenciais perdidas ou desligamentos",
-        "Integração com folha de ponto automatiza o RH",
-        "Níveis de acesso por horário, setor e perfil de usuário",
-        "Reduz fraudes e acesso não autorizado a áreas sensíveis",
-        "Modernidade e profissionalismo na recepção do ambiente",
-      ]}
-      cons={[
-        "Requer alimentação elétrica nas portas controladas",
-        "Cadastro inicial de usuários demanda tempo de implantação",
-        "Necessita treinamento básico de operadores e usuários",
-        "Falhas elétricas exigem fonte redundante (nobreak / bateria)",
-        "Investimento inicial maior que fechaduras convencionais",
-      ]}
+...
       gallery={[
         { src: imgAcessoEquip, alt: "Equipamento em funcionamento", caption: "Leitor biométrico e facial em uso real em ambiente corporativo" },
         { src: imgAcessoAcess, alt: "Acessórios de controle", caption: "Biometria, RFID, fechaduras eletromagnéticas e teclados" },
-        { src: imgReception, alt: "Recepção controlada", caption: "Catracas e portarias automatizadas com gestão centralizada" },
-        { src: imgInstall, alt: "Instalação técnica", caption: "Equipe Espier instalando sistema completo de controle" },
+        { src: imgReception, alt: "Recepção controlada", caption: "Unidade preparada para atendimento exclusivo e recepção profissional de clientes" },
+        { src: imgInstall, alt: "Instalação técnica", caption: "Equipe Espier em campo executando instalações com organização e agilidade" },
       ]}
       faqs={[
         { q: "Qual a diferença entre biometria digital e facial?", a: "A digital lê a impressão do dedo (rápida e econômica). A facial reconhece o rosto (mais higiênica e moderna, ideal para alto fluxo). Ambas são extremamente seguras — recomendamos conforme o uso." },
