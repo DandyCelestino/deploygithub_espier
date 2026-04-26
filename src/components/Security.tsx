@@ -18,8 +18,8 @@ const Security = () => (
       <div className="grid lg:grid-cols-2 gap-10 items-center mb-16">
         <div>
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Segurança Eletrônica</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
-            Equipes treinadas para soluções em manutenção e infra estrutura e segurança patrimonial
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
+            Manutenção e infra estrutura e segurança patrimonial
           </h2>
           <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
             Soluções completas de segurança eletrônica com manutenção e infra estrutura de ponta,
