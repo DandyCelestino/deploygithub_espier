@@ -1,16 +1,15 @@
 import imgTI from "@/assets/espier-tecnica-interna.png";
 import imgSeguranca from "@/assets/espier-campo-barra.png";
-import imgTelecom from "@/assets/espier-recepcao-petropolis.png";
-import imgCftv from "@/assets/espier-frota-matriz.png";
-import imgAcesso from "@/assets/espier-recepcao-macae.png";
+import imgRecepcaoComercial from "@/assets/espier-recepcao-comercial.png";
+import imgInfraLogistica from "@/assets/espier-infra-logistica.png";
 import imgSobre from "@/assets/espier-campo-barra.png";
 
 const projects = [
-  { img: imgTelecom, title: "Atendimento Corporativo", category: "Relacionamento & Comercial", desc: "Estrutura profissional para atendimento consultivo e apresentação de soluções sob medida." },
+  { img: imgRecepcaoComercial, title: "Atendimento Corporativo", category: "Relacionamento & Comercial", desc: "Estrutura profissional para atendimento consultivo e apresentação de soluções sob medida." },
   { img: imgSeguranca, title: "Operação em Campo", category: "Segurança Eletrônica", desc: "Equipes e frota preparadas para instalações, suporte técnico e atendimento externo com agilidade." },
   { img: imgTI, title: "Laboratório Técnico", category: "Manutenção & Recuperação", desc: "Diagnóstico, manutenção e recuperação de equipamentos com organização e padrão profissional." },
-  { img: imgCftv, title: "Matriz Operacional", category: "Infraestrutura & Logística", desc: "Base estruturada para coordenar equipes, frota e projetos de alta demanda com eficiência." },
-  { img: imgAcesso, title: "Recepção Exclusiva", category: "Experiência do Cliente", desc: "Ambiente preparado para receber clientes com proximidade, confiança e atendimento personalizado." },
+  { img: imgInfraLogistica, title: "Matriz Operacional", category: "Infraestrutura & Logística", desc: "Base estruturada para coordenar equipes, frota e projetos de alta demanda com eficiência." },
+  { img: imgRecepcaoComercial, title: "Recepção Exclusiva", category: "Experiência do Cliente", desc: "Ambiente preparado para receber clientes com proximidade, confiança e atendimento personalizado." },
   { img: imgSobre, title: "Presença de Marca", category: "Credibilidade", desc: "Imagem institucional forte que transmite solidez, prontidão operacional e alto padrão de execução." },
 ];
 
