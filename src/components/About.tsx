@@ -3,7 +3,7 @@ import imgSobre from "@/assets/espier-frota-matriz.png";
 
 const values = [
   { icon: Target, title: "Missão", text: "Oferecer soluções tecnológicas de excelência que transformem a operação dos nossos clientes, garantindo segurança, performance e inovação." },
-  { icon: Eye, title: "Visão", text: "Ser referência nacional em TI e segurança eletrônica, reconhecida pela qualidade técnica e compromisso com resultados." },
+  { icon: Eye, title: "Visão", text: "Ser referência nacional em manutenção e infra estrutura e segurança eletrônica, reconhecida pela qualidade técnica e compromisso com resultados." },
   { icon: Heart, title: "Valores", text: "Ética, transparência, inovação contínua, compromisso com o cliente e busca incessante pela excelência técnica." },
 ];
 
@@ -23,11 +23,11 @@ const About = () => (
         <div>
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Sobre nós</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
-            Especialistas em <span className="gradient-text">TI</span> e{" "}
+            Especialistas em <span className="gradient-text">manutenção e infra estrutura</span> e{" "}
             <span className="gradient-text-green">segurança</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
-            Com mais de 10 anos de atuação, somos referência em soluções de TI e segurança
+            Com mais de 10 anos de atuação, somos referência em soluções de manutenção e infra estrutura e segurança
             eletrônica. Nossa equipe altamente qualificada entrega projetos com excelência
             técnica e compromisso total com o resultado.
           </p>

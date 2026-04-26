@@ -25,7 +25,7 @@ const Hero = () => {
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/20 text-white text-sm font-medium mb-6 border border-primary/40 backdrop-blur-sm">
               <Zap className="w-3.5 h-3.5 text-accent" />
-              Soluções completas em TI & Segurança
+              Soluções completas em manutenção e infra estrutura & Segurança
             </span>
           </div>
 
@@ -35,7 +35,7 @@ const Hero = () => {
           </h1>
 
           <p className="mt-6 text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl animate-fade-up-delay-2 leading-relaxed drop-shadow text-left">
-            Infraestrutura de TI, cabeamento estruturado, segurança eletrônica e
+            manutenção e infra estrutura, cabeamento estruturado, segurança eletrônica e
             suporte técnico especializado. Tudo o que sua empresa precisa em um
             único parceiro.
           </p>
