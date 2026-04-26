@@ -19,10 +19,10 @@ const Portfolio = () => (
       <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
         <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Portfólio</span>
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
-          Projetos que <span className="gradient-text">comprovam</span> nossa qualidade
+          Estrutura corporativa, <span className="gradient-text">nossa marca</span> de qualidade
         </h2>
         <p className="mt-4 text-muted-foreground text-base sm:text-lg">
-          Conheça alguns dos projetos que realizamos com excelência técnica.
+          Relacionamento, profissionalismo e competência, contenção de gastos (manutenção), logística e infra estrutura.
         </p>
       </div>
 
