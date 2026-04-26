@@ -29,12 +29,12 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight animate-fade-up-delay-1 text-white drop-shadow-lg font-sans text-center">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight animate-fade-up-delay-1 text-white drop-shadow-lg font-sans text-left">
             Tecnologia que{" "}
             <span className="gradient-text-green">Protege</span>
           </h1>
 
-          <p className="mt-6 text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl animate-fade-up-delay-2 leading-relaxed drop-shadow">
+          <p className="mt-6 text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl animate-fade-up-delay-2 leading-relaxed drop-shadow text-left">
             Infraestrutura de TI, cabeamento estruturado, segurança eletrônica e
             suporte técnico especializado. Tudo o que sua empresa precisa em um
             único parceiro.
