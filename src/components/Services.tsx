@@ -13,9 +13,9 @@ const services = [
   { icon: ShieldCheck, title: "Segurança da Informação", desc: "Firewalls, antivírus corporativo, políticas de segurança e compliance.", benefits: ["Proteção total", "Conformidade"] },
   { icon: Database, title: "Backup e Recuperação", desc: "Estratégias de backup local e em nuvem com planos de recuperação de desastres.", benefits: ["Zero perda de dados", "Recuperação rápida"] },
   { icon: Code2, title: "Automação e Sistemas", desc: "Sistemas sob medida, automação de processos e integrações entre plataformas.", benefits: ["Processos otimizados", "Produtividade"] },
-  { icon: Brain, title: "Consultoria em TI", desc: "Análise completa da infraestrutura com planos estratégicos de evolução tecnológica.", benefits: ["ROI maximizado", "Planejamento"] },
+  { icon: Brain, title: "Consultoria em manutenção e infra estrutura", desc: "Análise completa da infraestrutura com planos estratégicos de evolução tecnológica.", benefits: ["ROI maximizado", "Planejamento"] },
   { icon: Monitor, title: "Venda de Equipamentos", desc: "Fornecimento de hardware de qualidade com instalação e configuração profissional.", benefits: ["Homologados", "Suporte incluso"] },
-  { icon: Users, title: "Terceirização de TI", desc: "Outsourcing completo de TI com equipe dedicada e gerenciamento proativo.", benefits: ["Foco no negócio", "Custos previsíveis"] },
+  { icon: Users, title: "Terceirização de manutenção e infra estrutura", desc: "Outsourcing completo de manutenção e infra estrutura com equipe dedicada e gerenciamento proativo.", benefits: ["Foco no negócio", "Custos previsíveis"] },
 ];
 
 const cablingServices = [
@@ -46,7 +46,7 @@ const Services = () => (
         <div className="order-1 lg:order-2">
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Serviços</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
-            Soluções completas em <span className="gradient-text">TI</span>
+            Soluções completas em <span className="gradient-text">manutenção e infra estrutura</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
             Cobertura total para sua infraestrutura tecnológica — do suporte técnico
