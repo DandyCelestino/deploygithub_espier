@@ -3,8 +3,8 @@ import {
   Brain, Monitor, Users, Cable, CheckSquare, Activity, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import imgTI from "@/assets/img-ti.jpg";
-import imgTelecom from "@/assets/img-telecom.jpg";
+import imgTI from "@/assets/espier-tecnica-interna.png";
+import imgTelecom from "@/assets/espier-recepcao-petropolis.png";
 
 const services = [
   { icon: Wrench, title: "Manutenção e Suporte", desc: "Atendimento presencial e remoto para manutenção preventiva e corretiva de computadores e periféricos.", benefits: ["Redução de downtime", "Maior vida útil"] },
@@ -27,12 +27,11 @@ const cablingServices = [
 const Services = () => (
   <section id="servicos" className="py-20 lg:py-32 relative">
     <div className="section-container relative">
-      {/* Hero da seção com imagem de TI */}
       <div className="grid lg:grid-cols-2 gap-10 items-center mb-16">
         <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl aspect-[4/3] order-2 lg:order-1">
           <img
             src={imgTI}
-            alt="Especialista em TI gerenciando infraestrutura de servidores"
+            alt="Equipe técnica interna da Espier Telecom realizando manutenção e recuperação de equipamentos"
             loading="lazy"
             width={1280}
             height={832}
@@ -40,8 +39,8 @@ const Services = () => (
           />
           <div className="img-overlay-dark opacity-70" />
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <p className="text-xs font-mono uppercase tracking-widest text-accent">Tecnologia da Informação</p>
-            <p className="text-lg sm:text-xl font-bold mt-1">Infraestrutura corporativa de ponta</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-accent">Laboratório técnico</p>
+            <p className="text-lg sm:text-xl font-bold mt-1">Manutenção, diagnóstico e recuperação com padrão profissional</p>
           </div>
         </div>
         <div className="order-1 lg:order-2">
@@ -78,13 +77,12 @@ const Services = () => (
         ))}
       </div>
 
-      {/* Telecom highlight com imagem real */}
       <div className="relative rounded-2xl overflow-hidden border border-primary/20 shadow-xl">
         <div className="grid lg:grid-cols-2">
           <div className="relative min-h-[280px] lg:min-h-full">
             <img
               src={imgTelecom}
-              alt="Cabeamento estruturado e fibra óptica em rack corporativo"
+              alt="Unidade Espier Telecom com atendimento exclusivo e operação comercial estruturada"
               loading="lazy"
               width={1280}
               height={832}
@@ -92,8 +90,8 @@ const Services = () => (
             />
             <div className="img-overlay-red opacity-75" />
             <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-              <p className="text-xs font-mono uppercase tracking-widest text-white/90">Telecomunicações</p>
-              <p className="text-lg sm:text-xl font-bold mt-1">Cabeamento de alta performance</p>
+              <p className="text-xs font-mono uppercase tracking-widest text-white/90">Atendimento exclusivo</p>
+              <p className="text-lg sm:text-xl font-bold mt-1">Estrutura comercial preparada para receber e orientar clientes</p>
             </div>
           </div>
           <div className="bg-white p-6 sm:p-8 lg:p-12">

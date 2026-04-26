@@ -1,6 +1,6 @@
 import { ArrowRight, PhoneCall, Wrench, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroBg from "@/assets/espier-campo-barra.png";
 
 const Hero = () => {
   return (
@@ -9,7 +9,7 @@ const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img
           src={heroBg}
-          alt="Data center corporativo de grande porte com infraestrutura de TI"
+          alt="Equipe de campo e frota da Espier Telecom em operação externa"
           className="absolute inset-0 w-full h-full object-cover"
           width={1920}
           height={1080}

@@ -1,10 +1,10 @@
 import { Camera, Monitor, HardDrive, Wifi, Eye, Cloud, Cpu } from "lucide-react";
 import SecurityLanding from "@/components/security/SecurityLanding";
-import imgCftv from "@/assets/img-cftv.jpg";
+import imgCftv from "@/assets/espier-frota-matriz.png";
 import imgCftvEquip from "@/assets/cftv-equipamentos.jpg";
 import imgCftvAcess from "@/assets/cftv-acessorios.jpg";
-import imgInstall from "@/assets/installation.png";
-import imgMonitoring from "@/assets/monitoring.png";
+import imgInstall from "@/assets/espier-campo-barra.png";
+import imgMonitoring from "@/assets/espier-tecnica-interna.png";
 
 const CFTV = () => (
   <main>
@@ -59,8 +59,8 @@ const CFTV = () => (
       gallery={[
         { src: imgCftvEquip, alt: "Equipamentos em funcionamento", caption: "Centrais de monitoramento com câmeras IP 4K e NVR profissional" },
         { src: imgCftvAcess, alt: "Acessórios CFTV", caption: "Câmeras bullet, dome, cabos coaxiais, conectores BNC e suportes" },
-        { src: imgMonitoring, alt: "Sala de monitoramento", caption: "Operação 24/7 com visualização multi-canal em tempo real" },
-        { src: imgInstall, alt: "Instalação profissional", caption: "Equipe técnica certificada executando projeto completo" },
+        { src: imgMonitoring, alt: "Equipe técnica interna", caption: "Análise, configuração e recuperação técnica dos equipamentos de monitoramento" },
+        { src: imgInstall, alt: "Equipe de campo", caption: "Equipe Espier em operação externa para instalação e suporte especializado" },
       ]}
       faqs={[
         { q: "Quantas câmeras eu preciso para minha casa ou empresa?", a: "Depende da metragem, pontos críticos e ângulos cegos. Nossa equipe faz uma visita técnica gratuita e dimensiona o projeto ideal — geralmente residências usam de 4 a 8 câmeras e empresas de 8 a 32." },

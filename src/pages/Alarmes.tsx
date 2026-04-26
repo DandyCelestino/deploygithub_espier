@@ -1,10 +1,10 @@
 import { Bell, ShieldCheck, Wifi, Smartphone, Siren, Bluetooth, Activity } from "lucide-react";
 import SecurityLanding from "@/components/security/SecurityLanding";
-import imgAlarmes from "@/assets/img-alarmes.jpg";
+import imgAlarmes from "@/assets/espier-campo-barra.png";
 import imgAlarmesEquip from "@/assets/alarmes-equipamentos.jpg";
 import imgAlarmesAcess from "@/assets/alarmes-acessorios.jpg";
-import imgMonitoring from "@/assets/monitoring.png";
-import imgInstall from "@/assets/installation.png";
+import imgMonitoring from "@/assets/espier-tecnica-interna.png";
+import imgInstall from "@/assets/espier-frota-matriz.png";
 
 const Alarmes = () => (
   <main>
@@ -59,8 +59,8 @@ const Alarmes = () => (
       gallery={[
         { src: imgAlarmesEquip, alt: "Sistema em funcionamento", caption: "Central de alarme armada com sensores e controle por aplicativo" },
         { src: imgAlarmesAcess, alt: "Acessórios de alarme", caption: "Sensores PIR, magnéticos, sirenes, botões de pânico e controles" },
-        { src: imgMonitoring, alt: "Central de monitoramento", caption: "Resposta imediata 24h com equipe técnica especializada" },
-        { src: imgInstall, alt: "Instalação especializada", caption: "Projeto técnico executado por equipe Espier certificada" },
+        { src: imgMonitoring, alt: "Suporte técnico interno", caption: "Manutenção e preparação técnica dos equipamentos de segurança" },
+        { src: imgInstall, alt: "Base operacional", caption: "Estrutura e frota prontas para atendimento técnico e implantação rápida" },
       ]}
       faqs={[
         { q: "O alarme funciona se faltar energia ou internet?", a: "Sim. Nossas centrais possuem bateria de backup (autonomia de 12h a 24h) e módulo GPRS/4G que envia sinais à central de monitoramento mesmo sem internet via Wi-Fi." },

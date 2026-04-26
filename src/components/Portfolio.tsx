@@ -1,17 +1,17 @@
-import imgTI from "@/assets/img-ti.jpg";
-import imgSeguranca from "@/assets/img-seguranca.jpg";
-import imgTelecom from "@/assets/img-telecom.jpg";
-import imgCftv from "@/assets/img-cftv.jpg";
-import imgAcesso from "@/assets/img-acesso.jpg";
-import imgSobre from "@/assets/img-sobre.jpg";
+import imgTI from "@/assets/espier-tecnica-interna.png";
+import imgSeguranca from "@/assets/espier-campo-barra.png";
+import imgTelecom from "@/assets/espier-recepcao-petropolis.png";
+import imgCftv from "@/assets/espier-frota-matriz.png";
+import imgAcesso from "@/assets/espier-recepcao-macae.png";
+import imgSobre from "@/assets/espier-campo-barra.png";
 
 const projects = [
-  { img: imgTelecom, title: "Data Center Corporativo", category: "Cabeamento Estruturado", desc: "Projeto completo de cabeamento Cat6 com certificação para empresa de 200 pontos." },
-  { img: imgSeguranca, title: "Monitoramento Industrial", category: "Segurança Eletrônica", desc: "Sistema de CFTV com 48 câmeras IP e monitoramento remoto 24h." },
-  { img: imgTI, title: "Infraestrutura Cloud", category: "Cloud Computing", desc: "Migração completa de servidores on-premise para nuvem com zero downtime." },
-  { img: imgCftv, title: "Rede Hospitalar", category: "Redes & Infraestrutura", desc: "Rede de alta disponibilidade para hospital com 500 leitos e redundância total." },
-  { img: imgAcesso, title: "Condomínio Inteligente", category: "Segurança & Automação", desc: "Controle de acesso, CFTV e automação integrados em condomínio residencial." },
-  { img: imgSobre, title: "Outsourcing Completo", category: "Terceirização de TI", desc: "Gestão completa de TI para escritório de advocacia com 80 estações." },
+  { img: imgTelecom, title: "Atendimento Corporativo", category: "Relacionamento & Comercial", desc: "Estrutura profissional para atendimento consultivo e apresentação de soluções sob medida." },
+  { img: imgSeguranca, title: "Operação em Campo", category: "Segurança Eletrônica", desc: "Equipes e frota preparadas para instalações, suporte técnico e atendimento externo com agilidade." },
+  { img: imgTI, title: "Laboratório Técnico", category: "Manutenção & Recuperação", desc: "Diagnóstico, manutenção e recuperação de equipamentos com organização e padrão profissional." },
+  { img: imgCftv, title: "Matriz Operacional", category: "Infraestrutura & Logística", desc: "Base estruturada para coordenar equipes, frota e projetos de alta demanda com eficiência." },
+  { img: imgAcesso, title: "Recepção Exclusiva", category: "Experiência do Cliente", desc: "Ambiente preparado para receber clientes com proximidade, confiança e atendimento personalizado." },
+  { img: imgSobre, title: "Presença de Marca", category: "Credibilidade", desc: "Imagem institucional forte que transmite solidez, prontidão operacional e alto padrão de execução." },
 ];
 
 const Portfolio = () => (

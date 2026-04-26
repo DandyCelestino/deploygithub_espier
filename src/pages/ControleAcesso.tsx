@@ -1,10 +1,10 @@
 import { Fingerprint, DoorOpen, CreditCard, Users, Clock, BarChart3, Smartphone } from "lucide-react";
 import SecurityLanding from "@/components/security/SecurityLanding";
-import imgAcesso from "@/assets/img-acesso.jpg";
+import imgAcesso from "@/assets/espier-recepcao-macae.png";
 import imgAcessoEquip from "@/assets/acesso-equipamentos.jpg";
 import imgAcessoAcess from "@/assets/acesso-acessorios.jpg";
-import imgReception from "@/assets/reception.png";
-import imgInstall from "@/assets/installation.png";
+import imgReception from "@/assets/espier-recepcao-petropolis.png";
+import imgInstall from "@/assets/espier-campo-barra.png";
 
 const ControleAcesso = () => (
   <main>
@@ -59,8 +59,8 @@ const ControleAcesso = () => (
       gallery={[
         { src: imgAcessoEquip, alt: "Equipamento em funcionamento", caption: "Leitor biométrico e facial em uso real em ambiente corporativo" },
         { src: imgAcessoAcess, alt: "Acessórios de controle", caption: "Biometria, RFID, fechaduras eletromagnéticas e teclados" },
-        { src: imgReception, alt: "Recepção controlada", caption: "Catracas e portarias automatizadas com gestão centralizada" },
-        { src: imgInstall, alt: "Instalação técnica", caption: "Equipe Espier instalando sistema completo de controle" },
+        { src: imgReception, alt: "Recepção controlada", caption: "Unidade preparada para atendimento exclusivo e recepção profissional de clientes" },
+        { src: imgInstall, alt: "Instalação técnica", caption: "Equipe Espier em campo executando instalações com organização e agilidade" },
       ]}
       faqs={[
         { q: "Qual a diferença entre biometria digital e facial?", a: "A digital lê a impressão do dedo (rápida e econômica). A facial reconhece o rosto (mais higiênica e moderna, ideal para alto fluxo). Ambas são extremamente seguras — recomendamos conforme o uso." },
