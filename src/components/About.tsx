@@ -23,7 +23,7 @@ const About = () => (
         <div>
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Sobre nós</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
-            Especialistas em <span className="gradient-text">manutenção e infra estrutura</span> e{" "}
+            Especialistas em, <span className="gradient-text">TI, manutenção e infra estrutura</span> e{" "}
             <span className="gradient-text-green">segurança</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
