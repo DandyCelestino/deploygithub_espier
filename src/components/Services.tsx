@@ -45,7 +45,7 @@ const Services = () => (
         </div>
         <div className="order-1 lg:order-2">
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Serviços</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
             Soluções completas em <span className="gradient-text">manutenção e infra estrutura</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">

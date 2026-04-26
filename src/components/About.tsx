@@ -22,7 +22,7 @@ const About = () => (
       <div className="grid lg:grid-cols-2 gap-10 items-center mb-16">
         <div>
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Sobre nós</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
             Especialistas em <span className="gradient-text">manutenção e infra estrutura</span> e{" "}
             <span className="gradient-text-green">segurança</span>
           </h2>

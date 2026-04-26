@@ -25,7 +25,7 @@ const Contact = () => {
       <div className="section-container relative">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Contato</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-foreground">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
             Fale <span className="gradient-text">conosco</span>
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
