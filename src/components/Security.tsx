@@ -22,7 +22,7 @@ const Security = () => (
             Equipes treinadas para soluções em TI e segurança patrimonial
           </h2>
           <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
-            Soluções completas de segurança eletrônica com tecnologia de ponta,
+            Soluções completas de segurança eletrônica com TI de ponta,
             instalação profissional e suporte contínuo — padrão de empresas de grande porte.
           </p>
           <Button asChild size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90 glow-red">
