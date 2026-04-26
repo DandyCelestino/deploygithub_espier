@@ -1,6 +1,6 @@
 import { Camera, Wifi, Bell, Fingerprint, Zap, Cpu, Link2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import imgSeguranca from "@/assets/img-seguranca.jpg";
+import imgSeguranca from "@/assets/espier-campo-barra.png";
 
 const securityServices = [
   { icon: Camera, title: "CFTV", desc: "Câmeras IP, analógicas e monitoramento com acesso remoto via smartphone." },
@@ -34,7 +34,7 @@ const Security = () => (
         <div className="relative rounded-2xl overflow-hidden border border-primary/30 shadow-xl aspect-[4/3]">
           <img
             src={imgSeguranca}
-            alt="Central de monitoramento de segurança eletrônica corporativa"
+            alt="Equipe de campo da Espier Telecom e frota pronta para operações de segurança"
             loading="lazy"
             width={1280}
             height={832}
@@ -42,8 +42,8 @@ const Security = () => (
           />
           <div className="img-overlay-dark opacity-70" />
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <p className="text-xs font-mono uppercase tracking-widest text-accent">Centro de Monitoramento</p>
-            <p className="text-lg sm:text-xl font-bold mt-1">Vigilância 24h em tempo real</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-accent">Equipe de campo</p>
+            <p className="text-lg sm:text-xl font-bold mt-1">Prontidão técnica para instalações e atendimento</p>
           </div>
         </div>
       </div>

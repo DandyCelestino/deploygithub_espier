@@ -1,5 +1,5 @@
 import { Target, Eye, Heart, CheckCircle2 } from "lucide-react";
-import imgSobre from "@/assets/img-sobre.jpg";
+import imgSobre from "@/assets/espier-frota-matriz.png";
 
 const values = [
   { icon: Target, title: "Missão", text: "Oferecer soluções tecnológicas de excelência que transformem a operação dos nossos clientes, garantindo segurança, performance e inovação." },
@@ -35,7 +35,7 @@ const About = () => (
         <div className="relative rounded-2xl overflow-hidden border border-border shadow-lg aspect-[4/3]">
           <img
             src={imgSobre}
-            alt="Equipe corporativa de tecnologia em reunião estratégica"
+            alt="Matriz da Espier Telecom com frota operacional pronta para atendimento"
             loading="lazy"
             width={1280}
             height={832}
