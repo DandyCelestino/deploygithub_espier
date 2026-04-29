@@ -8,30 +8,28 @@ const testimonials = [
 ];
 
 const Testimonials = () => (
-  <section id="depoimentos" className="py-20 lg:py-32 relative bg-secondary/40">
+  <section id="depoimentos" className="py-20 lg:py-32 section-radial overflow-hidden">
     <div className="section-container relative">
-      <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-        <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Depoimentos</span>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
+      <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16">
+        <span className="eyebrow eyebrow-line">Depoimentos</span>
+        <h2 className="h-section mt-5">
           O que nossos <span className="gradient-text">clientes</span> dizem
         </h2>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
         {testimonials.map((t, i) => (
-          <div key={i} className="glass-card rounded-2xl p-6 sm:p-8 hover:border-primary/30 transition-all group hover:shadow-lg">
-            <Quote className="w-7 h-7 sm:w-8 sm:h-8 text-primary/30 mb-3 sm:mb-4 group-hover:text-primary/60 transition-colors" />
-            <p className="text-foreground/80 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base lg:text-lg">{t.text}</p>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-bold text-foreground text-sm sm:text-base">{t.name}</p>
-                <p className="text-xs sm:text-sm text-muted-foreground">{t.role}</p>
-              </div>
-              <div className="flex gap-0.5 sm:gap-1">
-                {[...Array(5)].map((_, j) => (
-                  <Star key={j} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-accent text-accent" />
-                ))}
-              </div>
+          <div key={i} className="premium-card premium-card-hover p-7 sm:p-8 group relative">
+            <Quote className="absolute top-6 right-6 w-10 h-10 text-primary/20 group-hover:text-primary/40 transition-colors" />
+            <div className="flex gap-1 mb-4">
+              {[...Array(5)].map((_, j) => (
+                <Star key={j} className="w-4 h-4 fill-accent text-accent" />
+              ))}
+            </div>
+            <p className="text-white/80 mb-6 leading-relaxed text-base lg:text-lg italic">"{t.text}"</p>
+            <div className="pt-4 border-t border-white/10">
+              <p className="font-bold text-white">{t.name}</p>
+              <p className="text-sm text-white/55 mt-0.5">{t.role}</p>
             </div>
           </div>
         ))}

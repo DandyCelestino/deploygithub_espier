@@ -14,21 +14,25 @@ const projects = [
 ];
 
 const Portfolio = () => (
-  <section id="portfolio" className="py-20 lg:py-32 relative">
+  <section id="portfolio" className="py-20 lg:py-32 section-dark-alt">
     <div className="section-container relative">
-      <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-        <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Portfólio</span>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
+      <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16">
+        <span className="eyebrow eyebrow-line">Portfólio</span>
+        <h2 className="h-section mt-5">
           Estrutura corporativa, <span className="gradient-text">nossa marca</span> de qualidade
         </h2>
-        <p className="mt-4 text-muted-foreground text-base sm:text-lg">
-          Relacionamento, profissionalismo e competência, contenção de gastos (manutenção), logística e infra estrutura.
+        <p className="mt-4 text-white/60 text-base sm:text-lg">
+          Relacionamento, profissionalismo e competência — contenção de custos com manutenção,
+          logística e infra estrutura.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {projects.map((p, i) => (
-          <div key={i} className="group glass-card rounded-2xl overflow-hidden hover:border-primary/30 transition-all hover:-translate-y-1 hover:shadow-xl">
+          <div
+            key={i}
+            className="group premium-card overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-1 hover:shadow-[0_25px_60px_-20px_hsl(0_80%_52%/0.45)]"
+          >
             <div className="aspect-[4/3] relative overflow-hidden">
               <img
                 src={p.img}
@@ -38,14 +42,16 @@ const Portfolio = () => (
                 height={960}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
-                <span className="text-[10px] sm:text-xs font-mono text-white uppercase tracking-wider font-semibold px-2 py-1 rounded bg-primary/90 backdrop-blur-sm">{p.category}</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+              <div className="absolute top-3 left-3">
+                <span className="text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider px-2.5 py-1 rounded-md bg-primary/90 backdrop-blur-sm">
+                  {p.category}
+                </span>
               </div>
-            </div>
-            <div className="p-4 sm:p-6">
-              <h3 className="text-sm sm:text-lg font-bold mb-1 sm:mb-2 text-foreground">{p.title}</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <h3 className="text-lg sm:text-xl font-extrabold text-white mb-1">{p.title}</h3>
+                <p className="text-xs sm:text-sm text-white/75 leading-relaxed line-clamp-2">{p.desc}</p>
+              </div>
             </div>
           </div>
         ))}
