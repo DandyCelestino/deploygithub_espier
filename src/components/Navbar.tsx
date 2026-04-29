@@ -16,6 +16,14 @@ const navLinks = [
       { label: "Controle de Acesso", to: "/seguranca/controle-de-acesso" },
     ],
   },
+  {
+    label: "TI",
+    href: "/ti",
+    subLinks: [
+      { label: "TI Empresarial", to: "/ti" },
+      { label: "Telecom", to: "/ti/telecom" },
+    ],
+  },
   { label: "Portfólio", href: "#portfolio" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Contato", href: "#contato" },
