@@ -16,6 +16,14 @@ const navLinks = [
       { label: "Controle de Acesso", to: "/seguranca/controle-de-acesso" },
     ],
   },
+  {
+    label: "TI",
+    href: "/ti",
+    subLinks: [
+      { label: "TI Empresarial", to: "/ti" },
+      { label: "Telecom", to: "/ti/telecom" },
+    ],
+  },
   { label: "Portfólio", href: "#portfolio" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Contato", href: "#contato" },
@@ -24,8 +32,8 @@ const navLinks = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileSubOpen, setMobileSubOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openMobileSub, setOpenMobileSub] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,7 +45,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false);
+        setOpenDropdown(null);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -58,29 +66,31 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) =>
             link.subLinks ? (
-              <div key={link.href} className="relative" ref={dropdownRef}>
+              <div key={link.label} className="relative" ref={openDropdown === link.label ? dropdownRef : undefined}>
                 <button
                   className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  onClick={() => setOpenDropdown(openDropdown === link.label ? null : link.label)}
                 >
                   {link.label}
-                  <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === link.label ? "rotate-180" : ""}`} />
                 </button>
-                {dropdownOpen && (
+                {openDropdown === link.label && (
                   <div className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-xl border border-border py-2 z-50">
-                    <a
-                      href={link.href}
-                      onClick={() => setDropdownOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
-                    >
-                      Visão Geral
-                    </a>
-                    <div className="border-t border-border/50 my-1" />
+                    {link.href.startsWith("#") ? (
+                      <a
+                        href={link.href}
+                        onClick={() => setOpenDropdown(null)}
+                        className="block px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                      >
+                        Visão Geral
+                      </a>
+                    ) : null}
+                    {link.href.startsWith("#") && <div className="border-t border-border/50 my-1" />}
                     {link.subLinks.map((sub) => (
                       <Link
                         key={sub.to}
                         to={sub.to}
-                        onClick={() => setDropdownOpen(false)}
+                        onClick={() => setOpenDropdown(null)}
                         className="block px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                       >
                         {sub.label}
@@ -124,28 +134,30 @@ const Navbar = () => {
           <div className="section-container flex flex-col gap-1 pt-2">
             {navLinks.map((link) =>
               link.subLinks ? (
-                <div key={link.href}>
+                <div key={link.label}>
                   <button
                     className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-3 w-full text-left"
-                    onClick={() => setMobileSubOpen(!mobileSubOpen)}
+                    onClick={() => setOpenMobileSub(openMobileSub === link.label ? null : link.label)}
                   >
                     {link.label}
-                    <ChevronDown className={`w-4 h-4 transition-transform ${mobileSubOpen ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${openMobileSub === link.label ? "rotate-180" : ""}`} />
                   </button>
-                  {mobileSubOpen && (
+                  {openMobileSub === link.label && (
                     <div className="pl-4 flex flex-col gap-1 border-l-2 border-primary/30 ml-2">
-                      <a
-                        href={link.href}
-                        onClick={() => { setOpen(false); setMobileSubOpen(false); }}
-                        className="text-sm text-muted-foreground hover:text-primary py-2"
-                      >
-                        Visão Geral
-                      </a>
+                      {link.href.startsWith("#") && (
+                        <a
+                          href={link.href}
+                          onClick={() => { setOpen(false); setOpenMobileSub(null); }}
+                          className="text-sm text-muted-foreground hover:text-primary py-2"
+                        >
+                          Visão Geral
+                        </a>
+                      )}
                       {link.subLinks.map((sub) => (
                         <Link
                           key={sub.to}
                           to={sub.to}
-                          onClick={() => { setOpen(false); setMobileSubOpen(false); }}
+                          onClick={() => { setOpen(false); setOpenMobileSub(null); }}
                           className="text-sm text-muted-foreground hover:text-primary py-2"
                         >
                           {sub.label}
