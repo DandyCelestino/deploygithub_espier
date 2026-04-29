@@ -64,7 +64,7 @@ const SecurityLanding = ({
   const waLink = `https://wa.me/${PHONE}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
-    <div className="bg-black text-white">
+    <div className="bg-background text-white">
       {/* HERO */}
       <section className="relative min-h-[92vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
@@ -146,7 +146,7 @@ const SecurityLanding = ({
       </section>
 
       {/* FEATURES — estilo Apple cards */}
-      <section className="py-20 lg:py-32 relative overflow-hidden bg-gradient-to-b from-black via-zinc-950 to-black">
+      <section className="py-20 lg:py-32 relative overflow-hidden bg-gradient-to-b from-background via-[hsl(0_0%_6%)] to-background">
         <div className="absolute inset-0 grid-bg opacity-[0.03]" />
         <div className="section-container relative">
           <div className="text-center max-w-2xl mx-auto mb-14">
@@ -180,7 +180,7 @@ const SecurityLanding = ({
       </section>
 
       {/* O QUE OFERECEMOS — Contratos / Equipamentos / Instalação / Manutenção */}
-      <section className="py-20 lg:py-32 relative bg-black">
+      <section className="py-20 lg:py-32 relative bg-background">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
         <div className="section-container relative">
           <div className="text-center max-w-2xl mx-auto mb-14">
@@ -215,7 +215,7 @@ const SecurityLanding = ({
 
       {/* DIFERENCIAIS PERSONALIZADOS */}
       {benefits.length > 0 && (
-        <section className="py-20 lg:py-32 relative bg-gradient-to-b from-black via-zinc-950 to-black">
+        <section className="py-20 lg:py-32 relative bg-gradient-to-b from-background via-[hsl(0_0%_6%)] to-background">
           <div className="section-container">
             <div className="text-center max-w-2xl mx-auto mb-14">
               <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Por que Espier</span>
@@ -239,7 +239,7 @@ const SecurityLanding = ({
       )}
 
       {/* SERVIÇOS PRESTADOS — checklist */}
-      <section className="py-20 lg:py-32 relative bg-black">
+      <section className="py-20 lg:py-32 relative bg-background">
         <div className="section-container">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
@@ -278,7 +278,7 @@ const SecurityLanding = ({
       </section>
 
       {/* DEPOIMENTOS */}
-      <section className="py-20 lg:py-32 relative overflow-hidden bg-gradient-to-b from-black via-zinc-950 to-black">
+      <section className="py-20 lg:py-32 relative overflow-hidden bg-gradient-to-b from-background via-[hsl(0_0%_6%)] to-background">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] -translate-y-1/2 rounded-full bg-accent/10 blur-[140px]" />
         <div className="section-container relative">
           <div className="text-center max-w-2xl mx-auto mb-14">
@@ -310,7 +310,7 @@ const SecurityLanding = ({
 
       {/* GALERIA — Equipamentos em funcionamento e acessórios */}
       {gallery.length > 0 && (
-        <section className="py-20 lg:py-32 relative bg-black overflow-hidden">
+        <section className="py-20 lg:py-32 relative bg-background overflow-hidden">
           <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[140px]" />
           <div className="section-container relative">
             <div className="text-center max-w-2xl mx-auto mb-14">
@@ -351,7 +351,7 @@ const SecurityLanding = ({
 
       {/* VANTAGENS / DESVANTAGENS */}
       {(pros.length > 0 || cons.length > 0) && (
-        <section className="py-20 lg:py-32 relative bg-gradient-to-b from-black via-zinc-950 to-black">
+        <section className="py-20 lg:py-32 relative bg-gradient-to-b from-background via-[hsl(0_0%_6%)] to-background">
           <div className="section-container">
             <div className="text-center max-w-2xl mx-auto mb-14">
               <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Análise honesta</span>
@@ -412,7 +412,7 @@ const SecurityLanding = ({
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <section className="py-20 lg:py-32 relative bg-black">
+        <section className="py-20 lg:py-32 relative bg-background">
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent/10 blur-[120px]" />
           <div className="section-container relative">
             <div className="text-center max-w-2xl mx-auto mb-14">

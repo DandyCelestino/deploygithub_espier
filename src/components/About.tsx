@@ -17,22 +17,22 @@ const differentials = [
 ];
 
 const About = () => (
-  <section id="sobre" className="py-20 lg:py-32 relative bg-secondary/40">
+  <section id="sobre" className="py-20 lg:py-32 section-radial">
     <div className="section-container relative">
-      <div className="grid lg:grid-cols-2 gap-10 items-center mb-16">
+      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-20">
         <div>
-          <span className="text-sm font-mono text-primary uppercase tracking-widest font-semibold">Sobre nós</span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 text-sidebar-foreground">
-            Especialistas em, <span className="gradient-text">TI, manutenção, infra estrutura</span> e{" "}
+          <span className="eyebrow">Sobre nós</span>
+          <h2 className="h-section mt-3">
+            Especialistas em <span className="gradient-text">TI, manutenção, infra estrutura</span> e{" "}
             <span className="gradient-text-green">segurança</span>
           </h2>
-          <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">
-            Com mais de 10 anos de atuação, somos referência em soluções de manutenção e infra estrutura e segurança
-            eletrônica. Nossa equipe altamente qualificada entrega projetos com excelência
-            técnica e compromisso total com o resultado.
+          <p className="mt-5 text-white/65 text-base sm:text-lg leading-relaxed">
+            Com mais de 10 anos de atuação, somos referência em soluções de manutenção e infra
+            estrutura e segurança eletrônica. Nossa equipe altamente qualificada entrega projetos
+            com excelência técnica e compromisso total com o resultado.
           </p>
         </div>
-        <div className="relative rounded-2xl overflow-hidden border border-border shadow-lg aspect-[4/3]">
+        <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] aspect-[4/3]">
           <img
             src={imgSobre}
             alt="Matriz da Espier Telecom com frota operacional pronta para atendimento"
@@ -45,25 +45,28 @@ const About = () => (
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-16">
         {values.map((v) => (
-          <div key={v.title} className="glass-card rounded-xl p-5 sm:p-8 hover:border-primary/30 transition-all group hover:-translate-y-1 hover:shadow-lg">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 sm:mb-5 group-hover:bg-primary/20 transition-all">
-              <v.icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+          <div key={v.title} className="premium-card premium-card-hover p-7 group">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center mb-5 glow-red-soft">
+              <v.icon className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-foreground">{v.title}</h3>
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{v.text}</p>
+            <h3 className="text-xl font-bold mb-3 text-white">{v.title}</h3>
+            <p className="text-sm text-white/65 leading-relaxed">{v.text}</p>
           </div>
         ))}
       </div>
 
-      <div className="glass-card rounded-xl p-6 sm:p-8 lg:p-12">
-        <h3 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center text-foreground">Nossos Diferenciais</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+      <div className="premium-card p-6 sm:p-10">
+        <div className="text-center mb-8">
+          <span className="eyebrow eyebrow-line">Nossos Diferenciais</span>
+          <h3 className="text-2xl sm:text-3xl font-extrabold mt-4 text-white">Por que empresas confiam na Espier</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {differentials.map((d) => (
-            <div key={d} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg hover:bg-primary/5 transition-colors">
+            <div key={d} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/5 hover:border-primary/30 hover:bg-white/[0.05] transition-all">
               <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
-              <span className="text-sm sm:text-base text-foreground">{d}</span>
+              <span className="text-sm text-white/85 font-medium">{d}</span>
             </div>
           ))}
         </div>
