@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, Shield, ChevronDown } from "lucide-react";
+import { Menu, X, Shield, ChevronDown, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -25,7 +25,6 @@ const navLinks = [
     ],
   },
   { label: "Portfólio", href: "#portfolio" },
-  { label: "Depoimentos", href: "#depoimentos" },
   { label: "Contato", href: "#contato" },
 ];
 
@@ -53,45 +52,55 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-xl border-b border-border shadow-sm" : "bg-white/60 backdrop-blur-sm"}`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-black/80 backdrop-blur-2xl border-b border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+          : "bg-gradient-to-b from-black/70 via-black/40 to-transparent backdrop-blur-md"
+      }`}
+    >
       <div className="section-container flex items-center justify-between h-16 lg:h-20">
-        <a href="#home" className="flex items-center gap-2 group">
-          <Shield className="w-8 h-8 text-primary group-hover:drop-shadow-[0_0_8px_hsl(145_70%_40%/0.5)] transition-all" />
-          <span className="text-xl font-bold tracking-tight text-foreground">
-            Espier.<span className="text-primary">Telecom</span>
+        <a href="/#home" className="flex items-center gap-2.5 group">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center group-hover:glow-red transition-all">
+            <Shield className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-lg lg:text-xl font-extrabold tracking-tight text-white">
+            Espier<span className="text-primary">.</span>Telecom
           </span>
         </a>
 
         {/* Desktop */}
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-7">
           {navLinks.map((link) =>
             link.subLinks ? (
               <div key={link.label} className="relative" ref={openDropdown === link.label ? dropdownRef : undefined}>
                 <button
-                  className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  className="flex items-center gap-1 text-sm font-semibold text-white/75 hover:text-white transition-colors"
                   onClick={() => setOpenDropdown(openDropdown === link.label ? null : link.label)}
                 >
                   {link.label}
                   <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === link.label ? "rotate-180" : ""}`} />
                 </button>
                 {openDropdown === link.label && (
-                  <div className="absolute top-full left-0 mt-3 w-52 bg-white rounded-xl shadow-xl border border-border py-2 z-50">
-                    {link.href.startsWith("#") ? (
-                      <a
-                        href={link.href}
-                        onClick={() => setOpenDropdown(null)}
-                        className="block px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
-                      >
-                        Visão Geral
-                      </a>
-                    ) : null}
-                    {link.href.startsWith("#") && <div className="border-t border-border/50 my-1" />}
+                  <div className="absolute top-full left-0 mt-3 w-56 rounded-xl border border-white/10 bg-black/95 backdrop-blur-xl shadow-2xl py-2 z-50">
+                    {link.href.startsWith("#") && (
+                      <>
+                        <a
+                          href={link.href}
+                          onClick={() => setOpenDropdown(null)}
+                          className="block px-4 py-2.5 text-sm text-white/80 hover:bg-primary/15 hover:text-primary transition-colors"
+                        >
+                          Visão Geral
+                        </a>
+                        <div className="border-t border-white/10 my-1" />
+                      </>
+                    )}
                     {link.subLinks.map((sub) => (
                       <Link
                         key={sub.to}
                         to={sub.to}
                         onClick={() => setOpenDropdown(null)}
-                        className="block px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                        className="block px-4 py-2.5 text-sm text-white/80 hover:bg-primary/15 hover:text-primary transition-colors"
                       >
                         {sub.label}
                       </Link>
@@ -103,24 +112,23 @@ const Navbar = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full"
+                className="text-sm font-semibold text-white/75 hover:text-white transition-colors relative after:absolute after:bottom-[-6px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full"
               >
                 {link.label}
               </a>
             )
           )}
-          <Button
-            asChild
-            size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red"
-          >
-            <a href="/#contato">Solicitar Orçamento</a>
+          <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red font-bold">
+            <a href="/#contato">
+              <Phone className="w-3.5 h-3.5 mr-1.5" />
+              Solicitar Orçamento
+            </a>
           </Button>
         </div>
 
         {/* Mobile toggle */}
         <button
-          className="lg:hidden text-foreground"
+          className="lg:hidden text-white"
           onClick={() => setOpen(!open)}
           aria-label="Menu"
         >
@@ -130,25 +138,25 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="lg:hidden bg-white/98 backdrop-blur-xl border-b border-border pb-6">
+        <div className="lg:hidden bg-black/95 backdrop-blur-xl border-t border-white/10 pb-6">
           <div className="section-container flex flex-col gap-1 pt-2">
             {navLinks.map((link) =>
               link.subLinks ? (
                 <div key={link.label}>
                   <button
-                    className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-3 w-full text-left"
+                    className="flex items-center gap-1 text-sm font-semibold text-white/85 hover:text-primary transition-colors py-3 w-full text-left"
                     onClick={() => setOpenMobileSub(openMobileSub === link.label ? null : link.label)}
                   >
                     {link.label}
                     <ChevronDown className={`w-4 h-4 transition-transform ${openMobileSub === link.label ? "rotate-180" : ""}`} />
                   </button>
                   {openMobileSub === link.label && (
-                    <div className="pl-4 flex flex-col gap-1 border-l-2 border-primary/30 ml-2">
+                    <div className="pl-4 flex flex-col gap-1 border-l-2 border-primary/40 ml-2">
                       {link.href.startsWith("#") && (
                         <a
                           href={link.href}
                           onClick={() => { setOpen(false); setOpenMobileSub(null); }}
-                          className="text-sm text-muted-foreground hover:text-primary py-2"
+                          className="text-sm text-white/70 hover:text-primary py-2"
                         >
                           Visão Geral
                         </a>
@@ -158,7 +166,7 @@ const Navbar = () => {
                           key={sub.to}
                           to={sub.to}
                           onClick={() => { setOpen(false); setOpenMobileSub(null); }}
-                          className="text-sm text-muted-foreground hover:text-primary py-2"
+                          className="text-sm text-white/70 hover:text-primary py-2"
                         >
                           {sub.label}
                         </Link>
@@ -171,7 +179,7 @@ const Navbar = () => {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-3"
+                  className="text-sm font-semibold text-white/85 hover:text-primary transition-colors py-3"
                 >
                   {link.label}
                 </a>
@@ -180,7 +188,7 @@ const Navbar = () => {
             <Button
               asChild
               size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red w-fit mt-2"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 glow-red w-fit mt-2 font-bold"
             >
               <a href="/#contato" onClick={() => setOpen(false)}>Solicitar Orçamento</a>
             </Button>
