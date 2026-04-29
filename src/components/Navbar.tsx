@@ -134,28 +134,30 @@ const Navbar = () => {
           <div className="section-container flex flex-col gap-1 pt-2">
             {navLinks.map((link) =>
               link.subLinks ? (
-                <div key={link.href}>
+                <div key={link.label}>
                   <button
                     className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors py-3 w-full text-left"
-                    onClick={() => setMobileSubOpen(!mobileSubOpen)}
+                    onClick={() => setOpenMobileSub(openMobileSub === link.label ? null : link.label)}
                   >
                     {link.label}
-                    <ChevronDown className={`w-4 h-4 transition-transform ${mobileSubOpen ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${openMobileSub === link.label ? "rotate-180" : ""}`} />
                   </button>
-                  {mobileSubOpen && (
+                  {openMobileSub === link.label && (
                     <div className="pl-4 flex flex-col gap-1 border-l-2 border-primary/30 ml-2">
-                      <a
-                        href={link.href}
-                        onClick={() => { setOpen(false); setMobileSubOpen(false); }}
-                        className="text-sm text-muted-foreground hover:text-primary py-2"
-                      >
-                        Visão Geral
-                      </a>
+                      {link.href.startsWith("#") && (
+                        <a
+                          href={link.href}
+                          onClick={() => { setOpen(false); setOpenMobileSub(null); }}
+                          className="text-sm text-muted-foreground hover:text-primary py-2"
+                        >
+                          Visão Geral
+                        </a>
+                      )}
                       {link.subLinks.map((sub) => (
                         <Link
                           key={sub.to}
                           to={sub.to}
-                          onClick={() => { setOpen(false); setMobileSubOpen(false); }}
+                          onClick={() => { setOpen(false); setOpenMobileSub(null); }}
                           className="text-sm text-muted-foreground hover:text-primary py-2"
                         >
                           {sub.label}
