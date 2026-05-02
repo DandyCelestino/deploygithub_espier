@@ -21,7 +21,7 @@ const Security = () => (
           <h2 className="h-section mt-3">
             Equipes treinadas <span className="gradient-text">constantemente.</span>
           </h2>
-          <p className="mt-5 text-white/65 text-base sm:text-lg leading-relaxed">
+          <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed">
             Soluções completas de segurança eletrônica com manutenção e infra estrutura de ponta,
             instalação profissional e suporte contínuo — padrão de empresas de grande porte. Equipes
             constantemente em treinamentos.
@@ -32,7 +32,7 @@ const Security = () => (
             </a>
           </Button>
         </div>
-        <div className="relative rounded-2xl overflow-hidden border border-primary/30 shadow-[0_20px_60px_-15px_rgba(220,38,38,0.4)] aspect-[4/3]">
+        <div className="relative rounded-2xl overflow-hidden border border-primary/30 shadow-[0_20px_60px_-15px_rgba(220,38,38,0.30)] aspect-[4/3]">
           <img
             src={imgSeguranca}
             alt="Equipe de campo da Espier Telecom e frota pronta para operações de segurança"
@@ -41,9 +41,9 @@ const Security = () => (
             height={832}
             className="w-full h-full object-cover"
           />
-          <div className="img-overlay-dark opacity-75" />
+          <div className="img-overlay-dark opacity-70" />
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">Equipe de campo</p>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-white">Equipe de campo</p>
             <p className="text-lg sm:text-xl font-extrabold mt-2">Prontidão técnica para instalações e atendimento</p>
           </div>
         </div>
@@ -55,11 +55,11 @@ const Security = () => (
             key={s.title}
             className="group premium-card premium-card-hover p-5 sm:p-6"
           >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center mb-4 group-hover:from-primary group-hover:to-red-700 group-hover:border-primary group-hover:glow-red-soft transition-all">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/30 flex items-center justify-center mb-4 group-hover:from-primary group-hover:to-red-700 group-hover:border-primary group-hover:glow-red-soft transition-all">
               <s.icon className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
             </div>
-            <h3 className="text-sm sm:text-base font-bold mb-2 text-white">{s.title}</h3>
-            <p className="text-xs sm:text-sm text-white/60 leading-relaxed">{s.desc}</p>
+            <h3 className="text-sm sm:text-base font-bold mb-2 text-foreground">{s.title}</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
           </div>
         ))}
       </div>

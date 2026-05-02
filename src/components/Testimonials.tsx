@@ -26,10 +26,10 @@ const Testimonials = () => (
                 <Star key={j} className="w-4 h-4 fill-accent text-accent" />
               ))}
             </div>
-            <p className="text-white/80 mb-6 leading-relaxed text-base lg:text-lg italic">"{t.text}"</p>
-            <div className="pt-4 border-t border-white/10">
-              <p className="font-bold text-white">{t.name}</p>
-              <p className="text-sm text-white/55 mt-0.5">{t.role}</p>
+            <p className="text-foreground/85 mb-6 leading-relaxed text-base lg:text-lg italic">"{t.text}"</p>
+            <div className="pt-4 border-t border-border">
+              <p className="font-bold text-foreground">{t.name}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{t.role}</p>
             </div>
           </div>
         ))}
