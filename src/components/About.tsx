@@ -26,13 +26,13 @@ const About = () => (
             Especialistas em <span className="gradient-text">TI, manutenção, infra estrutura</span> e{" "}
             <span className="gradient-text-green">segurança</span>
           </h2>
-          <p className="mt-5 text-white/65 text-base sm:text-lg leading-relaxed">
+          <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed">
             Com mais de 10 anos de atuação, somos referência em soluções de manutenção e infra
             estrutura e segurança eletrônica. Nossa equipe altamente qualificada entrega projetos
             com excelência técnica e compromisso total com o resultado.
           </p>
         </div>
-        <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)] aspect-[4/3]">
+        <div className="relative rounded-2xl overflow-hidden border border-border shadow-[0_20px_60px_-15px_rgba(15,23,42,0.25)] aspect-[4/3]">
           <img
             src={imgSobre}
             alt="Matriz da Espier Telecom com frota operacional pronta para atendimento"
@@ -41,7 +41,7 @@ const About = () => (
             height={832}
             className="w-full h-full object-cover"
           />
-          <div className="img-overlay-red opacity-60" />
+          <div className="img-overlay-red opacity-50" />
         </div>
       </div>
 
@@ -51,8 +51,8 @@ const About = () => (
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center mb-5 glow-red-soft">
               <v.icon className="w-7 h-7 text-white" />
             </div>
-            <h3 className="text-xl font-bold mb-3 text-white">{v.title}</h3>
-            <p className="text-sm text-white/65 leading-relaxed">{v.text}</p>
+            <h3 className="text-xl font-bold mb-3 text-foreground">{v.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">{v.text}</p>
           </div>
         ))}
       </div>
@@ -60,13 +60,13 @@ const About = () => (
       <div className="premium-card p-6 sm:p-10">
         <div className="text-center mb-8">
           <span className="eyebrow eyebrow-line">Nossos Diferenciais</span>
-          <h3 className="text-2xl sm:text-3xl font-extrabold mt-4 text-white">Por que empresas confiam na Espier</h3>
+          <h3 className="text-2xl sm:text-3xl font-extrabold mt-4 text-foreground">Por que empresas confiam na Espier</h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {differentials.map((d) => (
-            <div key={d} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/5 hover:border-primary/30 hover:bg-white/[0.05] transition-all">
+            <div key={d} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-secondary border border-border hover:border-primary/30 hover:bg-secondary/70 transition-all">
               <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
-              <span className="text-sm text-white/85 font-medium">{d}</span>
+              <span className="text-sm text-foreground/85 font-medium">{d}</span>
             </div>
           ))}
         </div>

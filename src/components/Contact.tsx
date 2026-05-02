@@ -20,7 +20,7 @@ const Contact = () => {
     setForm({ nome: "", email: "", telefone: "", mensagem: "" });
   };
 
-  const inputCls = "bg-white/[0.03] border-white/10 text-white placeholder:text-white/40 focus:border-primary focus:ring-primary/20 h-12";
+  const inputCls = "bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20 h-12";
 
   return (
     <section id="contato" className="py-20 lg:py-32 section-dark-alt">
@@ -30,7 +30,7 @@ const Contact = () => {
           <h2 className="h-section mt-5">
             Fale <span className="gradient-text">conosco</span>
           </h2>
-          <p className="mt-4 text-white/60 text-base sm:text-lg">
+          <p className="mt-4 text-muted-foreground text-base sm:text-lg">
             Solicite um orçamento sem compromisso ou tire suas dúvidas. Resposta em até 24h úteis.
           </p>
         </div>
@@ -38,7 +38,7 @@ const Contact = () => {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           <form onSubmit={handleSubmit} className="premium-card p-7 sm:p-8 space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2">Nome completo</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-foreground/70 mb-2">Nome completo</label>
               <Input
                 placeholder="Seu nome"
                 value={form.nome}
@@ -49,7 +49,7 @@ const Contact = () => {
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2">E-mail</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-foreground/70 mb-2">E-mail</label>
                 <Input
                   type="email"
                   placeholder="seu@email.com"
@@ -60,7 +60,7 @@ const Contact = () => {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2">Telefone</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-foreground/70 mb-2">Telefone</label>
                 <Input
                   placeholder="(21) 9 0000-0000"
                   value={form.telefone}
@@ -70,7 +70,7 @@ const Contact = () => {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-white/70 mb-2">Mensagem</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-foreground/70 mb-2">Mensagem</label>
               <Textarea
                 placeholder="Conte-nos sua necessidade..."
                 value={form.mensagem}
@@ -103,8 +103,8 @@ const Contact = () => {
                     <item.icon className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-bold text-white">{item.title}</h4>
-                    <p className="text-sm text-white/60 mt-1 break-words">{item.info}</p>
+                    <h4 className="font-bold text-foreground">{item.title}</h4>
+                    <p className="text-sm text-muted-foreground mt-1 break-words">{item.info}</p>
                   </div>
                 </div>
               );

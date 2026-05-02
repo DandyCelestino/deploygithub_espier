@@ -21,7 +21,7 @@ const Portfolio = () => (
         <h2 className="h-section mt-5">
           Estrutura corporativa, <span className="gradient-text">nossa marca</span> de qualidade
         </h2>
-        <p className="mt-4 text-white/60 text-base sm:text-lg">
+        <p className="mt-4 text-muted-foreground text-base sm:text-lg">
           Relacionamento, profissionalismo e competência — contenção de custos com manutenção,
           logística e infra estrutura.
         </p>
@@ -31,7 +31,7 @@ const Portfolio = () => (
         {projects.map((p, i) => (
           <div
             key={i}
-            className="group premium-card overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-1 hover:shadow-[0_25px_60px_-20px_hsl(0_80%_52%/0.45)]"
+            className="group premium-card overflow-hidden hover:border-primary/40 transition-all hover:-translate-y-1 hover:shadow-[0_25px_60px_-20px_hsl(0_80%_50%/0.35)]"
           >
             <div className="aspect-[4/3] relative overflow-hidden">
               <img
@@ -42,15 +42,15 @@ const Portfolio = () => (
                 height={960}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
               <div className="absolute top-3 left-3">
-                <span className="text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider px-2.5 py-1 rounded-md bg-primary/90 backdrop-blur-sm">
+                <span className="text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider px-2.5 py-1 rounded-md bg-primary/95 backdrop-blur-sm">
                   {p.category}
                 </span>
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <h3 className="text-lg sm:text-xl font-extrabold text-white mb-1">{p.title}</h3>
-                <p className="text-xs sm:text-sm text-white/75 leading-relaxed line-clamp-2">{p.desc}</p>
+                <p className="text-xs sm:text-sm text-white/85 leading-relaxed line-clamp-2">{p.desc}</p>
               </div>
             </div>
           </div>

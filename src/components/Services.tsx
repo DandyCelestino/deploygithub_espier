@@ -28,7 +28,7 @@ const Services = () => (
   <section id="servicos" className="py-20 lg:py-32 section-dark-alt">
     <div className="section-container relative">
       <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-20">
-        <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] aspect-[4/3] order-2 lg:order-1">
+        <div className="relative rounded-2xl overflow-hidden border border-border shadow-[0_20px_60px_-15px_rgba(15,23,42,0.25)] aspect-[4/3] order-2 lg:order-1">
           <img
             src={imgTI}
             alt="Equipe técnica interna da Espier Telecom realizando manutenção e recuperação de equipamentos"
@@ -37,9 +37,9 @@ const Services = () => (
             height={832}
             className="w-full h-full object-cover"
           />
-          <div className="img-overlay-dark opacity-80" />
+          <div className="img-overlay-dark opacity-75" />
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">Laboratório técnico</p>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-white">Laboratório técnico</p>
             <p className="text-lg sm:text-xl font-extrabold mt-2">Manutenção, diagnóstico e recuperação com padrão profissional</p>
           </div>
         </div>
@@ -48,7 +48,7 @@ const Services = () => (
           <h2 className="h-section mt-3">
             Soluções completas em <span className="gradient-text">manutenção e infra estrutura</span>
           </h2>
-          <p className="mt-5 text-white/65 text-base sm:text-lg leading-relaxed">
+          <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed">
             Cobertura total para sua infraestrutura tecnológica — do suporte técnico
             ao desenvolvimento de sistemas, com qualidade de empresa de grande porte.
           </p>
@@ -61,11 +61,11 @@ const Services = () => (
             key={s.title}
             className="group premium-card premium-card-hover p-6"
           >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 flex items-center justify-center mb-4 group-hover:from-primary group-hover:to-red-700 group-hover:border-primary group-hover:glow-red-soft transition-all">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/30 flex items-center justify-center mb-4 group-hover:from-primary group-hover:to-red-700 group-hover:border-primary group-hover:glow-red-soft transition-all">
               <s.icon className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
             </div>
-            <h3 className="text-base sm:text-lg font-bold mb-2 text-white">{s.title}</h3>
-            <p className="text-xs sm:text-sm text-white/60 mb-4 leading-relaxed">{s.desc}</p>
+            <h3 className="text-base sm:text-lg font-bold mb-2 text-foreground">{s.title}</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground mb-4 leading-relaxed">{s.desc}</p>
             <div className="flex flex-wrap gap-2">
               {s.benefits.map((b) => (
                 <span key={b} className="text-[10px] sm:text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/25 font-semibold">
@@ -78,7 +78,7 @@ const Services = () => (
       </div>
 
       {/* Destaque Cabeamento */}
-      <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]">
+      <div className="relative rounded-3xl overflow-hidden border border-border shadow-[0_30px_80px_-20px_rgba(15,23,42,0.2)]">
         <div className="grid lg:grid-cols-2">
           <div className="relative min-h-[300px] lg:min-h-full">
             <img
@@ -89,27 +89,27 @@ const Services = () => (
               height={832}
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="img-overlay-red opacity-80" />
+            <div className="img-overlay-red opacity-75" />
             <div className="absolute bottom-0 left-0 right-0 p-7 text-white">
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/90">Atendimento exclusivo</p>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/95">Atendimento exclusivo</p>
               <p className="text-xl sm:text-2xl font-extrabold mt-2">Estrutura comercial preparada para receber e orientar clientes</p>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-[hsl(0_0%_8%)] to-[hsl(0_0%_5%)] p-7 sm:p-10 lg:p-12">
+          <div className="bg-card p-7 sm:p-10 lg:p-12">
             <span className="eyebrow">Destaque</span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold mt-3 mb-7 text-white">
+            <h3 className="text-2xl sm:text-3xl font-extrabold mt-3 mb-7 text-foreground">
               Cabeamento Estruturado &<br/>
               <span className="gradient-text">Certificação Profissional</span>
             </h3>
             <div className="space-y-5 mb-8">
               {cablingServices.map((c) => (
                 <div key={c.title} className="flex gap-4 items-start">
-                  <div className="w-11 h-11 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center flex-shrink-0">
+                  <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center flex-shrink-0">
                     <c.icon className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-white">{c.title}</h4>
-                    <p className="text-sm text-white/60 mt-0.5">{c.desc}</p>
+                    <h4 className="font-bold text-foreground">{c.title}</h4>
+                    <p className="text-sm text-muted-foreground mt-0.5">{c.desc}</p>
                   </div>
                 </div>
               ))}
