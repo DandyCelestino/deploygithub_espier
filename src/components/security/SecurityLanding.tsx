@@ -216,7 +216,7 @@ const SecurityLanding = ({
       {/* DIFERENCIAIS PERSONALIZADOS */}
       {benefits.length > 0 && (
         <section className="py-20 lg:py-32 relative bg-gradient-to-b from-background via-[hsl(0_0%_6%)] to-background">
-          <div className="section-container">
+          <div className="section-container bg-slate-700">
             <div className="text-center max-w-2xl mx-auto mb-14">
               <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Por que Espier</span>
               <h2 className="text-3xl sm:text-5xl font-extrabold mt-3 tracking-tight text-white">
@@ -240,7 +240,7 @@ const SecurityLanding = ({
 
       {/* SERVIÇOS PRESTADOS — checklist */}
       <section className="py-20 lg:py-32 relative bg-slate-700">
-        <div className="section-container">
+        <div className="section-container bg-slate-700">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
               <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Serviços prestados</span>
@@ -352,7 +352,7 @@ const SecurityLanding = ({
       {/* VANTAGENS / DESVANTAGENS */}
       {(pros.length > 0 || cons.length > 0) && (
         <section className="py-20 lg:py-32 relative bg-gradient-to-b from-background via-[hsl(0_0%_6%)] to-background">
-          <div className="section-container">
+          <div className="section-container bg-slate-700">
             <div className="text-center max-w-2xl mx-auto mb-14">
               <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">Análise honesta</span>
               <h2 className="text-3xl sm:text-5xl font-extrabold mt-3 tracking-tight text-white">
