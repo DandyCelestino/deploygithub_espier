@@ -310,7 +310,7 @@ const SecurityLanding = ({
 
       {/* GALERIA — Equipamentos em funcionamento e acessórios */}
       {gallery.length > 0 && (
-        <section className="py-20 lg:py-32 relative bg-background overflow-hidden">
+        <section className="py-20 lg:py-32 relative bg-slate-700 overflow-hidden">
           <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[140px]" />
           <div className="section-container relative">
             <div className="text-center max-w-2xl mx-auto mb-14">
