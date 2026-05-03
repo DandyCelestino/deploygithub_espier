@@ -180,7 +180,7 @@ const SecurityLanding = ({
       </section>
 
       {/* O QUE OFERECEMOS — Contratos / Equipamentos / Instalação / Manutenção */}
-      <section className="py-20 lg:py-32 relative bg-background">
+      <section className="py-20 lg:py-32 relative bg-slate-700">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
         <div className="section-container relative">
           <div className="text-center max-w-2xl mx-auto mb-14">
@@ -239,7 +239,7 @@ const SecurityLanding = ({
       )}
 
       {/* SERVIÇOS PRESTADOS — checklist */}
-      <section className="py-20 lg:py-32 relative bg-background">
+      <section className="py-20 lg:py-32 relative bg-slate-700">
         <div className="section-container">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
@@ -310,7 +310,7 @@ const SecurityLanding = ({
 
       {/* GALERIA — Equipamentos em funcionamento e acessórios */}
       {gallery.length > 0 && (
-        <section className="py-20 lg:py-32 relative bg-background overflow-hidden">
+        <section className="py-20 lg:py-32 relative bg-slate-700 overflow-hidden">
           <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[140px]" />
           <div className="section-container relative">
             <div className="text-center max-w-2xl mx-auto mb-14">
@@ -412,7 +412,7 @@ const SecurityLanding = ({
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <section className="py-20 lg:py-32 relative bg-background">
+        <section className="py-20 lg:py-32 relative bg-slate-700">
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent/10 blur-[120px]" />
           <div className="section-container relative">
             <div className="text-center max-w-2xl mx-auto mb-14">
