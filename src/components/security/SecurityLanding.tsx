@@ -180,7 +180,7 @@ const SecurityLanding = ({
       </section>
 
       {/* O QUE OFERECEMOS — Contratos / Equipamentos / Instalação / Manutenção */}
-      <section className="py-20 lg:py-32 relative bg-background">
+      <section className="py-20 lg:py-32 relative bg-slate-700">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
         <div className="section-container relative">
           <div className="text-center max-w-2xl mx-auto mb-14">
