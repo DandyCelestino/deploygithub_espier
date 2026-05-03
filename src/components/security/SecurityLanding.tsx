@@ -239,7 +239,7 @@ const SecurityLanding = ({
       )}
 
       {/* SERVIÇOS PRESTADOS — checklist */}
-      <section className="py-20 lg:py-32 relative bg-background">
+      <section className="py-20 lg:py-32 relative bg-slate-700">
         <div className="section-container">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
