@@ -44,6 +44,66 @@ export type Database = {
         }
         Relationships: []
       }
+      candidaturas: {
+        Row: {
+          avaliado_em: string | null
+          avaliado_por: string | null
+          cargo_desejado: string
+          cpf: string
+          created_at: string
+          curriculo_url: string | null
+          disponibilidade: string
+          email: string
+          endereco: string
+          experiencia: string
+          id: string
+          mensagem: string | null
+          nome_completo: string
+          observacoes_internas: string | null
+          status: string
+          telefone: string
+          updated_at: string
+        }
+        Insert: {
+          avaliado_em?: string | null
+          avaliado_por?: string | null
+          cargo_desejado: string
+          cpf: string
+          created_at?: string
+          curriculo_url?: string | null
+          disponibilidade: string
+          email: string
+          endereco: string
+          experiencia: string
+          id?: string
+          mensagem?: string | null
+          nome_completo: string
+          observacoes_internas?: string | null
+          status?: string
+          telefone: string
+          updated_at?: string
+        }
+        Update: {
+          avaliado_em?: string | null
+          avaliado_por?: string | null
+          cargo_desejado?: string
+          cpf?: string
+          created_at?: string
+          curriculo_url?: string | null
+          disponibilidade?: string
+          email?: string
+          endereco?: string
+          experiencia?: string
+          id?: string
+          mensagem?: string | null
+          nome_completo?: string
+          observacoes_internas?: string | null
+          status?: string
+          telefone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cliente_feedbacks: {
         Row: {
           codigo_rastreio: string

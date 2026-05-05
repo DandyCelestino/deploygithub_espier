@@ -6,6 +6,7 @@ import Security from "@/components/Security";
 import Portfolio from "@/components/Portfolio";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
+import TrabalheConosco from "@/components/TrabalheConosco";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
@@ -19,6 +20,7 @@ const Index = () => (
     <Portfolio />
     <Testimonials />
     <Contact />
+    <TrabalheConosco />
     <Footer />
     <WhatsAppButton />
   </>
