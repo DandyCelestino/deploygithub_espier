@@ -61,13 +61,19 @@ const TrabalheConosco = () => {
     }
 
     setLoading(true);
-    const payload = {
-      ...parsed.data,
-      curriculo_url: parsed.data.curriculo_url || null,
-      mensagem: parsed.data.mensagem || null,
-    };
-
-    const { error } = await supabase.from("candidaturas").insert(payload);
+    const d = parsed.data;
+    const { error } = await supabase.from("candidaturas").insert({
+      nome_completo: d.nome_completo,
+      email: d.email,
+      telefone: d.telefone,
+      cpf: d.cpf,
+      endereco: d.endereco,
+      cargo_desejado: d.cargo_desejado,
+      experiencia: d.experiencia,
+      disponibilidade: d.disponibilidade,
+      curriculo_url: d.curriculo_url || null,
+      mensagem: d.mensagem || null,
+    });
     setLoading(false);
 
     if (error) {
