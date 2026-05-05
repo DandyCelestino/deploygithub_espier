@@ -30,52 +30,41 @@ const Dashboard = () => {
     if (!user) return;
     (async () => {
       const out: Partial<Stats> = {};
-      const tasks: Promise<any>[] = [];
+      const tasks: Promise<unknown>[] = [];
+      const run = (p: PromiseLike<unknown>) => tasks.push(Promise.resolve(p));
 
       if (hasRole("admin", "gerente")) {
-        tasks.push(
-          supabase.from("candidaturas").select("id", { count: "exact", head: true }).eq("status", "pendente")
-            .then(({ count }) => (out.candidaturasPendentes = count ?? 0)),
-          supabase.from("orcamentos").select("id", { count: "exact", head: true }).eq("status", "pendente")
-            .then(({ count }) => (out.orcamentosPendentes = count ?? 0)),
-          supabase.from("ordens_servico").select("id", { count: "exact", head: true }).eq("status", "aberta")
-            .then(({ count }) => (out.osAbertas = count ?? 0)),
-          supabase.from("ordens_servico").select("id", { count: "exact", head: true }).eq("status", "em_andamento")
-            .then(({ count }) => (out.osEmAndamento = count ?? 0)),
-          supabase.from("contratos").select("id", { count: "exact", head: true }).eq("status", "fechado")
-            .then(({ count }) => (out.contratosFechados = count ?? 0)),
-        );
+        run(supabase.from("candidaturas").select("id", { count: "exact", head: true }).eq("status", "pendente")
+          .then(({ count }) => { out.candidaturasPendentes = count ?? 0; }));
+        run(supabase.from("orcamentos").select("id", { count: "exact", head: true }).eq("status", "pendente")
+          .then(({ count }) => { out.orcamentosPendentes = count ?? 0; }));
+        run(supabase.from("ordens_servico").select("id", { count: "exact", head: true }).eq("status", "aberta")
+          .then(({ count }) => { out.osAbertas = count ?? 0; }));
+        run(supabase.from("ordens_servico").select("id", { count: "exact", head: true }).eq("status", "em_andamento")
+          .then(({ count }) => { out.osEmAndamento = count ?? 0; }));
+        run(supabase.from("contratos").select("id", { count: "exact", head: true }).eq("status", "fechado")
+          .then(({ count }) => { out.contratosFechados = count ?? 0; }));
       }
       if (hasRole("admin")) {
-        tasks.push(
-          supabase.from("profiles").select("id", { count: "exact", head: true })
-            .then(({ count }) => (out.totalUsuarios = count ?? 0)),
-        );
+        run(supabase.from("profiles").select("id", { count: "exact", head: true })
+          .then(({ count }) => { out.totalUsuarios = count ?? 0; }));
       }
       if (hasRole("admin", "gerente", "tecnico", "financeiro")) {
-        tasks.push(
-          supabase.from("estoque_itens").select("id,quantidade,quantidade_minima").then(({ data }) => {
-            out.estoqueBaixo = (data ?? []).filter((i: any) => i.quantidade <= i.quantidade_minima).length;
-          }),
-        );
+        run(supabase.from("estoque_itens").select("id,quantidade,quantidade_minima").then(({ data }) => {
+          out.estoqueBaixo = (data ?? []).filter((i) => i.quantidade <= i.quantidade_minima).length;
+        }));
       }
       if (hasRole("admin", "gerente", "financeiro")) {
-        tasks.push(
-          supabase.from("financeiro_contas").select("id", { count: "exact", head: true }).eq("status", "pendente")
-            .then(({ count }) => (out.contasPendentes = count ?? 0)),
-        );
+        run(supabase.from("financeiro_contas").select("id", { count: "exact", head: true }).eq("status", "pendente")
+          .then(({ count }) => { out.contasPendentes = count ?? 0; }));
       }
       if (hasRole("tecnico")) {
-        tasks.push(
-          supabase.from("ordens_servico").select("id", { count: "exact", head: true }).eq("tecnico_id", user.id)
-            .then(({ count }) => (out.osMinhas = count ?? 0)),
-        );
+        run(supabase.from("ordens_servico").select("id", { count: "exact", head: true }).eq("tecnico_id", user.id)
+          .then(({ count }) => { out.osMinhas = count ?? 0; }));
       }
       if (hasRole("vendedor")) {
-        tasks.push(
-          supabase.from("contratos").select("id", { count: "exact", head: true }).eq("vendedor_id", user.id)
-            .then(({ count }) => (out.meusContratos = count ?? 0)),
-        );
+        run(supabase.from("contratos").select("id", { count: "exact", head: true }).eq("vendedor_id", user.id)
+          .then(({ count }) => { out.meusContratos = count ?? 0; }));
       }
 
       await Promise.all(tasks);
