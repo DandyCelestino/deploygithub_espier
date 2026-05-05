@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const EMAIL = "admin@espier.com.br";
-const SENHA = "Admin@2024!";
+const SENHA = "Espier#Adm!2026$Secure";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
