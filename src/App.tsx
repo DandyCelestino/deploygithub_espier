@@ -11,6 +11,20 @@ import ControleAcesso from "./pages/ControleAcesso.tsx";
 import TI from "./pages/TI.tsx";
 import Telecom from "./pages/Telecom.tsx";
 
+import AdminAuth from "./pages/admin/AdminAuth.tsx";
+import AdminLayout from "./components/admin/AdminLayout.tsx";
+import ProtectedRoute from "./components/admin/ProtectedRoute.tsx";
+import Dashboard from "./pages/admin/Dashboard.tsx";
+import Candidaturas from "./pages/admin/Candidaturas.tsx";
+import Usuarios from "./pages/admin/Usuarios.tsx";
+import Clientes from "./pages/admin/Clientes.tsx";
+import Contratos from "./pages/admin/Contratos.tsx";
+import Orcamentos from "./pages/admin/Orcamentos.tsx";
+import OrdensServico from "./pages/admin/OrdensServico.tsx";
+import Estoque from "./pages/admin/Estoque.tsx";
+import Financeiro from "./pages/admin/Financeiro.tsx";
+import Configuracoes from "./pages/admin/Configuracoes.tsx";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,6 +40,29 @@ const App = () => (
           <Route path="/seguranca/controle-de-acesso" element={<ControleAcesso />} />
           <Route path="/ti" element={<TI />} />
           <Route path="/ti/telecom" element={<Telecom />} />
+
+          {/* Área restrita */}
+          <Route path="/admin/auth" element={<AdminAuth />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="candidaturas" element={<ProtectedRoute roles={["admin","gerente"]}><Candidaturas /></ProtectedRoute>} />
+            <Route path="usuarios" element={<ProtectedRoute roles={["admin"]}><Usuarios /></ProtectedRoute>} />
+            <Route path="clientes" element={<ProtectedRoute roles={["admin","gerente","vendedor"]}><Clientes /></ProtectedRoute>} />
+            <Route path="contratos" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro"]}><Contratos /></ProtectedRoute>} />
+            <Route path="orcamentos" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro","tecnico"]}><Orcamentos /></ProtectedRoute>} />
+            <Route path="ordens" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><OrdensServico /></ProtectedRoute>} />
+            <Route path="estoque" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><Estoque /></ProtectedRoute>} />
+            <Route path="financeiro" element={<ProtectedRoute roles={["admin","gerente","financeiro"]}><Financeiro /></ProtectedRoute>} />
+            <Route path="configuracoes" element={<ProtectedRoute roles={["admin"]}><Configuracoes /></ProtectedRoute>} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

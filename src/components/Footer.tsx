@@ -99,9 +99,14 @@ const Footer = () => (
         <p className="text-xs text-white/55 text-center sm:text-left">
           © {new Date().getFullYear()} <span className="text-white/80 font-semibold">Espier.Telecom</span>. Todos os direitos reservados.
         </p>
-        <p className="text-[10px] tracking-[0.3em] uppercase text-white/50">
-          Tecnologia · Segurança · Confiança
-        </p>
+        <div className="flex items-center gap-4">
+          <Link to="/admin/auth" className="text-[10px] tracking-[0.2em] uppercase text-white/40 hover:text-primary transition-colors">
+            Área restrita
+          </Link>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-white/50">
+            Tecnologia · Segurança · Confiança
+          </p>
+        </div>
       </div>
     </div>
   </footer>
