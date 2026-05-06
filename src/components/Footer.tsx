@@ -1,22 +1,59 @@
-import { Shield, Phone, Mail, MapPin, MessageCircle, Linkedin, Instagram, Facebook } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Phone, Mail, MapPin, MessageCircle, Linkedin, Instagram, Facebook, Search, ArrowRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import logoEspier from "@/assets/espier-logo.jpg";
 
-const Footer = () => (
+const Footer = () => {
+  const navigate = useNavigate();
+  const [codigo, setCodigo] = useState("");
+
+  const handleRastrear = (e: React.FormEvent) => {
+    e.preventDefault();
+    const c = codigo.trim();
+    if (!c) return;
+    navigate(`/rastreio?codigo=${encodeURIComponent(c)}`);
+  };
+
+  return (
   <footer className="relative border-t border-border bg-[hsl(220_22%_10%)] text-white overflow-hidden">
     {/* Glow decorativo */}
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
+
+    {/* Faixa de rastreamento público */}
+    <div className="relative border-b border-white/10 bg-white/[0.03]">
+      <div className="section-container py-7 lg:py-8 flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-8">
+        <div className="flex-1">
+          <p className="text-xs font-bold tracking-[0.25em] uppercase text-primary/90 mb-1">Acompanhe sua Ordem de Serviço</p>
+          <p className="text-sm text-white/70">Insira o código de rastreamento informado pela equipe Espier para ver o andamento, fotos e relatórios.</p>
+        </div>
+        <form onSubmit={handleRastrear} className="flex items-center gap-2 w-full lg:w-auto">
+          <div className="relative flex-1 lg:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
+            <input
+              type="text"
+              value={codigo}
+              onChange={(e) => setCodigo(e.target.value)}
+              placeholder="Ex: a1b2c3d4e5f6g7h8"
+              className="w-full h-11 pl-10 pr-3 rounded-lg bg-white/[0.06] border border-white/15 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-primary/60 focus:bg-white/[0.08] transition"
+              aria-label="Código de rastreamento"
+            />
+          </div>
+          <button
+            type="submit"
+            className="h-11 px-5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold flex items-center gap-1.5 transition"
+          >
+            Acompanhar <ArrowRight className="w-4 h-4" />
+          </button>
+        </form>
+      </div>
+    </div>
 
     <div className="relative section-container py-16 lg:py-20">
       <div className="grid gap-10 lg:gap-12 lg:grid-cols-12">
         {/* Brand */}
         <div className="lg:col-span-4">
-          <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center glow-red-soft">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-extrabold tracking-tight">
-              Espier<span className="text-primary">.</span>Telecom
-            </span>
+          <div className="mb-5">
+            <img src={logoEspier} alt="Espier.Telecom" className="h-11 w-auto object-contain" />
           </div>
           <p className="text-sm text-white/70 leading-relaxed max-w-sm">
             TI, manutenção, infra estrutura e segurança eletrônica de alto padrão.
