@@ -10,6 +10,7 @@ import CFTV from "./pages/CFTV.tsx";
 import ControleAcesso from "./pages/ControleAcesso.tsx";
 import TI from "./pages/TI.tsx";
 import Telecom from "./pages/Telecom.tsx";
+import Rastreio from "./pages/Rastreio.tsx";
 
 import AdminAuth from "./pages/admin/AdminAuth.tsx";
 import AdminLayout from "./components/admin/AdminLayout.tsx";
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/seguranca/controle-de-acesso" element={<ControleAcesso />} />
           <Route path="/ti" element={<TI />} />
           <Route path="/ti/telecom" element={<Telecom />} />
+          <Route path="/rastreio" element={<Rastreio />} />
 
           {/* Área restrita */}
           <Route path="/admin/auth" element={<AdminAuth />} />
