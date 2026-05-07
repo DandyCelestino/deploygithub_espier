@@ -22,6 +22,9 @@ interface OS {
   checklist_limpeza: boolean; checklist_fotos: boolean; checklist_assinatura_cliente: boolean;
   supervisao_aprovada: boolean; supervisao_por: string | null; supervisao_data: string | null;
   valor_liberado: boolean; observacoes: string | null;
+  vistoria_checklist_seguranca?: boolean; vistoria_checklist_qualidade?: boolean;
+  vistoria_checklist_documentacao?: boolean; vistoria_observacoes?: string | null;
+  vistoria_motivo_reprovacao?: string | null;
 }
 interface Relatorio {
   id: string; descricao: string; fotos: string[] | null; data_relatorio: string;
