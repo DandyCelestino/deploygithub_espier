@@ -23,14 +23,18 @@ interface NavItem {
 
 const items: NavItem[] = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard, roles: ["admin","gerente","tecnico","vendedor","financeiro"] },
+  { title: "Agenda", url: "/admin/agenda", icon: Calendar, roles: ["admin","gerente","tecnico","vendedor","financeiro"] },
   { title: "Candidaturas", url: "/admin/candidaturas", icon: UserPlus, roles: ["admin","gerente"] },
   { title: "Usuários", url: "/admin/usuarios", icon: Users, roles: ["admin"] },
+  { title: "Permissões", url: "/admin/permissoes", icon: Lock, roles: ["admin"] },
   { title: "Clientes", url: "/admin/clientes", icon: Users, roles: ["admin","gerente","vendedor"] },
+  { title: "Visitas", url: "/admin/visitas", icon: MapPin, roles: ["admin","gerente","vendedor"] },
   { title: "Contratos", url: "/admin/contratos", icon: FileText, roles: ["admin","gerente","vendedor","financeiro"] },
   { title: "Orçamentos", url: "/admin/orcamentos", icon: ClipboardList, roles: ["admin","gerente","vendedor","financeiro","tecnico"] },
   { title: "Ordens de Serviço", url: "/admin/ordens", icon: Wrench, roles: ["admin","gerente","tecnico","financeiro"] },
   { title: "Estoque", url: "/admin/estoque", icon: Package, roles: ["admin","gerente","tecnico","financeiro"] },
   { title: "Financeiro", url: "/admin/financeiro", icon: DollarSign, roles: ["admin","gerente","financeiro"] },
+  { title: "Histórico", url: "/admin/historico", icon: History, roles: ["admin","gerente"] },
 ];
 
 function AppSidebar() {
