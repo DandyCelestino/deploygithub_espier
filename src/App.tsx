@@ -25,6 +25,10 @@ import OrdensServico from "./pages/admin/OrdensServico.tsx";
 import Estoque from "./pages/admin/Estoque.tsx";
 import Financeiro from "./pages/admin/Financeiro.tsx";
 import Configuracoes from "./pages/admin/Configuracoes.tsx";
+import Visitas from "./pages/admin/Visitas.tsx";
+import Agenda from "./pages/admin/Agenda.tsx";
+import Permissoes from "./pages/admin/Permissoes.tsx";
+import Historico from "./pages/admin/Historico.tsx";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +66,10 @@ const App = () => (
             <Route path="ordens" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><OrdensServico /></ProtectedRoute>} />
             <Route path="estoque" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><Estoque /></ProtectedRoute>} />
             <Route path="financeiro" element={<ProtectedRoute roles={["admin","gerente","financeiro"]}><Financeiro /></ProtectedRoute>} />
+            <Route path="visitas" element={<ProtectedRoute roles={["admin","gerente","vendedor"]}><Visitas /></ProtectedRoute>} />
+            <Route path="agenda" element={<ProtectedRoute roles={["admin","gerente","tecnico","vendedor","financeiro"]}><Agenda /></ProtectedRoute>} />
+            <Route path="permissoes" element={<ProtectedRoute roles={["admin"]}><Permissoes /></ProtectedRoute>} />
+            <Route path="historico" element={<ProtectedRoute roles={["admin","gerente"]}><Historico /></ProtectedRoute>} />
             <Route path="configuracoes" element={<ProtectedRoute roles={["admin"]}><Configuracoes /></ProtectedRoute>} />
           </Route>
 

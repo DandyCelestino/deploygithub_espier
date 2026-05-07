@@ -22,6 +22,9 @@ interface OS {
   checklist_limpeza: boolean; checklist_fotos: boolean; checklist_assinatura_cliente: boolean;
   supervisao_aprovada: boolean; supervisao_por: string | null; supervisao_data: string | null;
   valor_liberado: boolean; observacoes: string | null;
+  vistoria_checklist_seguranca?: boolean; vistoria_checklist_qualidade?: boolean;
+  vistoria_checklist_documentacao?: boolean; vistoria_observacoes?: string | null;
+  vistoria_motivo_reprovacao?: string | null;
 }
 interface Relatorio {
   id: string; descricao: string; fotos: string[] | null; data_relatorio: string;
@@ -415,7 +418,7 @@ const OrdensServico = () => {
                     {editing.status === "aguardando_supervisao" && !editing.supervisao_aprovada && (
                       <>
                         <Card className="p-4 bg-purple-50 border-purple-200">
-                          <p className="text-xs font-bold text-purple-800 mb-2">CHECKLIST DE VISTORIA</p>
+                          <p className="text-xs font-bold text-purple-800 mb-2">CHECKLIST DO TÉCNICO</p>
                           <ul className="text-sm space-y-1.5">
                             {CHECKLIST_KEYS.map(([k, l]) => (
                               <li key={k as string} className="flex items-center gap-2">
@@ -425,11 +428,39 @@ const OrdensServico = () => {
                             ))}
                           </ul>
                           <p className="mt-3 text-sm text-slate-700">
-                            Valor a liberar: <strong>R$ {(Number(editing.valor_instalacao) * 0.30).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong> <span className="text-xs text-slate-500">(30% do valor da instalação — comissão técnico)</span>
+                            Valor a liberar: <strong>R$ {(Number(editing.valor_instalacao) * 0.30).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong> <span className="text-xs text-slate-500">(30% — comissão técnico)</span>
                           </p>
                         </Card>
+                        <Card className="p-4 bg-amber-50 border-amber-200">
+                          <p className="text-xs font-bold text-amber-800 mb-2">CHECKLIST DE VISTORIA DO GERENTE</p>
+                          <div className="space-y-2 text-sm">
+                            {[
+                              ["vistoria_checklist_seguranca", "Segurança e conformidade no local"],
+                              ["vistoria_checklist_qualidade", "Qualidade da instalação verificada"],
+                              ["vistoria_checklist_documentacao", "Documentação e fotos completas"],
+                            ].map(([k, l]) => (
+                              <label key={k} className="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" checked={!!(editing as any)[k]}
+                                  onChange={(e) => update({ [k]: e.target.checked } as any)} />
+                                {l}
+                              </label>
+                            ))}
+                          </div>
+                          <textarea
+                            placeholder="Observações da vistoria..."
+                            value={editing.vistoria_observacoes ?? ""}
+                            onChange={(e) => setEditing({ ...editing, vistoria_observacoes: e.target.value })}
+                            onBlur={() => update({ vistoria_observacoes: editing.vistoria_observacoes ?? null } as any)}
+                            className="mt-3 w-full text-sm rounded border border-amber-200 bg-white p-2"
+                            rows={3}
+                          />
+                        </Card>
                         <div className="grid grid-cols-2 gap-2">
-                          <Button onClick={aprovarVistoria} className="bg-emerald-600 hover:bg-emerald-700">
+                          <Button
+                            onClick={aprovarVistoria}
+                            disabled={!(editing.vistoria_checklist_seguranca && editing.vistoria_checklist_qualidade && editing.vistoria_checklist_documentacao)}
+                            className="bg-emerald-600 hover:bg-emerald-700"
+                          >
                             <CheckCircle2 className="w-4 h-4 mr-1.5" /> Aprovar e liberar pagamento
                           </Button>
                           <Button onClick={reprovarVistoria} variant="destructive">

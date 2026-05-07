@@ -44,6 +44,60 @@ export type Database = {
         }
         Relationships: []
       }
+      agenda_eventos: {
+        Row: {
+          cliente_id: string | null
+          created_at: string
+          criado_por: string
+          criado_por_nome: string | null
+          data_fim: string | null
+          data_inicio: string
+          descricao: string | null
+          id: string
+          local: string | null
+          ordem_servico_id: string | null
+          participantes: string[] | null
+          status: string
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          cliente_id?: string | null
+          created_at?: string
+          criado_por: string
+          criado_por_nome?: string | null
+          data_fim?: string | null
+          data_inicio: string
+          descricao?: string | null
+          id?: string
+          local?: string | null
+          ordem_servico_id?: string | null
+          participantes?: string[] | null
+          status?: string
+          tipo?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          cliente_id?: string | null
+          created_at?: string
+          criado_por?: string
+          criado_por_nome?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string | null
+          id?: string
+          local?: string | null
+          ordem_servico_id?: string | null
+          participantes?: string[] | null
+          status?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       candidaturas: {
         Row: {
           avaliado_em: string | null
@@ -147,33 +201,51 @@ export type Database = {
       }
       clientes: {
         Row: {
+          address: string | null
+          cep: string | null
+          city: string | null
           created_at: string
           created_by: string | null
           document: string | null
           email: string | null
           id: string
           name: string
+          observacoes: string | null
           phone: string | null
+          state: string | null
+          tipo_pessoa: string | null
           updated_at: string
         }
         Insert: {
+          address?: string | null
+          cep?: string | null
+          city?: string | null
           created_at?: string
           created_by?: string | null
           document?: string | null
           email?: string | null
           id?: string
           name: string
+          observacoes?: string | null
           phone?: string | null
+          state?: string | null
+          tipo_pessoa?: string | null
           updated_at?: string
         }
         Update: {
+          address?: string | null
+          cep?: string | null
+          city?: string | null
           created_at?: string
           created_by?: string | null
           document?: string | null
           email?: string | null
           id?: string
           name?: string
+          observacoes?: string | null
           phone?: string | null
+          state?: string | null
+          tipo_pessoa?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -465,6 +537,11 @@ export type Database = {
           updated_at: string
           valor_instalacao: number
           valor_liberado: boolean
+          vistoria_checklist_documentacao: boolean
+          vistoria_checklist_qualidade: boolean
+          vistoria_checklist_seguranca: boolean
+          vistoria_motivo_reprovacao: string | null
+          vistoria_observacoes: string | null
         }
         Insert: {
           checklist_assinatura_cliente?: boolean
@@ -494,6 +571,11 @@ export type Database = {
           updated_at?: string
           valor_instalacao?: number
           valor_liberado?: boolean
+          vistoria_checklist_documentacao?: boolean
+          vistoria_checklist_qualidade?: boolean
+          vistoria_checklist_seguranca?: boolean
+          vistoria_motivo_reprovacao?: string | null
+          vistoria_observacoes?: string | null
         }
         Update: {
           checklist_assinatura_cliente?: boolean
@@ -523,6 +605,11 @@ export type Database = {
           updated_at?: string
           valor_instalacao?: number
           valor_liberado?: boolean
+          vistoria_checklist_documentacao?: boolean
+          vistoria_checklist_qualidade?: boolean
+          vistoria_checklist_seguranca?: boolean
+          vistoria_motivo_reprovacao?: string | null
+          vistoria_observacoes?: string | null
         }
         Relationships: [
           {
@@ -608,6 +695,42 @@ export type Database = {
           },
         ]
       }
+      user_permissions: {
+        Row: {
+          can_create: boolean
+          can_delete: boolean
+          can_edit: boolean
+          can_view: boolean
+          created_at: string
+          id: string
+          module: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          can_create?: boolean
+          can_delete?: boolean
+          can_edit?: boolean
+          can_view?: boolean
+          created_at?: string
+          id?: string
+          module: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          can_create?: boolean
+          can_delete?: boolean
+          can_edit?: boolean
+          can_view?: boolean
+          created_at?: string
+          id?: string
+          module?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -623,6 +746,69 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      visitas: {
+        Row: {
+          autoriza_orcamento: boolean
+          cidade: string | null
+          cliente_email: string | null
+          cliente_id: string | null
+          cliente_nome: string
+          cliente_telefone: string | null
+          created_at: string
+          data_visita: string
+          endereco: string | null
+          id: string
+          observacoes: string | null
+          orcamento_id: string | null
+          servico_descricao: string | null
+          status: string
+          updated_at: string
+          valor_estimado: number
+          vendedor_id: string
+          vendedor_nome: string | null
+        }
+        Insert: {
+          autoriza_orcamento?: boolean
+          cidade?: string | null
+          cliente_email?: string | null
+          cliente_id?: string | null
+          cliente_nome: string
+          cliente_telefone?: string | null
+          created_at?: string
+          data_visita: string
+          endereco?: string | null
+          id?: string
+          observacoes?: string | null
+          orcamento_id?: string | null
+          servico_descricao?: string | null
+          status?: string
+          updated_at?: string
+          valor_estimado?: number
+          vendedor_id: string
+          vendedor_nome?: string | null
+        }
+        Update: {
+          autoriza_orcamento?: boolean
+          cidade?: string | null
+          cliente_email?: string | null
+          cliente_id?: string | null
+          cliente_nome?: string
+          cliente_telefone?: string | null
+          created_at?: string
+          data_visita?: string
+          endereco?: string | null
+          id?: string
+          observacoes?: string | null
+          orcamento_id?: string | null
+          servico_descricao?: string | null
+          status?: string
+          updated_at?: string
+          valor_estimado?: number
+          vendedor_id?: string
+          vendedor_nome?: string | null
         }
         Relationships: []
       }
