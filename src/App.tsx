@@ -66,6 +66,10 @@ const App = () => (
             <Route path="ordens" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><OrdensServico /></ProtectedRoute>} />
             <Route path="estoque" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><Estoque /></ProtectedRoute>} />
             <Route path="financeiro" element={<ProtectedRoute roles={["admin","gerente","financeiro"]}><Financeiro /></ProtectedRoute>} />
+            <Route path="visitas" element={<ProtectedRoute roles={["admin","gerente","vendedor"]}><Visitas /></ProtectedRoute>} />
+            <Route path="agenda" element={<ProtectedRoute roles={["admin","gerente","tecnico","vendedor","financeiro"]}><Agenda /></ProtectedRoute>} />
+            <Route path="permissoes" element={<ProtectedRoute roles={["admin"]}><Permissoes /></ProtectedRoute>} />
+            <Route path="historico" element={<ProtectedRoute roles={["admin","gerente"]}><Historico /></ProtectedRoute>} />
             <Route path="configuracoes" element={<ProtectedRoute roles={["admin"]}><Configuracoes /></ProtectedRoute>} />
           </Route>
 
