@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, FileText, ClipboardList, Wrench,
   Package, DollarSign, UserPlus, LogOut, ShieldCheck, Settings,
+  Calendar, MapPin, History, Lock,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
