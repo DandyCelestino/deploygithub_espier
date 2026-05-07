@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Phone, Mail, MapPin, MessageCircle, Linkedin, Instagram, Facebook, Search, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import logoEspier from "@/assets/espier-logo.jpg";
+import logoEspier from "@/assets/espier-logo-light.png";
 
 const Footer = () => {
   const navigate = useNavigate();
