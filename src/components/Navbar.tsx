@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import logoEspier from "@/assets/espier-logo.jpg";
+import logoEspier from "@/assets/espier-logo.png";
 
 const navLinks = [
   { label: "Home", href: "#home" },
