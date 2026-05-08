@@ -58,6 +58,8 @@ export type Database = {
           ordem_servico_id: string | null
           participantes: string[] | null
           status: string
+          target_roles: Database["public"]["Enums"]["app_role"][]
+          target_user_ids: string[]
           tipo: string
           titulo: string
           updated_at: string
@@ -75,6 +77,8 @@ export type Database = {
           ordem_servico_id?: string | null
           participantes?: string[] | null
           status?: string
+          target_roles?: Database["public"]["Enums"]["app_role"][]
+          target_user_ids?: string[]
           tipo?: string
           titulo: string
           updated_at?: string
@@ -92,6 +96,8 @@ export type Database = {
           ordem_servico_id?: string | null
           participantes?: string[] | null
           status?: string
+          target_roles?: Database["public"]["Enums"]["app_role"][]
+          target_user_ids?: string[]
           tipo?: string
           titulo?: string
           updated_at?: string
@@ -870,6 +876,13 @@ export type Database = {
           _user_id: string
         }
         Returns: undefined
+      }
+      user_has_any_role: {
+        Args: {
+          _roles: Database["public"]["Enums"]["app_role"][]
+          _user_id: string
+        }
+        Returns: boolean
       }
       validate_feedback_os: {
         Args: { _codigo_rastreio: string; _ordem_servico_id: string }
