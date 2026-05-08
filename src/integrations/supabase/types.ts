@@ -440,6 +440,39 @@ export type Database = {
         }
         Relationships: []
       }
+      orcamento_itens: {
+        Row: {
+          created_at: string
+          descricao: string
+          estoque_item_id: string | null
+          id: string
+          orcamento_id: string
+          quantidade: number
+          unidade: string
+          valor_total: number
+        }
+        Insert: {
+          created_at?: string
+          descricao: string
+          estoque_item_id?: string | null
+          id?: string
+          orcamento_id: string
+          quantidade?: number
+          unidade?: string
+          valor_total?: number
+        }
+        Update: {
+          created_at?: string
+          descricao?: string
+          estoque_item_id?: string | null
+          id?: string
+          orcamento_id?: string
+          quantidade?: number
+          unidade?: string
+          valor_total?: number
+        }
+        Relationships: []
+      }
       orcamentos: {
         Row: {
           cidade: string
@@ -457,6 +490,7 @@ export type Database = {
           servico_solicitado: string
           status: string
           updated_at: string
+          validade_dias: number
           valor_instalacao: number
           valor_total: number
         }
@@ -476,6 +510,7 @@ export type Database = {
           servico_solicitado: string
           status?: string
           updated_at?: string
+          validade_dias?: number
           valor_instalacao?: number
           valor_total?: number
         }
@@ -495,6 +530,7 @@ export type Database = {
           servico_solicitado?: string
           status?: string
           updated_at?: string
+          validade_dias?: number
           valor_instalacao?: number
           valor_total?: number
         }
