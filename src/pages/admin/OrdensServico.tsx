@@ -231,6 +231,32 @@ const OrdensServico = () => {
         </Select>
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por cliente, serviço, cidade ou rastreio..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="sm:w-52"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os status</SelectItem>
+              {STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {hasRole("admin", "gerente") && (
+            <Select value={tecnicoFiltro} onValueChange={setTecnicoFiltro}>
+              <SelectTrigger className="sm:w-52"><SelectValue placeholder="Técnico" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os técnicos</SelectItem>
+                <SelectItem value="sem">Sem técnico</SelectItem>
+                {tecnicos.map(t => <SelectItem key={t.user_id} value={t.user_id}>{t.full_name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
