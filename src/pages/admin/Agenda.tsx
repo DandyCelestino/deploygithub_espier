@@ -75,14 +75,28 @@ const Agenda = () => {
   useEffect(() => { load(); loadUsers(); }, []);
 
   const grouped = useMemo(() => {
-    const filtered = filtro === "todos" ? list : list.filter(e => e.tipo === filtro);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const weekEnd = new Date(today); weekEnd.setDate(weekEnd.getDate() + 7);
+    const filtered = list.filter(e => {
+      if (filtro !== "todos" && e.tipo !== filtro) return false;
+      if (areaFiltro !== "todas" && !(e.target_roles ?? []).includes(areaFiltro as AppRole)) return false;
+      if (busca) {
+        const q = busca.toLowerCase();
+        if (!e.titulo.toLowerCase().includes(q) && !(e.descricao ?? "").toLowerCase().includes(q) && !(e.local ?? "").toLowerCase().includes(q)) return false;
+      }
+      const d = new Date(e.data_inicio);
+      if (periodoFiltro === "futuros" && d < today) return false;
+      if (periodoFiltro === "hoje" && (d < today || d.toDateString() !== new Date().toDateString())) return false;
+      if (periodoFiltro === "semana" && (d < today || d > weekEnd)) return false;
+      return true;
+    });
     const groups: Record<string, Evento[]> = {};
     filtered.forEach(e => {
       const day = new Date(e.data_inicio).toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
       (groups[day] ||= []).push(e);
     });
     return groups;
-  }, [list, filtro]);
+  }, [list, filtro, areaFiltro, busca, periodoFiltro]);
 
   const toggleRole = (r: AppRole) => setForm(f => ({
     ...f,
