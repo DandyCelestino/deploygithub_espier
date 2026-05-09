@@ -54,6 +54,9 @@ const OrdensServico = () => {
   const [list, setList] = useState<OS[]>([]);
   const [tecnicos, setTecnicos] = useState<{ user_id: string; full_name: string }[]>([]);
   const [filter, setFilter] = useState<"todos" | "abertas" | "minhas" | "vistoria">("todos");
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [tecnicoFiltro, setTecnicoFiltro] = useState<string>("todos");
   const [editing, setEditing] = useState<OS | null>(null);
   const [open, setOpen] = useState(false);
   const [relatorios, setRelatorios] = useState<Relatorio[]>([]);
