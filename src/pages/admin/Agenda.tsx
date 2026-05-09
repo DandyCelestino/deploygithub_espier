@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type AppRole } from "@/hooks/useAuth";
-import { Plus, Calendar as CalIcon, Clock, MapPin, Trash2, Users, UserCheck } from "lucide-react";
+import { Plus, Calendar as CalIcon, Clock, MapPin, Trash2, Users, UserCheck, Search } from "lucide-react";
 
 interface Evento {
   id: string; titulo: string; descricao: string | null; tipo: string;
