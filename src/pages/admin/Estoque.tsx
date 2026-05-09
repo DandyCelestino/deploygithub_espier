@@ -16,10 +16,23 @@ const Estoque = () => {
   const { hasRole } = useAuth();
   const { toast } = useToast();
   const [list, setList] = useState<Item[]>([]);
+  const [busca, setBusca] = useState("");
+  const [estoqueFiltro, setEstoqueFiltro] = useState<"todos" | "baixo" | "ok">("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Item | null>(null);
   const [form, setForm] = useState({ codigo: "", descricao: "", quantidade: "0", quantidade_minima: "0", unidade: "un", localizacao: "" });
   const [busy, setBusy] = useState(false);
+
+  const filtered = list.filter(i => {
+    const baixo = i.quantidade <= i.quantidade_minima;
+    if (estoqueFiltro === "baixo" && !baixo) return false;
+    if (estoqueFiltro === "ok" && baixo) return false;
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!i.descricao.toLowerCase().includes(q) && !(i.codigo ?? "").toLowerCase().includes(q) && !(i.localizacao ?? "").toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   const load = async () => {
     const { data } = await supabase.from("estoque_itens").select("*").order("descricao");
