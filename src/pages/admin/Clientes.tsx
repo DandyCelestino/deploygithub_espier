@@ -26,6 +26,8 @@ const Clientes = () => {
   const canDelete = hasRole("admin", "gerente");
   const [list, setList] = useState<Cliente[]>([]);
   const [busca, setBusca] = useState("");
+  const [tipoFiltro, setTipoFiltro] = useState<"todos" | "fisica" | "juridica">("todos");
+  const [ufFiltro, setUfFiltro] = useState<string>("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Cliente | null>(null);
   const [form, setForm] = useState(empty);
