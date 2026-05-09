@@ -40,10 +40,25 @@ const Visitas = () => {
   const { toast } = useToast();
   const { user, hasRole } = useAuth();
   const [list, setList] = useState<Visita[]>([]);
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [orcFiltro, setOrcFiltro] = useState<"todos" | "gerado" | "autorizado" | "sem">("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Visita | null>(null);
   const [form, setForm] = useState<typeof empty>(empty);
   const [busy, setBusy] = useState(false);
+
+  const filtered = list.filter(v => {
+    if (statusFiltro !== "todos" && v.status !== statusFiltro) return false;
+    if (orcFiltro === "gerado" && !v.orcamento_id) return false;
+    if (orcFiltro === "autorizado" && (!v.autoriza_orcamento || v.orcamento_id)) return false;
+    if (orcFiltro === "sem" && (v.autoriza_orcamento || v.orcamento_id)) return false;
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!v.cliente_nome.toLowerCase().includes(q) && !(v.cliente_telefone ?? "").includes(busca) && !(v.cidade ?? "").toLowerCase().includes(q) && !(v.vendedor_nome ?? "").toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   const load = async () => {
     const { data } = await supabase.from("visitas").select("*").order("data_visita", { ascending: false });
