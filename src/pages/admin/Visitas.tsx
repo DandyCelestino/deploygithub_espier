@@ -116,6 +116,33 @@ const Visitas = () => {
         <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> Nova visita</Button>
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por cliente, telefone, cidade ou vendedor..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="sm:w-44"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos status</SelectItem>
+              <SelectItem value="agendada">Agendadas</SelectItem>
+              <SelectItem value="realizada">Realizadas</SelectItem>
+              <SelectItem value="cancelada">Canceladas</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={orcFiltro} onValueChange={(v: any) => setOrcFiltro(v)}>
+            <SelectTrigger className="sm:w-44"><SelectValue placeholder="Orçamento" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos orçamentos</SelectItem>
+              <SelectItem value="gerado">Já gerado</SelectItem>
+              <SelectItem value="autorizado">Autorizado pendente</SelectItem>
+              <SelectItem value="sem">Sem orçamento</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -126,8 +153,8 @@ const Visitas = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.length === 0 && <TableRow><TableCell colSpan={8} className="text-center text-slate-500 py-8">Nenhuma visita cadastrada.</TableCell></TableRow>}
-            {list.map(v => (
+            {filtered.length === 0 && <TableRow><TableCell colSpan={8} className="text-center text-slate-500 py-8">Nenhuma visita encontrada.</TableCell></TableRow>}
+            {filtered.map(v => (
               <TableRow key={v.id}>
                 <TableCell className="text-sm">
                   <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3 text-slate-400" />
