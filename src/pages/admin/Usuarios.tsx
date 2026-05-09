@@ -65,6 +65,31 @@ const Usuarios = () => {
         <p className="text-sm text-slate-500 mt-1">Gerencie acessos e papéis dos colaboradores.</p>
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por nome ou e-mail..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={roleFiltro} onValueChange={setRoleFiltro}>
+            <SelectTrigger className="sm:w-44"><SelectValue placeholder="Perfil" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os perfis</SelectItem>
+              {ALL_ROLES.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+              <SelectItem value="sem">Sem perfil</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={ativoFiltro} onValueChange={(v: any) => setAtivoFiltro(v)}>
+            <SelectTrigger className="sm:w-40"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos</SelectItem>
+              <SelectItem value="ativos">Ativos</SelectItem>
+              <SelectItem value="inativos">Inativos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -74,8 +99,20 @@ const Usuarios = () => {
           </TableHeader>
           <TableBody>
             {loading && <TableRow><TableCell colSpan={4} className="text-center py-8 text-slate-500">Carregando...</TableCell></TableRow>}
-            {!loading && list.length === 0 && <TableRow><TableCell colSpan={4} className="text-center py-8 text-slate-500">Nenhum usuário.</TableCell></TableRow>}
-            {list.map(u => (
+            {(() => {
+              const filtered = list.filter(u => {
+                if (ativoFiltro === "ativos" && !u.active) return false;
+                if (ativoFiltro === "inativos" && u.active) return false;
+                if (roleFiltro === "sem" && u.roles.length > 0) return false;
+                if (roleFiltro !== "todos" && roleFiltro !== "sem" && !u.roles.includes(roleFiltro)) return false;
+                if (busca) {
+                  const q = busca.toLowerCase();
+                  if (!(u.full_name ?? "").toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) return false;
+                }
+                return true;
+              });
+              if (!loading && filtered.length === 0) return <TableRow><TableCell colSpan={4} className="text-center py-8 text-slate-500">Nenhum usuário encontrado.</TableCell></TableRow>;
+              return filtered.map(u => (
               <TableRow key={u.user_id}>
                 <TableCell className="font-medium">{u.full_name || "—"}</TableCell>
                 <TableCell>{u.email}</TableCell>
