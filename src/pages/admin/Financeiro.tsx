@@ -21,9 +21,33 @@ const Financeiro = () => {
   const { toast } = useToast();
   const [list, setList] = useState<Conta[]>([]);
   const [filtroTipo, setFiltroTipo] = useState<"todos" | "receita" | "despesa">("todos");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [busca, setBusca] = useState("");
+  const [periodo, setPeriodo] = useState<"todos" | "mes" | "vencidas" | "proximas">("todos");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ tipo: "receita", descricao: "", valor: "", data_vencimento: "", categoria: "" });
   const [busy, setBusy] = useState(false);
+
+  const inMonth = (d: string) => {
+    const x = new Date(d), n = new Date();
+    return x.getMonth() === n.getMonth() && x.getFullYear() === n.getFullYear();
+  };
+  const visible = list.filter(c => {
+    if (statusFiltro !== "todos" && c.status !== statusFiltro) return false;
+    if (periodo === "mes" && !inMonth(c.data_vencimento)) return false;
+    const today = new Date(); today.setHours(0,0,0,0);
+    if (periodo === "vencidas" && (c.status === "pago" || new Date(c.data_vencimento) >= today)) return false;
+    if (periodo === "proximas") {
+      const due = new Date(c.data_vencimento);
+      const limit = new Date(); limit.setDate(limit.getDate() + 7);
+      if (c.status !== "pendente" || due < today || due > limit) return false;
+    }
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!c.descricao.toLowerCase().includes(q) && !(c.categoria ?? "").toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   const load = async () => {
     let q = supabase.from("financeiro_contas").select("*").order("data_vencimento", { ascending: false });
