@@ -34,6 +34,9 @@ const Orcamentos = () => {
 
   const [list, setList] = useState<Orcamento[]>([]);
   const [estoque, setEstoque] = useState<ItemEstoque[]>([]);
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [validadeFiltro, setValidadeFiltro] = useState<"todos" | "vigentes" | "vencidos">("todos");
   const [open, setOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [reportData, setReportData] = useState<{ orc: Orcamento; itens: ItemOrc[] } | null>(null);
