@@ -101,9 +101,18 @@ const OrdensServico = () => {
   }, [editing, open, loadRelatorios]);
 
   const filtered = list.filter(o => {
-    if (filter === "abertas") return o.status === "aberta";
-    if (filter === "minhas") return o.tecnico_id === user?.id;
-    if (filter === "vistoria") return o.status === "aguardando_supervisao";
+    if (filter === "abertas" && o.status !== "aberta") return false;
+    if (filter === "minhas" && o.tecnico_id !== user?.id) return false;
+    if (filter === "vistoria" && o.status !== "aguardando_supervisao") return false;
+    if (statusFiltro !== "todos" && o.status !== statusFiltro) return false;
+    if (tecnicoFiltro !== "todos") {
+      if (tecnicoFiltro === "sem" && o.tecnico_id) return false;
+      if (tecnicoFiltro !== "sem" && o.tecnico_id !== tecnicoFiltro) return false;
+    }
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!o.cliente_nome.toLowerCase().includes(q) && !o.servico_solicitado.toLowerCase().includes(q) && !(o.codigo_rastreio ?? "").toLowerCase().includes(q) && !(o.cidade ?? "").toLowerCase().includes(q)) return false;
+    }
     return true;
   });
 
