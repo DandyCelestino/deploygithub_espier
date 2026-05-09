@@ -21,6 +21,8 @@ const Contratos = () => {
   const { toast } = useToast();
   const [list, setList] = useState<Contrato[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Contrato | null>(null);
   const [form, setForm] = useState({ client_id: "", total_value: "", commission_value: "", status: "em_negociacao" });
