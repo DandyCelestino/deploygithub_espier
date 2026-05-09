@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, CheckCircle2, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { Plus, CheckCircle2, ArrowDownCircle, ArrowUpCircle, Search } from "lucide-react";
 
 interface Conta {
   id: string; tipo: string; descricao: string; valor: number; data_vencimento: string;
