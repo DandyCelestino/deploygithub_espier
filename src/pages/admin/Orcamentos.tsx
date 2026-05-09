@@ -272,7 +272,8 @@ const Orcamentos = () => {
                   )}
                 </TableCell>
               </TableRow>
-            ))}
+              ));
+            })()}
           </TableBody>
         </Table>
       </Card>
