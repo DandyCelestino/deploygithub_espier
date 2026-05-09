@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Search } from "lucide-react";
 
 interface Contrato { id: string; client_id: string; vendedor_id: string; total_value: number; commission_value: number; status: string; created_at: string; }
 interface Cliente { id: string; name: string; }
