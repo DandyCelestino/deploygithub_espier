@@ -113,6 +113,31 @@ const Financeiro = () => {
         <Card className="p-4"><p className="text-xs uppercase tracking-wider text-slate-500">Pendentes</p><p className="text-2xl font-bold text-amber-600 mt-1">R$ {pendentes.toFixed(2)}</p></Card>
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por descrição ou categoria..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos status</SelectItem>
+              {STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={periodo} onValueChange={(v: any) => setPeriodo(v)}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Período" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos períodos</SelectItem>
+              <SelectItem value="mes">Este mês</SelectItem>
+              <SelectItem value="vencidas">Vencidas</SelectItem>
+              <SelectItem value="proximas">Próx. 7 dias</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -121,8 +146,8 @@ const Financeiro = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhuma conta.</TableCell></TableRow>}
-            {list.map(c => (
+            {visible.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhuma conta encontrada.</TableCell></TableRow>}
+            {visible.map(c => (
               <TableRow key={c.id}>
                 <TableCell>
                   {c.tipo === "receita"
