@@ -134,7 +134,8 @@ const Usuarios = () => {
                 </TableCell>
                 <TableCell><Switch checked={u.active} onCheckedChange={() => toggleActive(u)} /></TableCell>
               </TableRow>
-            ))}
+              ));
+            })()}
           </TableBody>
         </Table>
       </Card>
