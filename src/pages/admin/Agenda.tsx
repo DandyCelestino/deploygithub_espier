@@ -51,6 +51,9 @@ const Agenda = () => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<typeof empty>(empty);
   const [filtro, setFiltro] = useState("todos");
+  const [areaFiltro, setAreaFiltro] = useState<string>("todas");
+  const [busca, setBusca] = useState("");
+  const [periodoFiltro, setPeriodoFiltro] = useState<"todos" | "futuros" | "hoje" | "semana">("todos");
   const [busy, setBusy] = useState(false);
 
   const load = async () => {
