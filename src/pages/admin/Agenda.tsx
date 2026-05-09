@@ -168,6 +168,31 @@ const Agenda = () => {
         </div>
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por título, descrição ou local..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={areaFiltro} onValueChange={setAreaFiltro}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Área" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todas">Todas as áreas</SelectItem>
+              {ALL_ROLES.map(r => <SelectItem key={r} value={r}>{ROLE_LABEL[r]}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={periodoFiltro} onValueChange={(v: any) => setPeriodoFiltro(v)}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Período" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos períodos</SelectItem>
+              <SelectItem value="hoje">Hoje</SelectItem>
+              <SelectItem value="semana">Próx. 7 dias</SelectItem>
+              <SelectItem value="futuros">A partir de hoje</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       {Object.keys(grouped).length === 0 && (
         <Card className="p-8 text-center text-slate-500">Nenhum evento agendado.</Card>
       )}
