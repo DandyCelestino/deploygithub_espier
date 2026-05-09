@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, CheckCircle2, FileText, Trash2, MessageCircle, Eye } from "lucide-react";
+import { Plus, Pencil, CheckCircle2, FileText, Trash2, MessageCircle, Eye, Search } from "lucide-react";
 
 interface Orcamento {
   id: string; cliente_nome: string; cliente_email: string | null; cliente_telefone: string | null;
