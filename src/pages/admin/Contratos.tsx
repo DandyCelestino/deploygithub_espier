@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Search } from "lucide-react";
 
 interface Contrato { id: string; client_id: string; vendedor_id: string; total_value: number; commission_value: number; status: string; created_at: string; }
 interface Cliente { id: string; name: string; }
@@ -21,6 +21,8 @@ const Contratos = () => {
   const { toast } = useToast();
   const [list, setList] = useState<Contrato[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Contrato | null>(null);
   const [form, setForm] = useState({ client_id: "", total_value: "", commission_value: "", status: "em_negociacao" });
@@ -59,6 +61,12 @@ const Contratos = () => {
   const clientName = (id: string) => clientes.find(c => c.id === id)?.name ?? "—";
   const canEdit = (c: Contrato) => hasRole("admin", "gerente") || c.vendedor_id === user?.id;
 
+  const filtered = list.filter(c => {
+    if (statusFiltro !== "todos" && c.status !== statusFiltro) return false;
+    if (busca && !clientName(c.client_id).toLowerCase().includes(busca.toLowerCase())) return false;
+    return true;
+  });
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
@@ -71,6 +79,22 @@ const Contratos = () => {
         )}
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por cliente..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="sm:w-52"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os status</SelectItem>
+              {STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -79,8 +103,8 @@ const Contratos = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhum contrato.</TableCell></TableRow>}
-            {list.map(c => (
+            {filtered.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhum contrato encontrado.</TableCell></TableRow>}
+            {filtered.map(c => (
               <TableRow key={c.id}>
                 <TableCell>{clientName(c.client_id)}</TableCell>
                 <TableCell>R$ {c.total_value.toFixed(2)}</TableCell>

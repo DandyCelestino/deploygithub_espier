@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type AppRole } from "@/hooks/useAuth";
-import { Plus, Calendar as CalIcon, Clock, MapPin, Trash2, Users, UserCheck } from "lucide-react";
+import { Plus, Calendar as CalIcon, Clock, MapPin, Trash2, Users, UserCheck, Search } from "lucide-react";
 
 interface Evento {
   id: string; titulo: string; descricao: string | null; tipo: string;
@@ -51,6 +51,9 @@ const Agenda = () => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<typeof empty>(empty);
   const [filtro, setFiltro] = useState("todos");
+  const [areaFiltro, setAreaFiltro] = useState<string>("todas");
+  const [busca, setBusca] = useState("");
+  const [periodoFiltro, setPeriodoFiltro] = useState<"todos" | "futuros" | "hoje" | "semana">("todos");
   const [busy, setBusy] = useState(false);
 
   const load = async () => {
@@ -72,14 +75,28 @@ const Agenda = () => {
   useEffect(() => { load(); loadUsers(); }, []);
 
   const grouped = useMemo(() => {
-    const filtered = filtro === "todos" ? list : list.filter(e => e.tipo === filtro);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const weekEnd = new Date(today); weekEnd.setDate(weekEnd.getDate() + 7);
+    const filtered = list.filter(e => {
+      if (filtro !== "todos" && e.tipo !== filtro) return false;
+      if (areaFiltro !== "todas" && !(e.target_roles ?? []).includes(areaFiltro as AppRole)) return false;
+      if (busca) {
+        const q = busca.toLowerCase();
+        if (!e.titulo.toLowerCase().includes(q) && !(e.descricao ?? "").toLowerCase().includes(q) && !(e.local ?? "").toLowerCase().includes(q)) return false;
+      }
+      const d = new Date(e.data_inicio);
+      if (periodoFiltro === "futuros" && d < today) return false;
+      if (periodoFiltro === "hoje" && (d < today || d.toDateString() !== new Date().toDateString())) return false;
+      if (periodoFiltro === "semana" && (d < today || d > weekEnd)) return false;
+      return true;
+    });
     const groups: Record<string, Evento[]> = {};
     filtered.forEach(e => {
       const day = new Date(e.data_inicio).toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
       (groups[day] ||= []).push(e);
     });
     return groups;
-  }, [list, filtro]);
+  }, [list, filtro, areaFiltro, busca, periodoFiltro]);
 
   const toggleRole = (r: AppRole) => setForm(f => ({
     ...f,
@@ -150,6 +167,31 @@ const Agenda = () => {
           <Button onClick={() => { setForm(empty); setOpen(true); }}><Plus className="w-4 h-4 mr-1.5" /> Novo evento</Button>
         </div>
       </div>
+
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por título, descrição ou local..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={areaFiltro} onValueChange={setAreaFiltro}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Área" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todas">Todas as áreas</SelectItem>
+              {ALL_ROLES.map(r => <SelectItem key={r} value={r}>{ROLE_LABEL[r]}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={periodoFiltro} onValueChange={(v: any) => setPeriodoFiltro(v)}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Período" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos períodos</SelectItem>
+              <SelectItem value="hoje">Hoje</SelectItem>
+              <SelectItem value="semana">Próx. 7 dias</SelectItem>
+              <SelectItem value="futuros">A partir de hoje</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
 
       {Object.keys(grouped).length === 0 && (
         <Card className="p-8 text-center text-slate-500">Nenhum evento agendado.</Card>

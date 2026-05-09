@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, Calendar, MapPin, CheckCircle2 } from "lucide-react";
+import { Plus, Pencil, Calendar, MapPin, CheckCircle2, Search } from "lucide-react";
 
 interface Visita {
   id: string; vendedor_id: string; vendedor_nome: string | null;
@@ -40,10 +40,25 @@ const Visitas = () => {
   const { toast } = useToast();
   const { user, hasRole } = useAuth();
   const [list, setList] = useState<Visita[]>([]);
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [orcFiltro, setOrcFiltro] = useState<"todos" | "gerado" | "autorizado" | "sem">("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Visita | null>(null);
   const [form, setForm] = useState<typeof empty>(empty);
   const [busy, setBusy] = useState(false);
+
+  const filtered = list.filter(v => {
+    if (statusFiltro !== "todos" && v.status !== statusFiltro) return false;
+    if (orcFiltro === "gerado" && !v.orcamento_id) return false;
+    if (orcFiltro === "autorizado" && (!v.autoriza_orcamento || v.orcamento_id)) return false;
+    if (orcFiltro === "sem" && (v.autoriza_orcamento || v.orcamento_id)) return false;
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!v.cliente_nome.toLowerCase().includes(q) && !(v.cliente_telefone ?? "").includes(busca) && !(v.cidade ?? "").toLowerCase().includes(q) && !(v.vendedor_nome ?? "").toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   const load = async () => {
     const { data } = await supabase.from("visitas").select("*").order("data_visita", { ascending: false });
@@ -101,6 +116,33 @@ const Visitas = () => {
         <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> Nova visita</Button>
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por cliente, telefone, cidade ou vendedor..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="sm:w-44"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos status</SelectItem>
+              <SelectItem value="agendada">Agendadas</SelectItem>
+              <SelectItem value="realizada">Realizadas</SelectItem>
+              <SelectItem value="cancelada">Canceladas</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={orcFiltro} onValueChange={(v: any) => setOrcFiltro(v)}>
+            <SelectTrigger className="sm:w-44"><SelectValue placeholder="Orçamento" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos orçamentos</SelectItem>
+              <SelectItem value="gerado">Já gerado</SelectItem>
+              <SelectItem value="autorizado">Autorizado pendente</SelectItem>
+              <SelectItem value="sem">Sem orçamento</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -111,8 +153,8 @@ const Visitas = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.length === 0 && <TableRow><TableCell colSpan={8} className="text-center text-slate-500 py-8">Nenhuma visita cadastrada.</TableCell></TableRow>}
-            {list.map(v => (
+            {filtered.length === 0 && <TableRow><TableCell colSpan={8} className="text-center text-slate-500 py-8">Nenhuma visita encontrada.</TableCell></TableRow>}
+            {filtered.map(v => (
               <TableRow key={v.id}>
                 <TableCell className="text-sm">
                   <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3 text-slate-400" />

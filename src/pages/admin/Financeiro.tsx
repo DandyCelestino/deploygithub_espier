@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, CheckCircle2, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { Plus, CheckCircle2, ArrowDownCircle, ArrowUpCircle, Search } from "lucide-react";
 
 interface Conta {
   id: string; tipo: string; descricao: string; valor: number; data_vencimento: string;
@@ -21,9 +21,33 @@ const Financeiro = () => {
   const { toast } = useToast();
   const [list, setList] = useState<Conta[]>([]);
   const [filtroTipo, setFiltroTipo] = useState<"todos" | "receita" | "despesa">("todos");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [busca, setBusca] = useState("");
+  const [periodo, setPeriodo] = useState<"todos" | "mes" | "vencidas" | "proximas">("todos");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ tipo: "receita", descricao: "", valor: "", data_vencimento: "", categoria: "" });
   const [busy, setBusy] = useState(false);
+
+  const inMonth = (d: string) => {
+    const x = new Date(d), n = new Date();
+    return x.getMonth() === n.getMonth() && x.getFullYear() === n.getFullYear();
+  };
+  const visible = list.filter(c => {
+    if (statusFiltro !== "todos" && c.status !== statusFiltro) return false;
+    if (periodo === "mes" && !inMonth(c.data_vencimento)) return false;
+    const today = new Date(); today.setHours(0,0,0,0);
+    if (periodo === "vencidas" && (c.status === "pago" || new Date(c.data_vencimento) >= today)) return false;
+    if (periodo === "proximas") {
+      const due = new Date(c.data_vencimento);
+      const limit = new Date(); limit.setDate(limit.getDate() + 7);
+      if (c.status !== "pendente" || due < today || due > limit) return false;
+    }
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!c.descricao.toLowerCase().includes(q) && !(c.categoria ?? "").toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   const load = async () => {
     let q = supabase.from("financeiro_contas").select("*").order("data_vencimento", { ascending: false });
@@ -89,6 +113,31 @@ const Financeiro = () => {
         <Card className="p-4"><p className="text-xs uppercase tracking-wider text-slate-500">Pendentes</p><p className="text-2xl font-bold text-amber-600 mt-1">R$ {pendentes.toFixed(2)}</p></Card>
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por descrição ou categoria..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos status</SelectItem>
+              {STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={periodo} onValueChange={(v: any) => setPeriodo(v)}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Período" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos períodos</SelectItem>
+              <SelectItem value="mes">Este mês</SelectItem>
+              <SelectItem value="vencidas">Vencidas</SelectItem>
+              <SelectItem value="proximas">Próx. 7 dias</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -97,8 +146,8 @@ const Financeiro = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhuma conta.</TableCell></TableRow>}
-            {list.map(c => (
+            {visible.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhuma conta encontrada.</TableCell></TableRow>}
+            {visible.map(c => (
               <TableRow key={c.id}>
                 <TableCell>
                   {c.tipo === "receita"

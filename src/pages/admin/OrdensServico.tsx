@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Eye, Upload, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Camera } from "lucide-react";
+import { Eye, Upload, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Camera, Search } from "lucide-react";
 
 interface OS {
   id: string; cliente_nome: string; servico_solicitado: string; endereco: string; cidade: string;
@@ -54,6 +54,9 @@ const OrdensServico = () => {
   const [list, setList] = useState<OS[]>([]);
   const [tecnicos, setTecnicos] = useState<{ user_id: string; full_name: string }[]>([]);
   const [filter, setFilter] = useState<"todos" | "abertas" | "minhas" | "vistoria">("todos");
+  const [busca, setBusca] = useState("");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [tecnicoFiltro, setTecnicoFiltro] = useState<string>("todos");
   const [editing, setEditing] = useState<OS | null>(null);
   const [open, setOpen] = useState(false);
   const [relatorios, setRelatorios] = useState<Relatorio[]>([]);
@@ -98,9 +101,18 @@ const OrdensServico = () => {
   }, [editing, open, loadRelatorios]);
 
   const filtered = list.filter(o => {
-    if (filter === "abertas") return o.status === "aberta";
-    if (filter === "minhas") return o.tecnico_id === user?.id;
-    if (filter === "vistoria") return o.status === "aguardando_supervisao";
+    if (filter === "abertas" && o.status !== "aberta") return false;
+    if (filter === "minhas" && o.tecnico_id !== user?.id) return false;
+    if (filter === "vistoria" && o.status !== "aguardando_supervisao") return false;
+    if (statusFiltro !== "todos" && o.status !== statusFiltro) return false;
+    if (tecnicoFiltro !== "todos") {
+      if (tecnicoFiltro === "sem" && o.tecnico_id) return false;
+      if (tecnicoFiltro !== "sem" && o.tecnico_id !== tecnicoFiltro) return false;
+    }
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!o.cliente_nome.toLowerCase().includes(q) && !o.servico_solicitado.toLowerCase().includes(q) && !(o.codigo_rastreio ?? "").toLowerCase().includes(q) && !(o.cidade ?? "").toLowerCase().includes(q)) return false;
+    }
     return true;
   });
 
@@ -218,6 +230,32 @@ const OrdensServico = () => {
           </SelectContent>
         </Select>
       </div>
+
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por cliente, serviço, cidade ou rastreio..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="sm:w-52"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os status</SelectItem>
+              {STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {hasRole("admin", "gerente") && (
+            <Select value={tecnicoFiltro} onValueChange={setTecnicoFiltro}>
+              <SelectTrigger className="sm:w-52"><SelectValue placeholder="Técnico" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os técnicos</SelectItem>
+                <SelectItem value="sem">Sem técnico</SelectItem>
+                {tecnicos.map(t => <SelectItem key={t.user_id} value={t.user_id}>{t.full_name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      </Card>
 
       <Card>
         <Table>

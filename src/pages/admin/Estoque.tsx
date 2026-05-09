@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, AlertTriangle } from "lucide-react";
+import { Plus, Pencil, AlertTriangle, Search } from "lucide-react";
 
 interface Item { id: string; codigo: string | null; descricao: string; quantidade: number; quantidade_minima: number; unidade: string; localizacao: string | null; }
 
@@ -15,10 +16,23 @@ const Estoque = () => {
   const { hasRole } = useAuth();
   const { toast } = useToast();
   const [list, setList] = useState<Item[]>([]);
+  const [busca, setBusca] = useState("");
+  const [estoqueFiltro, setEstoqueFiltro] = useState<"todos" | "baixo" | "ok">("todos");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Item | null>(null);
   const [form, setForm] = useState({ codigo: "", descricao: "", quantidade: "0", quantidade_minima: "0", unidade: "un", localizacao: "" });
   const [busy, setBusy] = useState(false);
+
+  const filtered = list.filter(i => {
+    const baixo = i.quantidade <= i.quantidade_minima;
+    if (estoqueFiltro === "baixo" && !baixo) return false;
+    if (estoqueFiltro === "ok" && baixo) return false;
+    if (busca) {
+      const q = busca.toLowerCase();
+      if (!i.descricao.toLowerCase().includes(q) && !(i.codigo ?? "").toLowerCase().includes(q) && !(i.localizacao ?? "").toLowerCase().includes(q)) return false;
+    }
+    return true;
+  });
 
   const load = async () => {
     const { data } = await supabase.from("estoque_itens").select("*").order("descricao");
@@ -58,6 +72,23 @@ const Estoque = () => {
         {canManage && <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> Novo item</Button>}
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por código, descrição ou localização..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={estoqueFiltro} onValueChange={(v: any) => setEstoqueFiltro(v)}>
+            <SelectTrigger className="sm:w-52"><SelectValue placeholder="Estoque" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os itens</SelectItem>
+              <SelectItem value="baixo">Estoque baixo</SelectItem>
+              <SelectItem value="ok">Estoque normal</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -66,8 +97,8 @@ const Estoque = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-slate-500 py-8">Nenhum item.</TableCell></TableRow>}
-            {list.map(i => {
+            {filtered.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-slate-500 py-8">Nenhum item encontrado.</TableCell></TableRow>}
+            {filtered.map(i => {
               const baixo = i.quantidade <= i.quantidade_minima;
               return (
                 <TableRow key={i.id} className={baixo ? "bg-rose-50/40" : ""}>
