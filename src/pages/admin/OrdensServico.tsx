@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Eye, Upload, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Camera } from "lucide-react";
+import { Eye, Upload, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Camera, Search } from "lucide-react";
 
 interface OS {
   id: string; cliente_nome: string; servico_solicitado: string; endereco: string; cidade: string;
