@@ -80,22 +80,45 @@ const Clientes = () => {
     setDelId(null);
   };
 
-  const filtered = list.filter(c => !busca || c.name.toLowerCase().includes(busca.toLowerCase()) || (c.email ?? "").toLowerCase().includes(busca.toLowerCase()) || (c.document ?? "").includes(busca));
+  const ufs = Array.from(new Set(list.map(c => c.state).filter(Boolean))) as string[];
+  const filtered = list.filter(c => {
+    if (tipoFiltro !== "todos" && (c.tipo_pessoa ?? "fisica") !== tipoFiltro) return false;
+    if (ufFiltro !== "todos" && (c.state ?? "") !== ufFiltro) return false;
+    if (busca && !c.name.toLowerCase().includes(busca.toLowerCase()) && !(c.email ?? "").toLowerCase().includes(busca.toLowerCase()) && !(c.document ?? "").includes(busca) && !(c.phone ?? "").includes(busca)) return false;
+    return true;
+  });
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Clientes</h1>
-          <p className="text-sm text-slate-500 mt-1">{list.length} cliente(s) cadastrado(s).</p>
+          <p className="text-sm text-slate-500 mt-1">{filtered.length} de {list.length} cliente(s).</p>
         </div>
         <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> Novo cliente</Button>
       </div>
 
       <Card className="p-4 mb-4">
-        <div className="relative max-w-md">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <Input placeholder="Buscar por nome, e-mail ou documento..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por nome, e-mail, documento ou telefone..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={tipoFiltro} onValueChange={(v: any) => setTipoFiltro(v)}>
+            <SelectTrigger className="sm:w-44"><SelectValue placeholder="Tipo" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os tipos</SelectItem>
+              <SelectItem value="fisica">Pessoa Física</SelectItem>
+              <SelectItem value="juridica">Pessoa Jurídica</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={ufFiltro} onValueChange={setUfFiltro}>
+            <SelectTrigger className="sm:w-32"><SelectValue placeholder="UF" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todas UFs</SelectItem>
+              {ufs.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </div>
       </Card>
 
