@@ -198,6 +198,30 @@ const Orcamentos = () => {
         {hasRole("admin", "gerente") && <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> Novo orçamento</Button>}
       </div>
 
+      <Card className="p-4 mb-4">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Input placeholder="Buscar por cliente, serviço ou cidade..." value={busca} onChange={e => setBusca(e.target.value)} className="pl-10" />
+          </div>
+          <Select value={statusFiltro} onValueChange={setStatusFiltro}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos status</SelectItem>
+              {STATUS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={validadeFiltro} onValueChange={(v: any) => setValidadeFiltro(v)}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Validade" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos</SelectItem>
+              <SelectItem value="vigentes">Vigentes</SelectItem>
+              <SelectItem value="vencidos">Vencidos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
       <Card>
         <Table>
           <TableHeader>
@@ -212,8 +236,24 @@ const Orcamentos = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {list.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhum orçamento.</TableCell></TableRow>}
-            {list.map(o => (
+            {(() => {
+              const filtered = list.filter(o => {
+                if (statusFiltro !== "todos" && o.status !== statusFiltro) return false;
+                if (validadeFiltro !== "todos") {
+                  const d = new Date(o.created_at);
+                  d.setDate(d.getDate() + (o.validade_dias ?? 30));
+                  const venc = d < new Date();
+                  if (validadeFiltro === "vigentes" && venc) return false;
+                  if (validadeFiltro === "vencidos" && !venc) return false;
+                }
+                if (busca) {
+                  const q = busca.toLowerCase();
+                  if (!o.cliente_nome.toLowerCase().includes(q) && !o.servico_solicitado.toLowerCase().includes(q) && !(o.cidade ?? "").toLowerCase().includes(q)) return false;
+                }
+                return true;
+              });
+              if (filtered.length === 0) return <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhum orçamento encontrado.</TableCell></TableRow>;
+              return filtered.map(o => (
               <TableRow key={o.id}>
                 <TableCell className="font-medium">{o.cliente_nome}</TableCell>
                 <TableCell className="max-w-xs truncate">{o.servico_solicitado}</TableCell>
