@@ -18,6 +18,9 @@ const Usuarios = () => {
   const { toast } = useToast();
   const [list, setList] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [busca, setBusca] = useState("");
+  const [roleFiltro, setRoleFiltro] = useState<string>("todos");
+  const [ativoFiltro, setAtivoFiltro] = useState<"todos" | "ativos" | "inativos">("todos");
 
   const load = async () => {
     setLoading(true);
