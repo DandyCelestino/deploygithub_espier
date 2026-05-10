@@ -16,8 +16,12 @@ interface Orcamento {
   endereco: string; cidade: string; estado: string; servico_solicitado: string;
   valor_total: number; valor_instalacao: number; status: string; created_at: string;
   descricao: string | null; validade_dias?: number;
+  cliente_id?: string | null; tipo_servico?: string; valor_mensal?: number;
+  origem?: string; setor_responsavel?: string | null; vendedor_id?: string | null;
 }
-interface ItemEstoque { id: string; descricao: string; codigo: string | null; unidade: string; }
+interface ItemEstoque { id: string; descricao: string; codigo: string | null; unidade: string; valor_venda?: number; }
+interface Cliente { id: string; name: string; email: string | null; phone: string | null; address: string | null; city: string | null; state: string | null; }
+interface UserMin { user_id: string; full_name: string; }
 interface ItemOrc {
   id?: string; orcamento_id?: string; estoque_item_id: string | null;
   descricao: string; quantidade: number; unidade: string; valor_total: number;
@@ -34,19 +38,24 @@ const Orcamentos = () => {
 
   const [list, setList] = useState<Orcamento[]>([]);
   const [estoque, setEstoque] = useState<ItemEstoque[]>([]);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [vendedores, setVendedores] = useState<UserMin[]>([]);
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [validadeFiltro, setValidadeFiltro] = useState<"todos" | "vigentes" | "vencidos">("todos");
+  const [origemFiltro, setOrigemFiltro] = useState<"todos" | "site" | "interno">("todos");
   const [open, setOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [reportData, setReportData] = useState<{ orc: Orcamento; itens: ItemOrc[] } | null>(null);
   const [editing, setEditing] = useState<Orcamento | null>(null);
   const [itens, setItens] = useState<ItemOrc[]>([]);
   const [form, setForm] = useState({
-    cliente_nome: "", cliente_email: "", cliente_telefone: "",
+    cliente_id: "", cliente_nome: "", cliente_email: "", cliente_telefone: "",
     endereco: "", cidade: "", estado: "SP",
     servico_solicitado: "", descricao: "",
     valor_instalacao: "", status: "pendente", validade_dias: "30",
+    tipo_servico: "avulso", valor_mensal: "",
+    setor_responsavel: "", vendedor_id: "",
   });
   const [busy, setBusy] = useState(false);
 
@@ -58,24 +67,59 @@ const Orcamentos = () => {
     setList((data ?? []) as Orcamento[]);
   };
   const loadEstoque = async () => {
-    const { data } = await supabase.from("estoque_itens").select("id,descricao,codigo,unidade").order("descricao");
+    const { data } = await supabase.from("estoque_itens").select("id,descricao,codigo,unidade,valor_venda").order("descricao");
     setEstoque((data ?? []) as ItemEstoque[]);
   };
-  useEffect(() => { load(); loadEstoque(); }, []);
+  const loadClientes = async () => {
+    const { data } = await supabase.from("clientes").select("id,name,email,phone,address,city,state").order("name");
+    setClientes((data ?? []) as Cliente[]);
+  };
+  const loadVendedores = async () => {
+    const { data: rolesData } = await supabase.from("user_roles").select("user_id").eq("role", "vendedor");
+    const ids = (rolesData ?? []).map((r: any) => r.user_id);
+    if (ids.length === 0) { setVendedores([]); return; }
+    const { data: profs } = await supabase.from("profiles").select("user_id,full_name").in("user_id", ids);
+    setVendedores((profs ?? []) as UserMin[]);
+  };
+  useEffect(() => { load(); loadEstoque(); loadClientes(); loadVendedores(); }, []);
+
+  const pickCliente = (id: string) => {
+    if (id === "manual") {
+      setForm(f => ({ ...f, cliente_id: "" }));
+      return;
+    }
+    const c = clientes.find(x => x.id === id);
+    if (!c) return;
+    setForm(f => ({
+      ...f, cliente_id: c.id,
+      cliente_nome: c.name, cliente_email: c.email ?? "", cliente_telefone: c.phone ?? "",
+      endereco: c.address ?? "", cidade: c.city ?? "", estado: c.state ?? "SP",
+    }));
+  };
 
   const openNew = () => {
     setEditing(null);
     setItens([]);
-    setForm({ cliente_nome: "", cliente_email: "", cliente_telefone: "", endereco: "", cidade: "", estado: "SP", servico_solicitado: "", descricao: "", valor_instalacao: "", status: "pendente", validade_dias: "30" });
+    setForm({
+      cliente_id: "", cliente_nome: "", cliente_email: "", cliente_telefone: "",
+      endereco: "", cidade: "", estado: "SP", servico_solicitado: "", descricao: "",
+      valor_instalacao: "", status: "pendente", validade_dias: "30",
+      tipo_servico: "avulso", valor_mensal: "", setor_responsavel: "", vendedor_id: "",
+    });
     setOpen(true);
   };
   const openEdit = async (o: Orcamento) => {
     setEditing(o);
     setForm({
+      cliente_id: o.cliente_id ?? "",
       cliente_nome: o.cliente_nome, cliente_email: o.cliente_email ?? "", cliente_telefone: o.cliente_telefone ?? "",
       endereco: o.endereco, cidade: o.cidade, estado: o.estado, servico_solicitado: o.servico_solicitado,
       descricao: o.descricao ?? "", valor_instalacao: String(o.valor_instalacao), status: o.status,
       validade_dias: String(o.validade_dias ?? 30),
+      tipo_servico: o.tipo_servico ?? "avulso",
+      valor_mensal: String(o.valor_mensal ?? 0),
+      setor_responsavel: o.setor_responsavel ?? "",
+      vendedor_id: o.vendedor_id ?? "",
     });
     const { data } = await supabase.from("orcamento_itens").select("*").eq("orcamento_id", o.id);
     setItens((data ?? []) as ItemOrc[]);
@@ -87,7 +131,10 @@ const Orcamentos = () => {
   const updateItem = (idx: number, patch: Partial<ItemOrc>) => setItens(itens.map((it, i) => i === idx ? { ...it, ...patch } : it));
   const pickEstoque = (idx: number, estId: string) => {
     const e = estoque.find(x => x.id === estId);
-    if (e) updateItem(idx, { estoque_item_id: e.id, descricao: e.descricao, unidade: e.unidade });
+    if (e) updateItem(idx, {
+      estoque_item_id: e.id, descricao: e.descricao, unidade: e.unidade,
+      valor_total: Number((e as any).valor_venda ?? 0),
+    });
   };
 
   const save = async () => {
@@ -95,7 +142,8 @@ const Orcamentos = () => {
       toast({ title: "Preencha cliente e serviço", variant: "destructive" }); return;
     }
     setBusy(true);
-    const payload = {
+    const payload: any = {
+      cliente_id: form.cliente_id || null,
       cliente_nome: form.cliente_nome,
       cliente_email: form.cliente_email || null,
       cliente_telefone: form.cliente_telefone || null,
@@ -106,6 +154,10 @@ const Orcamentos = () => {
       valor_total: totalGeral,
       status: form.status,
       validade_dias: Number(form.validade_dias) || 30,
+      tipo_servico: form.tipo_servico,
+      valor_mensal: Number(form.valor_mensal) || 0,
+      setor_responsavel: form.setor_responsavel || null,
+      vendedor_id: form.vendedor_id || null,
     };
     let orcId = editing?.id;
     const res = editing
@@ -219,6 +271,14 @@ const Orcamentos = () => {
               <SelectItem value="vencidos">Vencidos</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={origemFiltro} onValueChange={(v: any) => setOrigemFiltro(v)}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Origem" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todas origens</SelectItem>
+              <SelectItem value="site">Site (público)</SelectItem>
+              <SelectItem value="interno">Interno</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </Card>
 
@@ -239,6 +299,7 @@ const Orcamentos = () => {
             {(() => {
               const filtered = list.filter(o => {
                 if (statusFiltro !== "todos" && o.status !== statusFiltro) return false;
+                if (origemFiltro !== "todos" && (o.origem ?? "interno") !== origemFiltro) return false;
                 if (validadeFiltro !== "todos") {
                   const d = new Date(o.created_at);
                   d.setDate(d.getDate() + (o.validade_dias ?? 30));
@@ -254,8 +315,16 @@ const Orcamentos = () => {
               });
               if (filtered.length === 0) return <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhum orçamento encontrado.</TableCell></TableRow>;
               return filtered.map(o => (
-              <TableRow key={o.id}>
-                <TableCell className="font-medium">{o.cliente_nome}</TableCell>
+              <TableRow key={o.id} className={o.origem === "site" && !o.setor_responsavel ? "bg-amber-50/40" : ""}>
+                <TableCell className="font-medium">
+                  {o.cliente_nome}
+                  <div className="flex gap-1 mt-1 flex-wrap">
+                    {o.origem === "site" && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">Site</span>}
+                    {o.tipo_servico === "mensalidade" && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Mensal</span>}
+                    {o.origem === "site" && !o.setor_responsavel && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Sem setor</span>}
+                    {o.setor_responsavel && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">{o.setor_responsavel}</span>}
+                  </div>
+                </TableCell>
                 <TableCell className="max-w-xs truncate">{o.servico_solicitado}</TableCell>
                 {!isTecnico && <TableCell>{moeda(o.valor_total)}</TableCell>}
                 {isTecnico && <TableCell>{moeda(o.valor_instalacao)}</TableCell>}
@@ -283,6 +352,16 @@ const Orcamentos = () => {
         <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editing ? "Editar orçamento" : "Novo orçamento"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
+            <div>
+              <label className="text-xs text-slate-600">Cliente cadastrado</label>
+              <Select value={form.cliente_id || "manual"} onValueChange={pickCliente}>
+                <SelectTrigger><SelectValue placeholder="Selecionar cliente" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="manual">— Cliente novo / manual —</SelectItem>
+                  {clientes.map(c => <SelectItem key={c.id} value={c.id}>{c.name}{c.phone ? ` · ${c.phone}` : ""}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             <Input placeholder="Cliente *" value={form.cliente_nome} onChange={e => setForm({ ...form, cliente_nome: e.target.value })} />
             <div className="grid grid-cols-2 gap-3">
               <Input placeholder="E-mail" value={form.cliente_email} onChange={e => setForm({ ...form, cliente_email: e.target.value })} />
@@ -295,6 +374,51 @@ const Orcamentos = () => {
             </div>
             <Input placeholder="Serviço solicitado *" value={form.servico_solicitado} onChange={e => setForm({ ...form, servico_solicitado: e.target.value })} />
             <Textarea placeholder="Descrição / detalhes" rows={3} value={form.descricao} onChange={e => setForm({ ...form, descricao: e.target.value })} />
+
+            {hasRole("admin", "gerente") && (
+              <div className="grid grid-cols-3 gap-3 border-t pt-3">
+                <div>
+                  <label className="text-xs text-slate-600">Tipo de serviço</label>
+                  <Select value={form.tipo_servico} onValueChange={v => setForm({ ...form, tipo_servico: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="avulso">Avulso (1x)</SelectItem>
+                      <SelectItem value="mensalidade">Com mensalidade</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-600">Valor mensal (R$)</label>
+                  <Input type="number" step="0.01" disabled={form.tipo_servico !== "mensalidade"} value={form.valor_mensal} onChange={e => setForm({ ...form, valor_mensal: e.target.value })} />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-600">Vendedor responsável</label>
+                  <Select value={form.vendedor_id || "none"} onValueChange={v => setForm({ ...form, vendedor_id: v === "none" ? "" : v })}>
+                    <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">— Nenhum —</SelectItem>
+                      {vendedores.map(v => <SelectItem key={v.user_id} value={v.user_id}>{v.full_name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {hasRole("admin") && (
+              <div>
+                <label className="text-xs text-slate-600">Setor responsável (designar)</label>
+                <Select value={form.setor_responsavel || "none"} onValueChange={v => setForm({ ...form, setor_responsavel: v === "none" ? "" : v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar setor" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">— Não designado —</SelectItem>
+                    <SelectItem value="comercial">Comercial</SelectItem>
+                    <SelectItem value="tecnico">Técnico</SelectItem>
+                    <SelectItem value="financeiro">Financeiro</SelectItem>
+                    <SelectItem value="gerencia">Gerência</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* Itens (estoque) */}
             <div className="border-t pt-3">

@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Users, FileText, ClipboardList, Wrench,
   Package, DollarSign, UserPlus, LogOut, ShieldCheck, Settings,
-  Calendar, MapPin, History, Lock,
+  Calendar, MapPin, History, Lock, BadgeDollarSign,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -34,6 +34,7 @@ const items: NavItem[] = [
   { title: "Ordens de Serviço", url: "/admin/ordens", icon: Wrench, roles: ["admin","gerente","tecnico","financeiro"] },
   { title: "Estoque", url: "/admin/estoque", icon: Package, roles: ["admin","gerente","tecnico","financeiro"] },
   { title: "Financeiro", url: "/admin/financeiro", icon: DollarSign, roles: ["admin","gerente","financeiro"] },
+  { title: "Comissões", url: "/admin/comissoes", icon: BadgeDollarSign, roles: ["admin","gerente","vendedor","financeiro"] },
   { title: "Histórico", url: "/admin/historico", icon: History, roles: ["admin","gerente"] },
 ];
 

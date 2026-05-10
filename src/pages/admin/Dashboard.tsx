@@ -8,10 +8,13 @@ import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
+const moeda = (n: number) => `R$ ${Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 const Dashboard = () => {
   const { user, roles, hasRole } = useAuth();
   const [stats, setStats] = useState<Record<string, number>>({});
   const [tecnicoOS, setTecnicoOS] = useState<Record<string, any[]>>({});
+  const [vendedorComissoes, setVendedorComissoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,6 +64,12 @@ const Dashboard = () => {
       if (hasRole("vendedor")) {
         run(supabase.from("contratos").select("id", { count: "exact", head: true }).eq("vendedor_id", user.id).then(({ count }) => { out.meusContratos = count ?? 0; }));
         run(supabase.from("visitas").select("id", { count: "exact", head: true }).eq("vendedor_id", user.id).eq("status", "agendada").then(({ count }) => { out.minhasVisitas = count ?? 0; }));
+        run(supabase.from("vendedor_comissoes" as any).select("*").eq("vendedor_id", user.id).order("data_prevista", { ascending: true }).then(({ data }: any) => {
+          setVendedorComissoes(data ?? []);
+          out.comissaoEmExecucao = (data ?? []).filter((c: any) => c.status === "em_execucao").reduce((s: number, c: any) => s + Number(c.valor), 0);
+          out.comissaoAReceber = (data ?? []).filter((c: any) => c.status === "a_receber").reduce((s: number, c: any) => s + Number(c.valor), 0);
+          out.comissaoPaga = (data ?? []).filter((c: any) => c.status === "pago").reduce((s: number, c: any) => s + Number(c.valor), 0);
+        }));
       }
 
       await Promise.all(tasks);
@@ -105,6 +114,9 @@ const Dashboard = () => {
               <>
                 <StatCard to="/admin/contratos" icon={TrendingUp} label="Meus contratos" value={stats.meusContratos ?? 0} accent="text-emerald-600 bg-emerald-50" />
                 <StatCard to="/admin/visitas" icon={Calendar} label="Minhas visitas" value={stats.minhasVisitas ?? 0} accent="text-blue-600 bg-blue-50" />
+                <ValueCard to="/admin/comissoes" icon={Wrench} label="Em execução" value={moeda(stats.comissaoEmExecucao ?? 0)} accent="text-amber-600 bg-amber-50" />
+                <ValueCard to="/admin/comissoes" icon={DollarSign} label="A receber" value={moeda(stats.comissaoAReceber ?? 0)} accent="text-emerald-600 bg-emerald-50" />
+                <ValueCard to="/admin/comissoes" icon={CheckCircle2} label="Comissões pagas" value={moeda(stats.comissaoPaga ?? 0)} accent="text-slate-600 bg-slate-100" />
               </>
             )}
             {hasRole("admin") && (
@@ -129,11 +141,62 @@ const Dashboard = () => {
               </div>
             </div>
           )}
+
+          {hasRole("vendedor") && vendedorComissoes.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-lg font-bold text-slate-900 mb-3">Minhas comissões — etapas de pagamento</h2>
+              <Card className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                    <tr>
+                      <th className="text-left p-3">Tipo</th>
+                      <th className="text-left p-3">Parcela</th>
+                      <th className="text-left p-3">Valor</th>
+                      <th className="text-left p-3">Previsto</th>
+                      <th className="text-left p-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vendedorComissoes.map(c => (
+                      <tr key={c.id} className="border-t border-slate-100">
+                        <td className="p-3">{c.tipo === "recorrente" ? "Mensalidade" : "Avulsa"}</td>
+                        <td className="p-3">{c.parcela_num}/{c.parcela_total}</td>
+                        <td className="p-3 font-semibold">{moeda(Number(c.valor))}</td>
+                        <td className="p-3">{c.data_prevista ? new Date(c.data_prevista).toLocaleDateString("pt-BR") : "—"}</td>
+                        <td className="p-3">
+                          <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                            c.status === "pago" ? "bg-emerald-50 text-emerald-700"
+                            : c.status === "a_receber" ? "bg-blue-50 text-blue-700"
+                            : c.status === "cancelado" ? "bg-slate-100 text-slate-600"
+                            : "bg-amber-50 text-amber-700"}`}>
+                            {c.status.replace("_", " ")}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Card>
+            </div>
+          )}
         </>
       )}
     </div>
   );
 };
+
+const ValueCard = ({ to, icon: Icon, label, value, accent }: any) => (
+  <Link to={to}>
+    <Card className="p-5 hover:shadow-lg transition-shadow border-slate-200 cursor-pointer h-full">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${accent}`}>
+        <Icon className="w-5 h-5" />
+      </div>
+      <p className="text-2xl font-bold text-slate-900">{value}</p>
+      <p className="text-sm text-slate-500 mt-1">{label}</p>
+    </Card>
+  </Link>
+);
+
 
 const StatCard = ({ to, icon: Icon, label, value, accent, hideValue }: any) => (
   <Link to={to}>

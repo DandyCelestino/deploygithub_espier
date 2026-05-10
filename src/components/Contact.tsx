@@ -4,19 +4,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { toast } = useToast();
   const [form, setForm] = useState({ nome: "", email: "", telefone: "", mensagem: "" });
+  const [busy, setBusy] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`Contato de ${form.nome}`);
-    const body = encodeURIComponent(
-      `Nome: ${form.nome}\nE-mail: ${form.email}\nTelefone: ${form.telefone}\n\nMensagem:\n${form.mensagem}`
-    );
-    window.location.href = `mailto:espier.telecom@gmail.com?subject=${subject}&body=${body}`;
-    toast({ title: "Mensagem enviada!", description: "Seu cliente de e-mail foi aberto para enviar a mensagem." });
+    setBusy(true);
+    // Cria orçamento na área restrita (origem = site, status = pendente)
+    const { error } = await supabase.from("orcamentos").insert({
+      cliente_nome: form.nome,
+      cliente_email: form.email || null,
+      cliente_telefone: form.telefone || null,
+      endereco: "", cidade: "", estado: "RJ",
+      servico_solicitado: "Solicitação via site",
+      descricao: form.mensagem,
+      valor_total: 0, valor_instalacao: 0,
+      status: "pendente",
+      origem: "site",
+    } as any);
+    setBusy(false);
+    if (error) {
+      toast({ title: "Erro ao enviar", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Pedido recebido!", description: "Sua solicitação foi registrada e nossa equipe entrará em contato em até 24h úteis." });
     setForm({ nome: "", email: "", telefone: "", mensagem: "" });
   };
 
@@ -80,8 +95,8 @@ const Contact = () => {
                 className={inputCls + " h-auto resize-none"}
               />
             </div>
-            <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-red font-bold uppercase tracking-wide">
-              <Send className="w-4 h-4 mr-2" /> Enviar Mensagem
+            <Button type="submit" size="lg" disabled={busy} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-red font-bold uppercase tracking-wide">
+              <Send className="w-4 h-4 mr-2" /> {busy ? "Enviando..." : "Solicitar Orçamento"}
             </Button>
           </form>
 

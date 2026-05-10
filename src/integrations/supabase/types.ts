@@ -323,37 +323,55 @@ export type Database = {
       }
       estoque_itens: {
         Row: {
+          categoria_uso: string
           codigo: string | null
           created_at: string
           descricao: string
+          descricao_produto: string | null
           id: string
           localizacao: string | null
+          produtos_associados: string[]
           quantidade: number
           quantidade_minima: number
           unidade: string
           updated_at: string
+          usabilidade: string | null
+          valor_compra: number
+          valor_venda: number
         }
         Insert: {
+          categoria_uso?: string
           codigo?: string | null
           created_at?: string
           descricao: string
+          descricao_produto?: string | null
           id?: string
           localizacao?: string | null
+          produtos_associados?: string[]
           quantidade?: number
           quantidade_minima?: number
           unidade?: string
           updated_at?: string
+          usabilidade?: string | null
+          valor_compra?: number
+          valor_venda?: number
         }
         Update: {
+          categoria_uso?: string
           codigo?: string | null
           created_at?: string
           descricao?: string
+          descricao_produto?: string | null
           id?: string
           localizacao?: string | null
+          produtos_associados?: string[]
           quantidade?: number
           quantidade_minima?: number
           unidade?: string
           updated_at?: string
+          usabilidade?: string | null
+          valor_compra?: number
+          valor_venda?: number
         }
         Relationships: []
       }
@@ -483,62 +501,80 @@ export type Database = {
         Row: {
           cidade: string
           cliente_email: string | null
+          cliente_id: string | null
           cliente_nome: string
           cliente_telefone: string | null
           commission_value: number
           contrato_id: string | null
           created_at: string
-          criado_por: string
+          criado_por: string | null
           descricao: string | null
           endereco: string
           estado: string
           id: string
+          origem: string
           servico_solicitado: string
+          setor_responsavel: string | null
           status: string
+          tipo_servico: string
           updated_at: string
           validade_dias: number
           valor_instalacao: number
+          valor_mensal: number
           valor_total: number
+          vendedor_id: string | null
         }
         Insert: {
           cidade: string
           cliente_email?: string | null
+          cliente_id?: string | null
           cliente_nome: string
           cliente_telefone?: string | null
           commission_value?: number
           contrato_id?: string | null
           created_at?: string
-          criado_por: string
+          criado_por?: string | null
           descricao?: string | null
           endereco: string
           estado?: string
           id?: string
+          origem?: string
           servico_solicitado: string
+          setor_responsavel?: string | null
           status?: string
+          tipo_servico?: string
           updated_at?: string
           validade_dias?: number
           valor_instalacao?: number
+          valor_mensal?: number
           valor_total?: number
+          vendedor_id?: string | null
         }
         Update: {
           cidade?: string
           cliente_email?: string | null
+          cliente_id?: string | null
           cliente_nome?: string
           cliente_telefone?: string | null
           commission_value?: number
           contrato_id?: string | null
           created_at?: string
-          criado_por?: string
+          criado_por?: string | null
           descricao?: string | null
           endereco?: string
           estado?: string
           id?: string
+          origem?: string
           servico_solicitado?: string
+          setor_responsavel?: string | null
           status?: string
+          tipo_servico?: string
           updated_at?: string
           validade_dias?: number
           valor_instalacao?: number
+          valor_mensal?: number
           valor_total?: number
+          vendedor_id?: string | null
         }
         Relationships: [
           {
@@ -788,6 +824,54 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vendedor_comissoes: {
+        Row: {
+          created_at: string
+          data_prevista: string | null
+          id: string
+          observacao: string | null
+          orcamento_id: string | null
+          ordem_servico_id: string | null
+          parcela_num: number
+          parcela_total: number
+          status: string
+          tipo: string
+          updated_at: string
+          valor: number
+          vendedor_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_prevista?: string | null
+          id?: string
+          observacao?: string | null
+          orcamento_id?: string | null
+          ordem_servico_id?: string | null
+          parcela_num?: number
+          parcela_total?: number
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor?: number
+          vendedor_id: string
+        }
+        Update: {
+          created_at?: string
+          data_prevista?: string | null
+          id?: string
+          observacao?: string | null
+          orcamento_id?: string | null
+          ordem_servico_id?: string | null
+          parcela_num?: number
+          parcela_total?: number
+          status?: string
+          tipo?: string
+          updated_at?: string
+          valor?: number
+          vendedor_id?: string
         }
         Relationships: []
       }
