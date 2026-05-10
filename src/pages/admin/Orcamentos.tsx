@@ -38,19 +38,24 @@ const Orcamentos = () => {
 
   const [list, setList] = useState<Orcamento[]>([]);
   const [estoque, setEstoque] = useState<ItemEstoque[]>([]);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [vendedores, setVendedores] = useState<UserMin[]>([]);
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [validadeFiltro, setValidadeFiltro] = useState<"todos" | "vigentes" | "vencidos">("todos");
+  const [origemFiltro, setOrigemFiltro] = useState<"todos" | "site" | "interno">("todos");
   const [open, setOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [reportData, setReportData] = useState<{ orc: Orcamento; itens: ItemOrc[] } | null>(null);
   const [editing, setEditing] = useState<Orcamento | null>(null);
   const [itens, setItens] = useState<ItemOrc[]>([]);
   const [form, setForm] = useState({
-    cliente_nome: "", cliente_email: "", cliente_telefone: "",
+    cliente_id: "", cliente_nome: "", cliente_email: "", cliente_telefone: "",
     endereco: "", cidade: "", estado: "SP",
     servico_solicitado: "", descricao: "",
     valor_instalacao: "", status: "pendente", validade_dias: "30",
+    tipo_servico: "avulso", valor_mensal: "",
+    setor_responsavel: "", vendedor_id: "",
   });
   const [busy, setBusy] = useState(false);
 
@@ -62,10 +67,35 @@ const Orcamentos = () => {
     setList((data ?? []) as Orcamento[]);
   };
   const loadEstoque = async () => {
-    const { data } = await supabase.from("estoque_itens").select("id,descricao,codigo,unidade").order("descricao");
+    const { data } = await supabase.from("estoque_itens").select("id,descricao,codigo,unidade,valor_venda").order("descricao");
     setEstoque((data ?? []) as ItemEstoque[]);
   };
-  useEffect(() => { load(); loadEstoque(); }, []);
+  const loadClientes = async () => {
+    const { data } = await supabase.from("clientes").select("id,name,email,phone,address,city,state").order("name");
+    setClientes((data ?? []) as Cliente[]);
+  };
+  const loadVendedores = async () => {
+    const { data: rolesData } = await supabase.from("user_roles").select("user_id").eq("role", "vendedor");
+    const ids = (rolesData ?? []).map((r: any) => r.user_id);
+    if (ids.length === 0) { setVendedores([]); return; }
+    const { data: profs } = await supabase.from("profiles").select("user_id,full_name").in("user_id", ids);
+    setVendedores((profs ?? []) as UserMin[]);
+  };
+  useEffect(() => { load(); loadEstoque(); loadClientes(); loadVendedores(); }, []);
+
+  const pickCliente = (id: string) => {
+    if (id === "manual") {
+      setForm(f => ({ ...f, cliente_id: "" }));
+      return;
+    }
+    const c = clientes.find(x => x.id === id);
+    if (!c) return;
+    setForm(f => ({
+      ...f, cliente_id: c.id,
+      cliente_nome: c.name, cliente_email: c.email ?? "", cliente_telefone: c.phone ?? "",
+      endereco: c.address ?? "", cidade: c.city ?? "", estado: c.state ?? "SP",
+    }));
+  };
 
   const openNew = () => {
     setEditing(null);
