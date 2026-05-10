@@ -271,6 +271,14 @@ const Orcamentos = () => {
               <SelectItem value="vencidos">Vencidos</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={origemFiltro} onValueChange={(v: any) => setOrigemFiltro(v)}>
+            <SelectTrigger className="md:w-44"><SelectValue placeholder="Origem" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todas origens</SelectItem>
+              <SelectItem value="site">Site (público)</SelectItem>
+              <SelectItem value="interno">Interno</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </Card>
 
