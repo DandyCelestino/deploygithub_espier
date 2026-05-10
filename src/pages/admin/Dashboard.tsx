@@ -8,10 +8,13 @@ import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
+const moeda = (n: number) => `R$ ${Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
 const Dashboard = () => {
   const { user, roles, hasRole } = useAuth();
   const [stats, setStats] = useState<Record<string, number>>({});
   const [tecnicoOS, setTecnicoOS] = useState<Record<string, any[]>>({});
+  const [vendedorComissoes, setVendedorComissoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
