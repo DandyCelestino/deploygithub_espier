@@ -95,8 +95,8 @@ const Contact = () => {
                 className={inputCls + " h-auto resize-none"}
               />
             </div>
-            <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-red font-bold uppercase tracking-wide">
-              <Send className="w-4 h-4 mr-2" /> Enviar Mensagem
+            <Button type="submit" size="lg" disabled={busy} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-red font-bold uppercase tracking-wide">
+              <Send className="w-4 h-4 mr-2" /> {busy ? "Enviando..." : "Solicitar Orçamento"}
             </Button>
           </form>
 
