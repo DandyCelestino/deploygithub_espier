@@ -100,16 +100,26 @@ const Orcamentos = () => {
   const openNew = () => {
     setEditing(null);
     setItens([]);
-    setForm({ cliente_nome: "", cliente_email: "", cliente_telefone: "", endereco: "", cidade: "", estado: "SP", servico_solicitado: "", descricao: "", valor_instalacao: "", status: "pendente", validade_dias: "30" });
+    setForm({
+      cliente_id: "", cliente_nome: "", cliente_email: "", cliente_telefone: "",
+      endereco: "", cidade: "", estado: "SP", servico_solicitado: "", descricao: "",
+      valor_instalacao: "", status: "pendente", validade_dias: "30",
+      tipo_servico: "avulso", valor_mensal: "", setor_responsavel: "", vendedor_id: "",
+    });
     setOpen(true);
   };
   const openEdit = async (o: Orcamento) => {
     setEditing(o);
     setForm({
+      cliente_id: o.cliente_id ?? "",
       cliente_nome: o.cliente_nome, cliente_email: o.cliente_email ?? "", cliente_telefone: o.cliente_telefone ?? "",
       endereco: o.endereco, cidade: o.cidade, estado: o.estado, servico_solicitado: o.servico_solicitado,
       descricao: o.descricao ?? "", valor_instalacao: String(o.valor_instalacao), status: o.status,
       validade_dias: String(o.validade_dias ?? 30),
+      tipo_servico: o.tipo_servico ?? "avulso",
+      valor_mensal: String(o.valor_mensal ?? 0),
+      setor_responsavel: o.setor_responsavel ?? "",
+      vendedor_id: o.vendedor_id ?? "",
     });
     const { data } = await supabase.from("orcamento_itens").select("*").eq("orcamento_id", o.id);
     setItens((data ?? []) as ItemOrc[]);
@@ -121,7 +131,10 @@ const Orcamentos = () => {
   const updateItem = (idx: number, patch: Partial<ItemOrc>) => setItens(itens.map((it, i) => i === idx ? { ...it, ...patch } : it));
   const pickEstoque = (idx: number, estId: string) => {
     const e = estoque.find(x => x.id === estId);
-    if (e) updateItem(idx, { estoque_item_id: e.id, descricao: e.descricao, unidade: e.unidade });
+    if (e) updateItem(idx, {
+      estoque_item_id: e.id, descricao: e.descricao, unidade: e.unidade,
+      valor_total: Number((e as any).valor_venda ?? 0),
+    });
   };
 
   const save = async () => {
@@ -129,7 +142,8 @@ const Orcamentos = () => {
       toast({ title: "Preencha cliente e serviço", variant: "destructive" }); return;
     }
     setBusy(true);
-    const payload = {
+    const payload: any = {
+      cliente_id: form.cliente_id || null,
       cliente_nome: form.cliente_nome,
       cliente_email: form.cliente_email || null,
       cliente_telefone: form.cliente_telefone || null,
@@ -140,6 +154,10 @@ const Orcamentos = () => {
       valor_total: totalGeral,
       status: form.status,
       validade_dias: Number(form.validade_dias) || 30,
+      tipo_servico: form.tipo_servico,
+      valor_mensal: Number(form.valor_mensal) || 0,
+      setor_responsavel: form.setor_responsavel || null,
+      vendedor_id: form.vendedor_id || null,
     };
     let orcId = editing?.id;
     const res = editing
