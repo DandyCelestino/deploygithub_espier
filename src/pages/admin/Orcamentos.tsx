@@ -299,6 +299,7 @@ const Orcamentos = () => {
             {(() => {
               const filtered = list.filter(o => {
                 if (statusFiltro !== "todos" && o.status !== statusFiltro) return false;
+                if (origemFiltro !== "todos" && (o.origem ?? "interno") !== origemFiltro) return false;
                 if (validadeFiltro !== "todos") {
                   const d = new Date(o.created_at);
                   d.setDate(d.getDate() + (o.validade_dias ?? 30));
@@ -314,8 +315,16 @@ const Orcamentos = () => {
               });
               if (filtered.length === 0) return <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">Nenhum orçamento encontrado.</TableCell></TableRow>;
               return filtered.map(o => (
-              <TableRow key={o.id}>
-                <TableCell className="font-medium">{o.cliente_nome}</TableCell>
+              <TableRow key={o.id} className={o.origem === "site" && !o.setor_responsavel ? "bg-amber-50/40" : ""}>
+                <TableCell className="font-medium">
+                  {o.cliente_nome}
+                  <div className="flex gap-1 mt-1 flex-wrap">
+                    {o.origem === "site" && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">Site</span>}
+                    {o.tipo_servico === "mensalidade" && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Mensal</span>}
+                    {o.origem === "site" && !o.setor_responsavel && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Sem setor</span>}
+                    {o.setor_responsavel && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">{o.setor_responsavel}</span>}
+                  </div>
+                </TableCell>
                 <TableCell className="max-w-xs truncate">{o.servico_solicitado}</TableCell>
                 {!isTecnico && <TableCell>{moeda(o.valor_total)}</TableCell>}
                 {isTecnico && <TableCell>{moeda(o.valor_instalacao)}</TableCell>}
