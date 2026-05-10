@@ -1,108 +1,120 @@
+## Escopo Geral
 
-
-## Plano: Evolução do Sistema ESPIER.TELECOM
-
-### Contexto Importante
-O projeto roda em **React + Vite + Lovable Cloud** (Supabase). Tecnologias como Next.js, NestJS, Prisma, AWS S3 e Docker **nao sao compativeis** com esta plataforma. O plano adapta toda a arquitetura solicitada para o stack atual, mantendo a mesma funcionalidade.
+Esta fase amplia o ERP com fluxo financeiro automático para vendedores, expansão do cadastro de estoque e integração do formulário público de orçamento com a área restrita.
 
 ---
 
-### Fase 1 -- Banco de Dados (Migracao)
+## 1. Estoque — Cadastro Profissional
 
-Novas tabelas e alteracoes:
+Ampliar `estoque_itens` e a tela `Estoque.tsx`:
 
-1. **Adicionar role `vendedor`** ao enum `app_role`
-2. **Tabela `clientes`** -- id, name, email, phone, document, created_at
-3. **Tabela `contratos`** -- id, client_id (FK clientes), vendedor_id, status (em_negociacao/fechado/cancelado), total_value, created_at
-4. **Tabela `activity_logs`** -- id, user_id, action, entity_type, entity_id, details (jsonb), created_at -- centraliza todos os relatorios automaticos
-5. **Adicionar `commission_value`** na tabela `orcamentos`
-6. **Adicionar `contrato_id`** (FK) na tabela `orcamentos`
-7. **RLS policies** para todas as novas tabelas seguindo RBAC
-8. **Trigger automatico**: quando contrato muda para `fechado`, cria orcamento automaticamente
-9. **Trigger automatico**: quando orcamento muda para `aprovado`, cria ordem de servico (ja existe no frontend, sera movido para DB trigger)
-10. **Funcao `log_activity`** -- SECURITY DEFINER para registrar acoes automaticamente
+**Novos campos:**
+- `valor_compra` (numeric) — custo do produto
+- `valor_venda` (numeric) — preço de venda
+- `descricao_produto` (text) — descrição detalhada
+- `usabilidade` (text) — para que serve / aplicação
+- `produtos_associados` (uuid[]) — referências a outros itens do estoque
+- `categoria_uso` (text: "instalacao" | "orcamento" | "ambos") — botão para designar onde o item entra
 
----
-
-### Fase 2 -- RBAC e Controle de Acesso
-
-- **ADMIN**: Acesso total
-- **GERENTE**: Avaliar servicos, aprovar/reprovar, relatorios
-- **TECNICO**: Atualizar OS, relatorios tecnicos
-- **VENDEDOR**: CRUD contratos proprios, solicitar orcamento, dashboard de vendas
-- **FINANCEIRO**: Visualizar financeiro (ja existe)
-- **CLIENTE**: Acesso via tracking_code apenas (ja existe em `/acompanhar`)
-
-Regra adicional: OS com status `encerrada` bloqueia acesso do cliente no tracking.
+**UI:** formulário expandido com abas (Dados / Descrição / Associados), tabela mostra qtd em estoque + valores (visíveis para admin/gerente/financeiro; técnico vê apenas qtd e descrição).
 
 ---
 
-### Fase 3 -- Frontend (Novas Paginas)
+## 2. Orçamentos — Cliente do Cadastro
 
-1. **`/admin/clientes`** -- CRUD de clientes (admin/gerente/vendedor)
-2. **`/admin/contratos`** -- Gestao de contratos com fluxo de status
-3. **`/admin/dashboard-vendedor`** -- Dashboard do vendedor: contratos, comissoes, valores a receber
-4. **`/admin/logs`** -- Visualizacao de logs de atividade (admin/gerente)
-5. **Atualizar `AdminSidebar`** com novos menus por role
-6. **Atualizar `Dashboard.tsx`** com cards especificos por perfil (vendedor)
-7. **Atualizar `AcompanharOS.tsx`** para bloquear acesso quando OS estiver encerrada
+No diálogo "Novo orçamento" em `Orcamentos.tsx`:
+- Adicionar `Select` carregando `clientes` cadastrados
+- Ao selecionar, preencher automaticamente nome, e-mail, telefone, endereço, cidade, estado
+- Manter opção de digitar manualmente (cliente novo)
 
 ---
 
-### Fase 4 -- Automacoes
+## 3. Módulo Vendedor — Painel & Comissões
 
-Todas implementadas como **database triggers/functions**:
-- Contrato fechado → cria orcamento vinculado
-- Orcamento aprovado → cria OS com tracking_code
-- Qualquer mudanca de status → registra em `activity_logs`
-- OS encerrada → bloqueia tracking do cliente
+**Tabelas novas:**
+- `vendedor_comissoes`: `vendedor_id`, `orcamento_id`, `ordem_servico_id`, `tipo` (avulsa/recorrente), `valor`, `status` (em_execucao / a_receber / pago), `parcela_num`, `parcela_total`, `data_prevista`
+- Nas `visitas`, exibir histórico vinculado ao vendedor logado
+
+**Triggers automáticos:**
+- Quando `ordens_servico.status = 'aberta'` (gerente aprovou OS): criar registro `em_execucao` na comissão do vendedor
+- Quando `supervisao_aprovada = true` (OS finalizada e vistoriada): mover comissão para `a_receber`
+- Se serviço **avulso**: 1 parcela = 10% do `valor_instalacao`
+- Se serviço **com mensalidade** (novo flag `tipo_servico` em orçamento + `valor_mensal`): 
+  - gerar 3 parcelas mensais (10% do valor mensal) em `vendedor_comissoes`
+  - gerar contas recorrentes em `financeiro_contas` (receita do cliente, mês a mês, marcadas com `referencia_tipo='mensalidade'`)
+
+**Dashboard do Vendedor (`Dashboard.tsx`):** 
+- Card "Em execução" (aprovadas, ainda não instaladas)
+- Card "A receber" (instaladas, aguardando pagamento)
+- Card "Recebidas" 
+- Tabela com cada etapa: visita → orçamento → OS → técnico executor → status atual
+
+**Página Visitas:** mostrar baixa de estoque vinculada (via OS) e técnico executor.
 
 ---
 
-### Fase 5 -- Menu Dinamico por Perfil
+## 4. Site Público → Orçamento Imediato
 
-O sidebar mostrara itens diferentes por role:
-- **Vendedor** ve: Dashboard Vendedor, Clientes, Contratos
-- **Tecnico** ve: Dashboard, Ordens, Relatorios Diarios
-- **Gerente/Admin** ve: tudo
-- **Financeiro** ve: Dashboard, Financeiro, Estoque
+`src/components/Contact.tsx` (formulário público):
+- Ao enviar, criar registro em `orcamentos` com `status='pendente'`, `criado_por=NULL` (origem pública), campo novo `origem='site'`, `setor_responsavel=NULL`
+- Política RLS: permitir INSERT anônimo apenas com `origem='site'` e `status='pendente'`
+
+**Tela Orçamentos (admin):**
+- Filtro novo "Origem" (site / interno)
+- Campo "Setor responsável" (Select: comercial/tecnico/financeiro/gerencia) — apenas admin pode designar
+- Badge visual quando origem=site e ainda sem setor designado
 
 ---
 
-### Detalhes Tecnicos
+## 5. Migração SQL (resumo)
 
-```text
-Fluxo de Automacao:
-VENDEDOR cria CONTRATO
-        |
-    status = FECHADO
-        |
-  [DB Trigger] → cria ORCAMENTO (pendente)
-        |
-  ADMIN aprova ORCAMENTO
-        |
-  [DB Trigger] → cria ORDEM DE SERVICO (aberta)
-        |
-  TECNICO executa → aguardando_supervisao
-        |
-  GERENTE supervisiona → concluida → valor_liberado
-        |
-  status = encerrada → bloqueia tracking
+```sql
+ALTER TABLE estoque_itens 
+  ADD COLUMN valor_compra numeric DEFAULT 0,
+  ADD COLUMN valor_venda numeric DEFAULT 0,
+  ADD COLUMN descricao_produto text,
+  ADD COLUMN usabilidade text,
+  ADD COLUMN produtos_associados uuid[] DEFAULT '{}',
+  ADD COLUMN categoria_uso text DEFAULT 'ambos';
+
+ALTER TABLE orcamentos
+  ADD COLUMN cliente_id uuid,
+  ADD COLUMN tipo_servico text DEFAULT 'avulso',  -- avulso | mensalidade
+  ADD COLUMN valor_mensal numeric DEFAULT 0,
+  ADD COLUMN origem text DEFAULT 'interno',       -- interno | site
+  ADD COLUMN setor_responsavel text,
+  ADD COLUMN vendedor_id uuid;
+
+CREATE TABLE vendedor_comissoes (...);
+
+-- Triggers: 
+-- on_os_aprovada_para_execucao  → cria comissao em_execucao
+-- on_os_finalizada_para_receber → move para a_receber + cria recorrência se mensalidade
+
+-- Política RLS para INSERT público em orçamentos (origem=site)
 ```
 
-Arquivos novos:
-- `src/pages/admin/Clientes.tsx`
-- `src/pages/admin/Contratos.tsx`
-- `src/pages/admin/DashboardVendedor.tsx`
-- `src/pages/admin/Logs.tsx`
-- 1 migration SQL (tabelas + triggers + functions + RLS)
+---
 
-Arquivos editados:
-- `src/contexts/AuthContext.tsx` (adicionar vendedor ao tipo)
-- `src/components/admin/AdminSidebar.tsx` (menu dinamico por role)
-- `src/App.tsx` (novas rotas)
-- `src/components/ProtectedRoute.tsx` (adicionar vendedor)
-- `src/pages/admin/Orcamentos.tsx` (remover criacao manual de OS, link com contrato)
-- `src/pages/AcompanharOS.tsx` (bloquear acesso quando encerrada)
-- `src/pages/admin/Dashboard.tsx` (adicionar resumo vendedor)
+## 6. Arquivos Afetados
 
+**Migrations:** 1 nova migration consolidada.
+
+**Editar:**
+- `src/pages/admin/Estoque.tsx` (form expandido + colunas)
+- `src/pages/admin/Orcamentos.tsx` (select de cliente + tipo_servico + setor)
+- `src/pages/admin/Visitas.tsx` (histórico + técnico vinculado)
+- `src/pages/admin/Dashboard.tsx` (cards do vendedor)
+- `src/components/Contact.tsx` (envio público → orçamento)
+
+**Criar:**
+- `src/pages/admin/Comissoes.tsx` + rota `/admin/comissoes` (admin/gerente/vendedor)
+- `src/components/admin/AdminLayout.tsx` (item de menu)
+
+---
+
+## Confirmações antes de implementar
+
+1. **Comissão recorrente:** "3 meses de 10% do serviço" — entendo como 10% do **valor mensal** por 3 meses consecutivos. Confirma?
+2. **Cobrança recorrente do cliente:** gerar quantas parcelas? (12? indefinido até cancelar contrato? sugiro 12 meses inicialmente)
+3. **Setor responsável (orçamentos do site):** apenas Admin pode designar, ou Gerente também?
