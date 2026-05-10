@@ -114,6 +114,9 @@ const Dashboard = () => {
               <>
                 <StatCard to="/admin/contratos" icon={TrendingUp} label="Meus contratos" value={stats.meusContratos ?? 0} accent="text-emerald-600 bg-emerald-50" />
                 <StatCard to="/admin/visitas" icon={Calendar} label="Minhas visitas" value={stats.minhasVisitas ?? 0} accent="text-blue-600 bg-blue-50" />
+                <ValueCard to="/admin/comissoes" icon={Wrench} label="Em execução" value={moeda(stats.comissaoEmExecucao ?? 0)} accent="text-amber-600 bg-amber-50" />
+                <ValueCard to="/admin/comissoes" icon={DollarSign} label="A receber" value={moeda(stats.comissaoAReceber ?? 0)} accent="text-emerald-600 bg-emerald-50" />
+                <ValueCard to="/admin/comissoes" icon={CheckCircle2} label="Comissões pagas" value={moeda(stats.comissaoPaga ?? 0)} accent="text-slate-600 bg-slate-100" />
               </>
             )}
             {hasRole("admin") && (
