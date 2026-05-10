@@ -16,8 +16,12 @@ interface Orcamento {
   endereco: string; cidade: string; estado: string; servico_solicitado: string;
   valor_total: number; valor_instalacao: number; status: string; created_at: string;
   descricao: string | null; validade_dias?: number;
+  cliente_id?: string | null; tipo_servico?: string; valor_mensal?: number;
+  origem?: string; setor_responsavel?: string | null; vendedor_id?: string | null;
 }
-interface ItemEstoque { id: string; descricao: string; codigo: string | null; unidade: string; }
+interface ItemEstoque { id: string; descricao: string; codigo: string | null; unidade: string; valor_venda?: number; }
+interface Cliente { id: string; name: string; email: string | null; phone: string | null; address: string | null; city: string | null; state: string | null; }
+interface UserMin { user_id: string; full_name: string; }
 interface ItemOrc {
   id?: string; orcamento_id?: string; estoque_item_id: string | null;
   descricao: string; quantidade: number; unidade: string; valor_total: number;
