@@ -29,6 +29,7 @@ import Visitas from "./pages/admin/Visitas.tsx";
 import Agenda from "./pages/admin/Agenda.tsx";
 import Permissoes from "./pages/admin/Permissoes.tsx";
 import Historico from "./pages/admin/Historico.tsx";
+import Comissoes from "./pages/admin/Comissoes.tsx";
 
 const queryClient = new QueryClient();
 
