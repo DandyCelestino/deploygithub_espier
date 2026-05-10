@@ -64,6 +64,12 @@ const Dashboard = () => {
       if (hasRole("vendedor")) {
         run(supabase.from("contratos").select("id", { count: "exact", head: true }).eq("vendedor_id", user.id).then(({ count }) => { out.meusContratos = count ?? 0; }));
         run(supabase.from("visitas").select("id", { count: "exact", head: true }).eq("vendedor_id", user.id).eq("status", "agendada").then(({ count }) => { out.minhasVisitas = count ?? 0; }));
+        run(supabase.from("vendedor_comissoes" as any).select("*").eq("vendedor_id", user.id).order("data_prevista", { ascending: true }).then(({ data }: any) => {
+          setVendedorComissoes(data ?? []);
+          out.comissaoEmExecucao = (data ?? []).filter((c: any) => c.status === "em_execucao").reduce((s: number, c: any) => s + Number(c.valor), 0);
+          out.comissaoAReceber = (data ?? []).filter((c: any) => c.status === "a_receber").reduce((s: number, c: any) => s + Number(c.valor), 0);
+          out.comissaoPaga = (data ?? []).filter((c: any) => c.status === "pago").reduce((s: number, c: any) => s + Number(c.valor), 0);
+        }));
       }
 
       await Promise.all(tasks);
