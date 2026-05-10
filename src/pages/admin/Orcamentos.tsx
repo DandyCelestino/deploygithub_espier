@@ -352,6 +352,16 @@ const Orcamentos = () => {
         <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editing ? "Editar orçamento" : "Novo orçamento"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
+            <div>
+              <label className="text-xs text-slate-600">Cliente cadastrado</label>
+              <Select value={form.cliente_id || "manual"} onValueChange={pickCliente}>
+                <SelectTrigger><SelectValue placeholder="Selecionar cliente" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="manual">— Cliente novo / manual —</SelectItem>
+                  {clientes.map(c => <SelectItem key={c.id} value={c.id}>{c.name}{c.phone ? ` · ${c.phone}` : ""}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             <Input placeholder="Cliente *" value={form.cliente_nome} onChange={e => setForm({ ...form, cliente_nome: e.target.value })} />
             <div className="grid grid-cols-2 gap-3">
               <Input placeholder="E-mail" value={form.cliente_email} onChange={e => setForm({ ...form, cliente_email: e.target.value })} />
@@ -364,6 +374,51 @@ const Orcamentos = () => {
             </div>
             <Input placeholder="Serviço solicitado *" value={form.servico_solicitado} onChange={e => setForm({ ...form, servico_solicitado: e.target.value })} />
             <Textarea placeholder="Descrição / detalhes" rows={3} value={form.descricao} onChange={e => setForm({ ...form, descricao: e.target.value })} />
+
+            {hasRole("admin", "gerente") && (
+              <div className="grid grid-cols-3 gap-3 border-t pt-3">
+                <div>
+                  <label className="text-xs text-slate-600">Tipo de serviço</label>
+                  <Select value={form.tipo_servico} onValueChange={v => setForm({ ...form, tipo_servico: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="avulso">Avulso (1x)</SelectItem>
+                      <SelectItem value="mensalidade">Com mensalidade</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-xs text-slate-600">Valor mensal (R$)</label>
+                  <Input type="number" step="0.01" disabled={form.tipo_servico !== "mensalidade"} value={form.valor_mensal} onChange={e => setForm({ ...form, valor_mensal: e.target.value })} />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-600">Vendedor responsável</label>
+                  <Select value={form.vendedor_id || "none"} onValueChange={v => setForm({ ...form, vendedor_id: v === "none" ? "" : v })}>
+                    <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">— Nenhum —</SelectItem>
+                      {vendedores.map(v => <SelectItem key={v.user_id} value={v.user_id}>{v.full_name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {hasRole("admin") && (
+              <div>
+                <label className="text-xs text-slate-600">Setor responsável (designar)</label>
+                <Select value={form.setor_responsavel || "none"} onValueChange={v => setForm({ ...form, setor_responsavel: v === "none" ? "" : v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar setor" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">— Não designado —</SelectItem>
+                    <SelectItem value="comercial">Comercial</SelectItem>
+                    <SelectItem value="tecnico">Técnico</SelectItem>
+                    <SelectItem value="financeiro">Financeiro</SelectItem>
+                    <SelectItem value="gerencia">Gerência</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             {/* Itens (estoque) */}
             <div className="border-t pt-3">
