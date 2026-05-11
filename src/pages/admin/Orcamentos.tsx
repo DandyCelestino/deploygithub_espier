@@ -247,7 +247,7 @@ const Orcamentos = () => {
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Orçamentos</h1>
           <p className="text-sm text-slate-500 mt-1">Aprove orçamentos para gerar Ordens de Serviço. Validade padrão de 30 dias.</p>
         </div>
-        {hasRole("admin", "gerente") && <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> Novo orçamento</Button>}
+        {hasRole("admin", "gerente", "vendedor") && <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> {hasRole("admin","gerente") ? "Novo orçamento" : "Solicitar orçamento"}</Button>}
       </div>
 
       <Card className="p-4 mb-4">
