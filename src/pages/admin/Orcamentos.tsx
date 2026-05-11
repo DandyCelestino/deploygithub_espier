@@ -142,6 +142,7 @@ const Orcamentos = () => {
       toast({ title: "Preencha cliente e serviço", variant: "destructive" }); return;
     }
     setBusy(true);
+    const isVendedorOnly = hasRole("vendedor") && !hasRole("admin", "gerente");
     const payload: any = {
       cliente_id: form.cliente_id || null,
       cliente_nome: form.cliente_nome,
@@ -152,12 +153,13 @@ const Orcamentos = () => {
       descricao: form.descricao || null,
       valor_instalacao: Number(form.valor_instalacao) || 0,
       valor_total: totalGeral,
-      status: form.status,
+      status: isVendedorOnly ? "solicitado" : form.status,
       validade_dias: Number(form.validade_dias) || 30,
       tipo_servico: form.tipo_servico,
       valor_mensal: Number(form.valor_mensal) || 0,
-      setor_responsavel: form.setor_responsavel || null,
-      vendedor_id: form.vendedor_id || null,
+      setor_responsavel: isVendedorOnly ? "comercial" : (form.setor_responsavel || null),
+      vendedor_id: isVendedorOnly ? user!.id : (form.vendedor_id || null),
+      origem: isVendedorOnly ? "vendedor" : "interno",
     };
     let orcId = editing?.id;
     const res = editing
@@ -247,7 +249,7 @@ const Orcamentos = () => {
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Orçamentos</h1>
           <p className="text-sm text-slate-500 mt-1">Aprove orçamentos para gerar Ordens de Serviço. Validade padrão de 30 dias.</p>
         </div>
-        {hasRole("admin", "gerente") && <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> Novo orçamento</Button>}
+        {hasRole("admin", "gerente", "vendedor") && <Button onClick={openNew}><Plus className="w-4 h-4 mr-1.5" /> {hasRole("admin","gerente") ? "Novo orçamento" : "Solicitar orçamento"}</Button>}
       </div>
 
       <Card className="p-4 mb-4">

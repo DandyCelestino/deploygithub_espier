@@ -4,8 +4,12 @@ import { Briefcase, Send, CheckCircle2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
+const CARGOS = ["Técnico", "Gerente", "Vendedor", "Call Center"];
+const MODALIDADES = ["Freelance", "Home Office", "CLT", "Colaborador", "Parceiro", "Fornecedor"];
 
 const candidaturaSchema = z.object({
   nome_completo: z.string().trim().min(3, "Nome muito curto").max(120),
@@ -172,10 +176,20 @@ const TrabalheConosco = () => {
 
             <div className="grid sm:grid-cols-2 gap-4">
               <Field label="Cargo desejado *">
-                <Input className={inputCls} placeholder="Ex: Técnico de Telecom" value={form.cargo_desejado} onChange={update("cargo_desejado")} required maxLength={120} />
+                <Select value={form.cargo_desejado} onValueChange={(v) => setForm(s => ({ ...s, cargo_desejado: v }))}>
+                  <SelectTrigger className={inputCls}><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                  <SelectContent>
+                    {CARGOS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </Field>
-              <Field label="Disponibilidade *">
-                <Input className={inputCls} placeholder="Ex: Imediata / 30 dias" value={form.disponibilidade} onChange={update("disponibilidade")} required maxLength={120} />
+              <Field label="Modalidade *">
+                <Select value={form.disponibilidade} onValueChange={(v) => setForm(s => ({ ...s, disponibilidade: v }))}>
+                  <SelectTrigger className={inputCls}><SelectValue placeholder="Selecione..." /></SelectTrigger>
+                  <SelectContent>
+                    {MODALIDADES.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </Field>
             </div>
 
