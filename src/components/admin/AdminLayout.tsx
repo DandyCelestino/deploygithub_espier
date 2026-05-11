@@ -30,7 +30,7 @@ const items: NavItem[] = [
   { title: "Clientes", url: "/admin/clientes", icon: Users, roles: ["admin","gerente","vendedor"] },
   { title: "Visitas", url: "/admin/visitas", icon: MapPin, roles: ["admin","gerente","vendedor"] },
   { title: "Contratos", url: "/admin/contratos", icon: FileText, roles: ["admin","gerente","vendedor","financeiro"] },
-  { title: "Orçamentos", url: "/admin/orcamentos", icon: ClipboardList, roles: ["admin","gerente","vendedor","financeiro","tecnico"] },
+  { title: "Orçamentos", url: "/admin/orcamentos", icon: ClipboardList, roles: ["admin","gerente","vendedor","financeiro"] },
   { title: "Ordens de Serviço", url: "/admin/ordens", icon: Wrench, roles: ["admin","gerente","tecnico","financeiro"] },
   { title: "Estoque", url: "/admin/estoque", icon: Package, roles: ["admin","gerente","tecnico","financeiro"] },
   { title: "Financeiro", url: "/admin/financeiro", icon: DollarSign, roles: ["admin","gerente","financeiro"] },
