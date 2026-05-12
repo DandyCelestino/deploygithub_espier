@@ -35,6 +35,7 @@ const items: NavItem[] = [
   { title: "Estoque", url: "/admin/estoque", icon: Package, roles: ["admin","gerente","tecnico","financeiro"] },
   { title: "Financeiro", url: "/admin/financeiro", icon: DollarSign, roles: ["admin","gerente","financeiro"] },
   { title: "Comissões", url: "/admin/comissoes", icon: BadgeDollarSign, roles: ["admin","gerente","vendedor","financeiro"] },
+  { title: "Vendedores · CRM", url: "/admin/vendedores", icon: Briefcase, roles: ["admin","gerente","vendedor"] },
   { title: "Histórico", url: "/admin/historico", icon: History, roles: ["admin","gerente"] },
 ];
 
