@@ -30,6 +30,7 @@ import Agenda from "./pages/admin/Agenda.tsx";
 import Permissoes from "./pages/admin/Permissoes.tsx";
 import Historico from "./pages/admin/Historico.tsx";
 import Comissoes from "./pages/admin/Comissoes.tsx";
+import Vendedores from "./pages/admin/Vendedores.tsx";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App = () => (
             <Route path="permissoes" element={<ProtectedRoute roles={["admin"]}><Permissoes /></ProtectedRoute>} />
             <Route path="historico" element={<ProtectedRoute roles={["admin","gerente"]}><Historico /></ProtectedRoute>} />
             <Route path="comissoes" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro"]}><Comissoes /></ProtectedRoute>} />
+            <Route path="vendedores" element={<ProtectedRoute roles={["admin","gerente","vendedor"]}><Vendedores /></ProtectedRoute>} />
             <Route path="configuracoes" element={<ProtectedRoute roles={["admin"]}><Configuracoes /></ProtectedRoute>} />
           </Route>
 
