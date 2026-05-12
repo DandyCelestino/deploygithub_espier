@@ -464,6 +464,175 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_atividades: {
+        Row: {
+          anexo_url: string | null
+          autor_id: string | null
+          autor_nome: string | null
+          created_at: string
+          data_evento: string
+          descricao: string
+          id: string
+          lead_id: string
+          tipo: string
+        }
+        Insert: {
+          anexo_url?: string | null
+          autor_id?: string | null
+          autor_nome?: string | null
+          created_at?: string
+          data_evento?: string
+          descricao: string
+          id?: string
+          lead_id: string
+          tipo?: string
+        }
+        Update: {
+          anexo_url?: string | null
+          autor_id?: string | null
+          autor_nome?: string | null
+          created_at?: string
+          data_evento?: string
+          descricao?: string
+          id?: string
+          lead_id?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_atividades_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          cidade: string | null
+          cliente_id: string | null
+          contrato_id: string | null
+          created_at: string
+          email: string | null
+          empresa: string | null
+          estado: string | null
+          etapa: string
+          etapa_changed_at: string
+          foto_url: string | null
+          id: string
+          motivo_perda: string | null
+          nome: string
+          observacoes_internas: string | null
+          orcamento_id: string | null
+          ordem_servico_id: string | null
+          origem: string | null
+          prioridade: string
+          proxima_acao: string | null
+          proxima_acao_data: string | null
+          servico_interesse: string | null
+          tags: string[]
+          telefone: string | null
+          ultimo_contato: string | null
+          updated_at: string
+          valor_estimado: number
+          vendedor_id: string
+          vendedor_nome: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          cidade?: string | null
+          cliente_id?: string | null
+          contrato_id?: string | null
+          created_at?: string
+          email?: string | null
+          empresa?: string | null
+          estado?: string | null
+          etapa?: string
+          etapa_changed_at?: string
+          foto_url?: string | null
+          id?: string
+          motivo_perda?: string | null
+          nome: string
+          observacoes_internas?: string | null
+          orcamento_id?: string | null
+          ordem_servico_id?: string | null
+          origem?: string | null
+          prioridade?: string
+          proxima_acao?: string | null
+          proxima_acao_data?: string | null
+          servico_interesse?: string | null
+          tags?: string[]
+          telefone?: string | null
+          ultimo_contato?: string | null
+          updated_at?: string
+          valor_estimado?: number
+          vendedor_id: string
+          vendedor_nome?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          cidade?: string | null
+          cliente_id?: string | null
+          contrato_id?: string | null
+          created_at?: string
+          email?: string | null
+          empresa?: string | null
+          estado?: string | null
+          etapa?: string
+          etapa_changed_at?: string
+          foto_url?: string | null
+          id?: string
+          motivo_perda?: string | null
+          nome?: string
+          observacoes_internas?: string | null
+          orcamento_id?: string | null
+          ordem_servico_id?: string | null
+          origem?: string | null
+          prioridade?: string
+          proxima_acao?: string | null
+          proxima_acao_data?: string | null
+          servico_interesse?: string | null
+          tags?: string[]
+          telefone?: string | null
+          ultimo_contato?: string | null
+          updated_at?: string
+          valor_estimado?: number
+          vendedor_id?: string
+          vendedor_nome?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_orcamento_id_fkey"
+            columns: ["orcamento_id"]
+            isOneToOne: false
+            referencedRelation: "orcamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_ordem_servico_id_fkey"
+            columns: ["ordem_servico_id"]
+            isOneToOne: false
+            referencedRelation: "ordens_servico"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orcamento_itens: {
         Row: {
           created_at: string
@@ -871,6 +1040,39 @@ export type Database = {
           tipo?: string
           updated_at?: string
           valor?: number
+          vendedor_id?: string
+        }
+        Relationships: []
+      }
+      vendedor_metas: {
+        Row: {
+          ano: number
+          created_at: string
+          id: string
+          mes: number
+          meta_valor: number
+          meta_vendas: number
+          updated_at: string
+          vendedor_id: string
+        }
+        Insert: {
+          ano: number
+          created_at?: string
+          id?: string
+          mes: number
+          meta_valor?: number
+          meta_vendas?: number
+          updated_at?: string
+          vendedor_id: string
+        }
+        Update: {
+          ano?: number
+          created_at?: string
+          id?: string
+          mes?: number
+          meta_valor?: number
+          meta_vendas?: number
+          updated_at?: string
           vendedor_id?: string
         }
         Relationships: []
