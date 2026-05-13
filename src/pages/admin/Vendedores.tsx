@@ -644,11 +644,19 @@ function LeadDetalheDialog({
 }: {
   lead: Lead | null; atividades: Atividade[]; onClose: () => void;
   onAddAtividade: (tipo: string, descricao: string) => void;
-  onMover: (etapa: string) => void; onExcluir: () => void; canDelete: boolean;
+  onMover: (etapa: string) => void; onExcluir: () => void;
+  onSave: (patch: Record<string, any>) => void; canDelete: boolean;
 }) {
   const [novoTipo, setNovoTipo] = useState("observacao");
   const [novoTexto, setNovoTexto] = useState("");
+  const [edit, setEdit] = useState<Record<string, any>>({});
+  useEffect(() => { setEdit({}); }, [lead?.id]);
   if (!lead) return null;
+
+  const travado = valorTravado(lead.etapa);
+  const v = (k: string) => (edit[k] !== undefined ? edit[k] : lead[k] ?? "");
+  const set = (k: string, val: any) => setEdit((e) => ({ ...e, [k]: val }));
+  const dirty = Object.keys(edit).length > 0;
 
   return (
     <Dialog open={!!lead} onOpenChange={(o) => !o && onClose()}>
@@ -660,26 +668,47 @@ function LeadDetalheDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <div className="space-y-1.5">
-            {lead.telefone && <p><Phone className="w-3.5 h-3.5 inline mr-1.5 text-slate-400" />{lead.telefone}</p>}
-            {lead.whatsapp && <p><MessageCircle className="w-3.5 h-3.5 inline mr-1.5 text-emerald-500" /><a className="text-emerald-600 underline" href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">{lead.whatsapp}</a></p>}
-            {lead.email && <p>📧 {lead.email}</p>}
-            {lead.cidade && <p><MapPin className="w-3.5 h-3.5 inline mr-1.5 text-slate-400" />{lead.cidade} <a className="text-blue-600 underline ml-1 text-xs" href={`https://www.google.com/maps/search/${encodeURIComponent(lead.cidade)}`} target="_blank" rel="noreferrer">abrir mapa</a></p>}
-          </div>
-          <div className="space-y-1.5">
-            <p><strong>Vendedor:</strong> {lead.vendedor_nome ?? "—"}</p>
-            <p><strong>Serviço:</strong> {lead.servico_interesse ?? "—"}</p>
-            <p><strong>Valor:</strong> <span className="font-mono text-emerald-600">{fmtBRL(Number(lead.valor_estimado || 0))}</span></p>
-            <p><strong>Próxima ação:</strong> {lead.proxima_acao ?? "—"}</p>
-          </div>
-        </div>
-
-        {lead.observacoes_internas && (
-          <div className="bg-amber-50 border border-amber-200 p-3 rounded text-sm text-amber-900">
-            <strong>Notas internas:</strong> {lead.observacoes_internas}
+        {travado && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-2 rounded">
+            🔒 Esta etapa (<strong>{ETAPAS.find(e => e.id === lead.etapa)?.label}</strong>) trava edição de valor e serviço. Movimentações financeiras devem seguir pelo orçamento.
           </div>
         )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <div><Label className="text-xs">Telefone</Label><Input value={v("telefone")} onChange={(e) => set("telefone", e.target.value)} /></div>
+          <div><Label className="text-xs">WhatsApp</Label><Input value={v("whatsapp")} onChange={(e) => set("whatsapp", e.target.value)} /></div>
+          <div><Label className="text-xs">E-mail</Label><Input value={v("email")} onChange={(e) => set("email", e.target.value)} /></div>
+          <div><Label className="text-xs">CEP</Label><Input value={v("cep")} onChange={(e) => set("cep", e.target.value)} /></div>
+          <div className="sm:col-span-2"><Label className="text-xs">Endereço</Label><Input value={v("endereco")} onChange={(e) => set("endereco", e.target.value)} /></div>
+          <div><Label className="text-xs">Cidade</Label><Input value={v("cidade")} onChange={(e) => set("cidade", e.target.value)} /></div>
+          <div>
+            <Label className="text-xs">Serviço de interesse</Label>
+            <Select value={v("servico_interesse") || ""} onValueChange={(val) => set("servico_interesse", val)} disabled={travado}>
+              <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+              <SelectContent>{SERVICOS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-xs">Valor estimado (R$)</Label>
+            <Input type="number" disabled={travado} value={v("valor_estimado")} onChange={(e) => set("valor_estimado", Number(e.target.value) || 0)} />
+          </div>
+          <div>
+            <Label className="text-xs">Prioridade</Label>
+            <Select value={v("prioridade") || "media"} onValueChange={(val) => set("prioridade", val)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{PRIORIDADES.map((p) => <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="sm:col-span-2"><Label className="text-xs">Próxima ação</Label><Input value={v("proxima_acao")} onChange={(e) => set("proxima_acao", e.target.value)} /></div>
+          <div className="sm:col-span-2"><Label className="text-xs">Observações internas</Label><Textarea value={v("observacoes_internas")} onChange={(e) => set("observacoes_internas", e.target.value)} /></div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+          <span><strong className="text-slate-700">Vendedor:</strong> {lead.vendedor_nome ?? "—"}</span>
+          {lead.whatsapp && <a className="text-emerald-600 underline" href={`https://wa.me/${onlyDigits(lead.whatsapp)}`} target="_blank" rel="noreferrer"><MessageCircle className="w-3 h-3 inline" /> WhatsApp</a>}
+          {lead.telefone && <a className="text-blue-600 underline" href={`tel:${lead.telefone}`}><Phone className="w-3 h-3 inline" /> Ligar</a>}
+          {(lead.cidade || lead.endereco) && <a className="text-blue-600 underline" target="_blank" rel="noreferrer" href={`https://www.google.com/maps/search/${encodeURIComponent(`${lead.endereco ?? ""} ${lead.cidade ?? ""}`)}`}><MapPin className="w-3 h-3 inline" /> Mapa</a>}
+        </div>
 
         <div>
           <Label className="text-xs">Mover para etapa</Label>
