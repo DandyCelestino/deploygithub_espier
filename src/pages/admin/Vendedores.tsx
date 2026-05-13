@@ -640,7 +640,7 @@ function KanbanCard({ lead, onClick }: { lead: Lead; onClick: () => void }) {
 }
 
 function LeadDetalheDialog({
-  lead, atividades, onClose, onAddAtividade, onMover, onExcluir, canDelete,
+  lead, atividades, onClose, onAddAtividade, onMover, onExcluir, onSave, canDelete,
 }: {
   lead: Lead | null; atividades: Atividade[]; onClose: () => void;
   onAddAtividade: (tipo: string, descricao: string) => void;
