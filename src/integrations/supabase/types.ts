@@ -510,12 +510,14 @@ export type Database = {
       }
       leads: {
         Row: {
+          cep: string | null
           cidade: string | null
           cliente_id: string | null
           contrato_id: string | null
           created_at: string
           email: string | null
           empresa: string | null
+          endereco: string | null
           estado: string | null
           etapa: string
           etapa_changed_at: string
@@ -541,12 +543,14 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          cep?: string | null
           cidade?: string | null
           cliente_id?: string | null
           contrato_id?: string | null
           created_at?: string
           email?: string | null
           empresa?: string | null
+          endereco?: string | null
           estado?: string | null
           etapa?: string
           etapa_changed_at?: string
@@ -572,12 +576,14 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          cep?: string | null
           cidade?: string | null
           cliente_id?: string | null
           contrato_id?: string | null
           created_at?: string
           email?: string | null
           empresa?: string | null
+          endereco?: string | null
           estado?: string | null
           etapa?: string
           etapa_changed_at?: string

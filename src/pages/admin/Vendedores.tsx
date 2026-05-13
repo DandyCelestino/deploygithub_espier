@@ -44,6 +44,30 @@ const PRIORIDADES = [
   { id: "urgente", label: "Urgente", color: "bg-rose-200 text-rose-800" },
 ];
 
+const SERVICOS = [
+  "TI — Infraestrutura e Redes",
+  "Telecom — Telefonia e PABX",
+  "CFTV — Câmeras de Segurança",
+  "Alarmes Monitorados",
+  "Controle de Acesso",
+  "Cerca Elétrica e Concertina",
+  "Rastreamento Veicular",
+  "Portões Automáticos",
+  "Cabeamento Estruturado",
+  "Manutenção Preventiva",
+  "Outro",
+];
+
+// Etapas a partir das quais valor/serviço ficam travados (após "Visita Realizada")
+const ETAPAS_TRAVAM_VALOR = [
+  "visita_realizada", "proposta_andamento", "pedido_orcamento", "negociacao",
+  "fechamento", "contrato_assinado", "venda_concluida", "pos_venda",
+];
+const valorTravado = (etapa?: string) => !!etapa && ETAPAS_TRAVAM_VALOR.includes(etapa);
+
+const onlyDigits = (s: string) => (s || "").replace(/\D/g, "");
+const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
 const fmtBRL = (v: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v || 0);
 
@@ -75,9 +99,9 @@ export default function Vendedores() {
   // form novo lead
   const empty = {
     nome: "", empresa: "", telefone: "", whatsapp: "", email: "",
-    cidade: "", servico_interesse: "", valor_estimado: "0",
-    prioridade: "media", proxima_acao: "", observacoes_internas: "",
-    cliente_id: "", vendedor_id: user?.id ?? "",
+    endereco: "", cep: "", cidade: "", servico_interesse: "",
+    valor_estimado: "0", prioridade: "media", proxima_acao: "",
+    observacoes_internas: "", cliente_id: "", vendedor_id: user?.id ?? "",
   };
   const [form, setForm] = useState<any>(empty);
 
@@ -88,8 +112,15 @@ export default function Vendedores() {
   useEffect(() => {
     if (!user) return;
     fetchAll();
+    setForm((f: any) => ({ ...f, vendedor_id: f.vendedor_id || user.id }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
+
+  // Ao abrir o diálogo, garante que o vendedor logado já vem preenchido
+  function abrirNovo() {
+    setForm({ ...empty, vendedor_id: user?.id ?? "" });
+    setNovoOpen(true);
+  }
 
   async function fetchAll() {
     setLoading(true);
@@ -130,25 +161,41 @@ export default function Vendedores() {
   }
 
   async function criarLead() {
-    if (!form.nome || !form.vendedor_id) {
-      toast.error("Nome e vendedor são obrigatórios");
-      return;
-    }
-    const vendNome = vendedores.find((v) => v.user_id === form.vendedor_id)?.full_name ?? "";
+    // Vendedor logado é assumido automaticamente
+    const vendedor_id = form.vendedor_id || user?.id;
+    if (!vendedor_id) { toast.error("Sessão inválida — faça login novamente."); return; }
+
+    // Validações obrigatórias
+    if (!form.nome.trim()) return toast.error("Nome do cliente é obrigatório");
+    if (!form.telefone.trim() || onlyDigits(form.telefone).length < 10)
+      return toast.error("Telefone válido é obrigatório (DDD + número)");
+    if (!form.whatsapp.trim() || onlyDigits(form.whatsapp).length < 10)
+      return toast.error("WhatsApp válido é obrigatório");
+    if (!form.email.trim() || !isEmail(form.email))
+      return toast.error("E-mail válido é obrigatório");
+    if (!form.endereco.trim()) return toast.error("Endereço do cliente é obrigatório");
+    if (!form.servico_interesse) return toast.error("Selecione o serviço de interesse");
+
+    const vendNome =
+      vendedores.find((v) => v.user_id === vendedor_id)?.full_name ??
+      (vendedor_id === user?.id ? (user?.user_metadata?.full_name as string) ?? user?.email ?? "" : "");
+
     const { error } = await supabase.from("leads").insert({
-      nome: form.nome,
+      nome: form.nome.trim(),
       empresa: form.empresa || null,
-      telefone: form.telefone || null,
-      whatsapp: form.whatsapp || form.telefone || null,
-      email: form.email || null,
+      telefone: form.telefone,
+      whatsapp: form.whatsapp,
+      email: form.email,
+      endereco: form.endereco,
+      cep: form.cep || null,
       cidade: form.cidade || null,
-      servico_interesse: form.servico_interesse || null,
+      servico_interesse: form.servico_interesse,
       valor_estimado: Number(form.valor_estimado) || 0,
       prioridade: form.prioridade,
       proxima_acao: form.proxima_acao || null,
       observacoes_internas: form.observacoes_internas || null,
       cliente_id: form.cliente_id || null,
-      vendedor_id: form.vendedor_id,
+      vendedor_id,
       vendedor_nome: vendNome,
       etapa: "novo_lead",
       origem: "manual",
@@ -239,20 +286,67 @@ export default function Vendedores() {
           <h1 className="text-2xl font-bold text-slate-900">Vendedores · CRM Comercial</h1>
           <p className="text-sm text-slate-500">Pipeline Kanban, leads e desempenho da equipe.</p>
         </div>
-        <Dialog open={novoOpen} onOpenChange={setNovoOpen}>
+        <Dialog open={novoOpen} onOpenChange={(o) => (o ? abrirNovo() : setNovoOpen(false))}>
           <DialogTrigger asChild>
-            <Button className="bg-primary text-white"><Plus className="w-4 h-4 mr-1.5" /> Novo Lead</Button>
+            <Button className="bg-primary text-white" onClick={abrirNovo}><Plus className="w-4 h-4 mr-1.5" /> Novo Lead</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader><DialogTitle>Novo lead</DialogTitle></DialogHeader>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Novo lead</DialogTitle>
+              <p className="text-xs text-slate-500">
+                Vendedor responsável: <strong>{vendedores.find(v => v.user_id === (form.vendedor_id || user?.id))?.full_name ?? user?.email ?? "—"}</strong>
+                {!isGestor && " (preenchido automaticamente)"}
+              </p>
+            </DialogHeader>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div><Label>Nome *</Label><Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></div>
+              <div className="sm:col-span-2">
+                <Label>Nome do cliente *</Label>
+                <Input
+                  list="leads-nomes"
+                  value={form.nome}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    const match = leads.find((l) => l.nome === v);
+                    if (match) {
+                      setForm({
+                        ...form,
+                        nome: match.nome,
+                        empresa: match.empresa ?? "",
+                        telefone: match.telefone ?? "",
+                        whatsapp: match.whatsapp ?? "",
+                        email: match.email ?? "",
+                        endereco: match.endereco ?? "",
+                        cep: match.cep ?? "",
+                        cidade: match.cidade ?? "",
+                      });
+                    } else {
+                      setForm({ ...form, nome: v });
+                    }
+                  }}
+                  placeholder="Digite ou selecione um lead existente..."
+                />
+                <datalist id="leads-nomes">
+                  {Array.from(new Set(leads.map((l) => l.nome).filter(Boolean))).map((n: string) => (
+                    <option key={n} value={n} />
+                  ))}
+                </datalist>
+              </div>
               <div><Label>Empresa</Label><Input value={form.empresa} onChange={(e) => setForm({ ...form, empresa: e.target.value })} /></div>
-              <div><Label>Telefone</Label><Input value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></div>
-              <div><Label>WhatsApp</Label><Input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} /></div>
-              <div><Label>E-mail</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div><Label>Telefone *</Label><Input required placeholder="(21) 9XXXX-XXXX" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></div>
+              <div><Label>WhatsApp *</Label><Input required placeholder="(21) 9XXXX-XXXX" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} /></div>
+              <div><Label>E-mail *</Label><Input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div><Label>CEP</Label><Input placeholder="00000-000" value={form.cep} onChange={(e) => setForm({ ...form, cep: e.target.value })} /></div>
+              <div className="sm:col-span-2"><Label>Endereço *</Label><Input required placeholder="Rua, número, bairro" value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} /></div>
               <div><Label>Cidade</Label><Input value={form.cidade} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></div>
-              <div><Label>Serviço de interesse</Label><Input value={form.servico_interesse} onChange={(e) => setForm({ ...form, servico_interesse: e.target.value })} /></div>
+              <div>
+                <Label>Serviço de interesse *</Label>
+                <Select value={form.servico_interesse} onValueChange={(v) => setForm({ ...form, servico_interesse: v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecione um serviço" /></SelectTrigger>
+                  <SelectContent>
+                    {SERVICOS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
               <div><Label>Valor estimado (R$)</Label><Input type="number" value={form.valor_estimado} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value })} /></div>
               <div>
                 <Label>Prioridade</Label>
@@ -458,6 +552,14 @@ export default function Vendedores() {
         onAddAtividade={addAtividade}
         onMover={(etapa) => detalheLead && moverEtapa(detalheLead.id, etapa)}
         onExcluir={() => detalheLead && excluirLead(detalheLead.id)}
+        onSave={async (patch) => {
+          if (!detalheLead) return;
+          const { error } = await supabase.from("leads").update(patch as any).eq("id", detalheLead.id);
+          if (error) { toast.error(error.message); return; }
+          toast.success("Lead atualizado");
+          setDetalheLead({ ...detalheLead, ...patch });
+          fetchAll();
+        }}
         canDelete={isGestor || (isVendedor && detalheLead?.vendedor_id === user?.id)}
       />
     </div>
@@ -538,15 +640,23 @@ function KanbanCard({ lead, onClick }: { lead: Lead; onClick: () => void }) {
 }
 
 function LeadDetalheDialog({
-  lead, atividades, onClose, onAddAtividade, onMover, onExcluir, canDelete,
+  lead, atividades, onClose, onAddAtividade, onMover, onExcluir, onSave, canDelete,
 }: {
   lead: Lead | null; atividades: Atividade[]; onClose: () => void;
   onAddAtividade: (tipo: string, descricao: string) => void;
-  onMover: (etapa: string) => void; onExcluir: () => void; canDelete: boolean;
+  onMover: (etapa: string) => void; onExcluir: () => void;
+  onSave: (patch: Record<string, any>) => void; canDelete: boolean;
 }) {
   const [novoTipo, setNovoTipo] = useState("observacao");
   const [novoTexto, setNovoTexto] = useState("");
+  const [edit, setEdit] = useState<Record<string, any>>({});
+  useEffect(() => { setEdit({}); }, [lead?.id]);
   if (!lead) return null;
+
+  const travado = valorTravado(lead.etapa);
+  const v = (k: string) => (edit[k] !== undefined ? edit[k] : lead[k] ?? "");
+  const set = (k: string, val: any) => setEdit((e) => ({ ...e, [k]: val }));
+  const dirty = Object.keys(edit).length > 0;
 
   return (
     <Dialog open={!!lead} onOpenChange={(o) => !o && onClose()}>
@@ -558,26 +668,47 @@ function LeadDetalheDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <div className="space-y-1.5">
-            {lead.telefone && <p><Phone className="w-3.5 h-3.5 inline mr-1.5 text-slate-400" />{lead.telefone}</p>}
-            {lead.whatsapp && <p><MessageCircle className="w-3.5 h-3.5 inline mr-1.5 text-emerald-500" /><a className="text-emerald-600 underline" href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">{lead.whatsapp}</a></p>}
-            {lead.email && <p>📧 {lead.email}</p>}
-            {lead.cidade && <p><MapPin className="w-3.5 h-3.5 inline mr-1.5 text-slate-400" />{lead.cidade} <a className="text-blue-600 underline ml-1 text-xs" href={`https://www.google.com/maps/search/${encodeURIComponent(lead.cidade)}`} target="_blank" rel="noreferrer">abrir mapa</a></p>}
-          </div>
-          <div className="space-y-1.5">
-            <p><strong>Vendedor:</strong> {lead.vendedor_nome ?? "—"}</p>
-            <p><strong>Serviço:</strong> {lead.servico_interesse ?? "—"}</p>
-            <p><strong>Valor:</strong> <span className="font-mono text-emerald-600">{fmtBRL(Number(lead.valor_estimado || 0))}</span></p>
-            <p><strong>Próxima ação:</strong> {lead.proxima_acao ?? "—"}</p>
-          </div>
-        </div>
-
-        {lead.observacoes_internas && (
-          <div className="bg-amber-50 border border-amber-200 p-3 rounded text-sm text-amber-900">
-            <strong>Notas internas:</strong> {lead.observacoes_internas}
+        {travado && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 text-xs p-2 rounded">
+            🔒 Esta etapa (<strong>{ETAPAS.find(e => e.id === lead.etapa)?.label}</strong>) trava edição de valor e serviço. Movimentações financeiras devem seguir pelo orçamento.
           </div>
         )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <div><Label className="text-xs">Telefone</Label><Input value={v("telefone")} onChange={(e) => set("telefone", e.target.value)} /></div>
+          <div><Label className="text-xs">WhatsApp</Label><Input value={v("whatsapp")} onChange={(e) => set("whatsapp", e.target.value)} /></div>
+          <div><Label className="text-xs">E-mail</Label><Input value={v("email")} onChange={(e) => set("email", e.target.value)} /></div>
+          <div><Label className="text-xs">CEP</Label><Input value={v("cep")} onChange={(e) => set("cep", e.target.value)} /></div>
+          <div className="sm:col-span-2"><Label className="text-xs">Endereço</Label><Input value={v("endereco")} onChange={(e) => set("endereco", e.target.value)} /></div>
+          <div><Label className="text-xs">Cidade</Label><Input value={v("cidade")} onChange={(e) => set("cidade", e.target.value)} /></div>
+          <div>
+            <Label className="text-xs">Serviço de interesse</Label>
+            <Select value={v("servico_interesse") || ""} onValueChange={(val) => set("servico_interesse", val)} disabled={travado}>
+              <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+              <SelectContent>{SERVICOS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-xs">Valor estimado (R$)</Label>
+            <Input type="number" disabled={travado} value={v("valor_estimado")} onChange={(e) => set("valor_estimado", Number(e.target.value) || 0)} />
+          </div>
+          <div>
+            <Label className="text-xs">Prioridade</Label>
+            <Select value={v("prioridade") || "media"} onValueChange={(val) => set("prioridade", val)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>{PRIORIDADES.map((p) => <SelectItem key={p.id} value={p.id}>{p.label}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="sm:col-span-2"><Label className="text-xs">Próxima ação</Label><Input value={v("proxima_acao")} onChange={(e) => set("proxima_acao", e.target.value)} /></div>
+          <div className="sm:col-span-2"><Label className="text-xs">Observações internas</Label><Textarea value={v("observacoes_internas")} onChange={(e) => set("observacoes_internas", e.target.value)} /></div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+          <span><strong className="text-slate-700">Vendedor:</strong> {lead.vendedor_nome ?? "—"}</span>
+          {lead.whatsapp && <a className="text-emerald-600 underline" href={`https://wa.me/${onlyDigits(lead.whatsapp)}`} target="_blank" rel="noreferrer"><MessageCircle className="w-3 h-3 inline" /> WhatsApp</a>}
+          {lead.telefone && <a className="text-blue-600 underline" href={`tel:${lead.telefone}`}><Phone className="w-3 h-3 inline" /> Ligar</a>}
+          {(lead.cidade || lead.endereco) && <a className="text-blue-600 underline" target="_blank" rel="noreferrer" href={`https://www.google.com/maps/search/${encodeURIComponent(`${lead.endereco ?? ""} ${lead.cidade ?? ""}`)}`}><MapPin className="w-3 h-3 inline" /> Mapa</a>}
+        </div>
 
         <div>
           <Label className="text-xs">Mover para etapa</Label>
@@ -619,9 +750,12 @@ function LeadDetalheDialog({
           </div>
         </div>
 
-        <DialogFooter className="flex justify-between sm:justify-between">
+        <DialogFooter className="flex flex-wrap justify-between gap-2 sm:justify-between">
           {canDelete ? <Button variant="destructive" size="sm" onClick={onExcluir}>Excluir lead</Button> : <span />}
-          <Button variant="outline" onClick={onClose}>Fechar</Button>
+          <div className="flex gap-2">
+            {dirty && <Button onClick={() => { onSave(edit); setEdit({}); }}>Salvar alterações</Button>}
+            <Button variant="outline" onClick={onClose}>Fechar</Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
