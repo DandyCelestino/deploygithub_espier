@@ -750,9 +750,12 @@ function LeadDetalheDialog({
           </div>
         </div>
 
-        <DialogFooter className="flex justify-between sm:justify-between">
+        <DialogFooter className="flex flex-wrap justify-between gap-2 sm:justify-between">
           {canDelete ? <Button variant="destructive" size="sm" onClick={onExcluir}>Excluir lead</Button> : <span />}
-          <Button variant="outline" onClick={onClose}>Fechar</Button>
+          <div className="flex gap-2">
+            {dirty && <Button onClick={() => { onSave(edit); setEdit({}); }}>Salvar alterações</Button>}
+            <Button variant="outline" onClick={onClose}>Fechar</Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
