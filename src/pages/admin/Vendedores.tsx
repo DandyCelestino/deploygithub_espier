@@ -99,9 +99,9 @@ export default function Vendedores() {
   // form novo lead
   const empty = {
     nome: "", empresa: "", telefone: "", whatsapp: "", email: "",
-    cidade: "", servico_interesse: "", valor_estimado: "0",
-    prioridade: "media", proxima_acao: "", observacoes_internas: "",
-    cliente_id: "", vendedor_id: user?.id ?? "",
+    endereco: "", cep: "", cidade: "", servico_interesse: "",
+    valor_estimado: "0", prioridade: "media", proxima_acao: "",
+    observacoes_internas: "", cliente_id: "", vendedor_id: user?.id ?? "",
   };
   const [form, setForm] = useState<any>(empty);
 
@@ -112,8 +112,15 @@ export default function Vendedores() {
   useEffect(() => {
     if (!user) return;
     fetchAll();
+    setForm((f: any) => ({ ...f, vendedor_id: f.vendedor_id || user.id }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
+
+  // Ao abrir o diálogo, garante que o vendedor logado já vem preenchido
+  function abrirNovo() {
+    setForm({ ...empty, vendedor_id: user?.id ?? "" });
+    setNovoOpen(true);
+  }
 
   async function fetchAll() {
     setLoading(true);
@@ -154,25 +161,41 @@ export default function Vendedores() {
   }
 
   async function criarLead() {
-    if (!form.nome || !form.vendedor_id) {
-      toast.error("Nome e vendedor são obrigatórios");
-      return;
-    }
-    const vendNome = vendedores.find((v) => v.user_id === form.vendedor_id)?.full_name ?? "";
+    // Vendedor logado é assumido automaticamente
+    const vendedor_id = form.vendedor_id || user?.id;
+    if (!vendedor_id) { toast.error("Sessão inválida — faça login novamente."); return; }
+
+    // Validações obrigatórias
+    if (!form.nome.trim()) return toast.error("Nome do cliente é obrigatório");
+    if (!form.telefone.trim() || onlyDigits(form.telefone).length < 10)
+      return toast.error("Telefone válido é obrigatório (DDD + número)");
+    if (!form.whatsapp.trim() || onlyDigits(form.whatsapp).length < 10)
+      return toast.error("WhatsApp válido é obrigatório");
+    if (!form.email.trim() || !isEmail(form.email))
+      return toast.error("E-mail válido é obrigatório");
+    if (!form.endereco.trim()) return toast.error("Endereço do cliente é obrigatório");
+    if (!form.servico_interesse) return toast.error("Selecione o serviço de interesse");
+
+    const vendNome =
+      vendedores.find((v) => v.user_id === vendedor_id)?.full_name ??
+      (vendedor_id === user?.id ? (user?.user_metadata?.full_name as string) ?? user?.email ?? "" : "");
+
     const { error } = await supabase.from("leads").insert({
-      nome: form.nome,
+      nome: form.nome.trim(),
       empresa: form.empresa || null,
-      telefone: form.telefone || null,
-      whatsapp: form.whatsapp || form.telefone || null,
-      email: form.email || null,
+      telefone: form.telefone,
+      whatsapp: form.whatsapp,
+      email: form.email,
+      endereco: form.endereco,
+      cep: form.cep || null,
       cidade: form.cidade || null,
-      servico_interesse: form.servico_interesse || null,
+      servico_interesse: form.servico_interesse,
       valor_estimado: Number(form.valor_estimado) || 0,
       prioridade: form.prioridade,
       proxima_acao: form.proxima_acao || null,
       observacoes_internas: form.observacoes_internas || null,
       cliente_id: form.cliente_id || null,
-      vendedor_id: form.vendedor_id,
+      vendedor_id,
       vendedor_nome: vendNome,
       etapa: "novo_lead",
       origem: "manual",
