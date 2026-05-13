@@ -554,7 +554,7 @@ export default function Vendedores() {
         onExcluir={() => detalheLead && excluirLead(detalheLead.id)}
         onSave={async (patch) => {
           if (!detalheLead) return;
-          const { error } = await supabase.from("leads").update(patch).eq("id", detalheLead.id);
+          const { error } = await supabase.from("leads").update(patch as any).eq("id", detalheLead.id);
           if (error) { toast.error(error.message); return; }
           toast.success("Lead atualizado");
           setDetalheLead({ ...detalheLead, ...patch });
