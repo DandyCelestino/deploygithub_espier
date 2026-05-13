@@ -44,6 +44,30 @@ const PRIORIDADES = [
   { id: "urgente", label: "Urgente", color: "bg-rose-200 text-rose-800" },
 ];
 
+const SERVICOS = [
+  "TI — Infraestrutura e Redes",
+  "Telecom — Telefonia e PABX",
+  "CFTV — Câmeras de Segurança",
+  "Alarmes Monitorados",
+  "Controle de Acesso",
+  "Cerca Elétrica e Concertina",
+  "Rastreamento Veicular",
+  "Portões Automáticos",
+  "Cabeamento Estruturado",
+  "Manutenção Preventiva",
+  "Outro",
+];
+
+// Etapas a partir das quais valor/serviço ficam travados (após "Visita Realizada")
+const ETAPAS_TRAVAM_VALOR = [
+  "visita_realizada", "proposta_andamento", "pedido_orcamento", "negociacao",
+  "fechamento", "contrato_assinado", "venda_concluida", "pos_venda",
+];
+const valorTravado = (etapa?: string) => !!etapa && ETAPAS_TRAVAM_VALOR.includes(etapa);
+
+const onlyDigits = (s: string) => (s || "").replace(/\D/g, "");
+const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+
 const fmtBRL = (v: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v || 0);
 
