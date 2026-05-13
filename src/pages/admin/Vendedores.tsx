@@ -286,20 +286,67 @@ export default function Vendedores() {
           <h1 className="text-2xl font-bold text-slate-900">Vendedores · CRM Comercial</h1>
           <p className="text-sm text-slate-500">Pipeline Kanban, leads e desempenho da equipe.</p>
         </div>
-        <Dialog open={novoOpen} onOpenChange={setNovoOpen}>
+        <Dialog open={novoOpen} onOpenChange={(o) => (o ? abrirNovo() : setNovoOpen(false))}>
           <DialogTrigger asChild>
-            <Button className="bg-primary text-white"><Plus className="w-4 h-4 mr-1.5" /> Novo Lead</Button>
+            <Button className="bg-primary text-white" onClick={abrirNovo}><Plus className="w-4 h-4 mr-1.5" /> Novo Lead</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader><DialogTitle>Novo lead</DialogTitle></DialogHeader>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Novo lead</DialogTitle>
+              <p className="text-xs text-slate-500">
+                Vendedor responsável: <strong>{vendedores.find(v => v.user_id === (form.vendedor_id || user?.id))?.full_name ?? user?.email ?? "—"}</strong>
+                {!isGestor && " (preenchido automaticamente)"}
+              </p>
+            </DialogHeader>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div><Label>Nome *</Label><Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} /></div>
+              <div className="sm:col-span-2">
+                <Label>Nome do cliente *</Label>
+                <Input
+                  list="leads-nomes"
+                  value={form.nome}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    const match = leads.find((l) => l.nome === v);
+                    if (match) {
+                      setForm({
+                        ...form,
+                        nome: match.nome,
+                        empresa: match.empresa ?? "",
+                        telefone: match.telefone ?? "",
+                        whatsapp: match.whatsapp ?? "",
+                        email: match.email ?? "",
+                        endereco: match.endereco ?? "",
+                        cep: match.cep ?? "",
+                        cidade: match.cidade ?? "",
+                      });
+                    } else {
+                      setForm({ ...form, nome: v });
+                    }
+                  }}
+                  placeholder="Digite ou selecione um lead existente..."
+                />
+                <datalist id="leads-nomes">
+                  {Array.from(new Set(leads.map((l) => l.nome).filter(Boolean))).map((n: string) => (
+                    <option key={n} value={n} />
+                  ))}
+                </datalist>
+              </div>
               <div><Label>Empresa</Label><Input value={form.empresa} onChange={(e) => setForm({ ...form, empresa: e.target.value })} /></div>
-              <div><Label>Telefone</Label><Input value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></div>
-              <div><Label>WhatsApp</Label><Input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} /></div>
-              <div><Label>E-mail</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div><Label>Telefone *</Label><Input required placeholder="(21) 9XXXX-XXXX" value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} /></div>
+              <div><Label>WhatsApp *</Label><Input required placeholder="(21) 9XXXX-XXXX" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} /></div>
+              <div><Label>E-mail *</Label><Input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+              <div><Label>CEP</Label><Input placeholder="00000-000" value={form.cep} onChange={(e) => setForm({ ...form, cep: e.target.value })} /></div>
+              <div className="sm:col-span-2"><Label>Endereço *</Label><Input required placeholder="Rua, número, bairro" value={form.endereco} onChange={(e) => setForm({ ...form, endereco: e.target.value })} /></div>
               <div><Label>Cidade</Label><Input value={form.cidade} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></div>
-              <div><Label>Serviço de interesse</Label><Input value={form.servico_interesse} onChange={(e) => setForm({ ...form, servico_interesse: e.target.value })} /></div>
+              <div>
+                <Label>Serviço de interesse *</Label>
+                <Select value={form.servico_interesse} onValueChange={(v) => setForm({ ...form, servico_interesse: v })}>
+                  <SelectTrigger><SelectValue placeholder="Selecione um serviço" /></SelectTrigger>
+                  <SelectContent>
+                    {SERVICOS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
               <div><Label>Valor estimado (R$)</Label><Input type="number" value={form.valor_estimado} onChange={(e) => setForm({ ...form, valor_estimado: e.target.value })} /></div>
               <div>
                 <Label>Prioridade</Label>
