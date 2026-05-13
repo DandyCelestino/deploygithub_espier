@@ -552,6 +552,14 @@ export default function Vendedores() {
         onAddAtividade={addAtividade}
         onMover={(etapa) => detalheLead && moverEtapa(detalheLead.id, etapa)}
         onExcluir={() => detalheLead && excluirLead(detalheLead.id)}
+        onSave={async (patch) => {
+          if (!detalheLead) return;
+          const { error } = await supabase.from("leads").update(patch).eq("id", detalheLead.id);
+          if (error) { toast.error(error.message); return; }
+          toast.success("Lead atualizado");
+          setDetalheLead({ ...detalheLead, ...patch });
+          fetchAll();
+        }}
         canDelete={isGestor || (isVendedor && detalheLead?.vendedor_id === user?.id)}
       />
     </div>
