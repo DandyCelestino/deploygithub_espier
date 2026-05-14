@@ -20,6 +20,7 @@ interface Visita {
   endereco: string | null; cidade: string | null; data_visita: string;
   servico_descricao: string | null; valor_estimado: number; status: string;
   autoriza_orcamento: boolean; orcamento_id: string | null; observacoes: string | null;
+  assumida_por?: string | null; assumida_em?: string | null; lead_id?: string | null;
 }
 
 const empty = {
