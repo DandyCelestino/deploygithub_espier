@@ -675,9 +675,13 @@ function KanbanColumn({
   );
 }
 
-function KanbanCard({ lead, onClick }: { lead: Lead; onClick: () => void }) {
+function KanbanCard({ lead, onClick, onAgendar, onReagendar, onDescartar }: {
+  lead: Lead; onClick: () => void;
+  onAgendar?: () => void; onReagendar?: () => void; onDescartar?: () => void;
+}) {
   const prio = PRIORIDADES.find((p) => p.id === lead.prioridade);
   const dias = diasParado(lead.etapa_changed_at);
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
   return (
     <div
       draggable
@@ -698,13 +702,32 @@ function KanbanCard({ lead, onClick }: { lead: Lead; onClick: () => void }) {
       <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
         <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{dias}d na etapa</span>
         <div className="flex gap-1">
-          {lead.whatsapp && <a href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-emerald-600"><MessageCircle className="w-3.5 h-3.5" /></a>}
-          {lead.telefone && <a href={`tel:${lead.telefone}`} onClick={(e) => e.stopPropagation()} className="text-blue-600"><Phone className="w-3.5 h-3.5" /></a>}
+          {lead.whatsapp && <a href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" onClick={stop} className="text-emerald-600"><MessageCircle className="w-3.5 h-3.5" /></a>}
+          {lead.telefone && <a href={`tel:${lead.telefone}`} onClick={stop} className="text-blue-600"><Phone className="w-3.5 h-3.5" /></a>}
         </div>
       </div>
       {lead.tags?.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-1.5">
           {lead.tags.slice(0, 3).map((t: string, i: number) => <span key={i} className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded flex items-center gap-0.5"><Tag className="w-2.5 h-2.5" />{t}</span>)}
+        </div>
+      )}
+      {(onAgendar || onReagendar || onDescartar) && (
+        <div className="flex gap-1 mt-2 pt-2 border-t border-slate-100">
+          {onAgendar && lead.etapa !== "agendamento_visita" && (
+            <Button size="sm" variant="outline" className="h-6 text-[10px] px-1.5 flex-1" onClick={(e) => { stop(e); onAgendar(); }}>
+              <Calendar className="w-3 h-3 mr-0.5" /> Agendar
+            </Button>
+          )}
+          {onReagendar && lead.etapa === "agendamento_visita" && (
+            <Button size="sm" variant="outline" className="h-6 text-[10px] px-1.5 flex-1" onClick={(e) => { stop(e); onReagendar(); }}>
+              <RotateCcw className="w-3 h-3 mr-0.5" /> Reagendar
+            </Button>
+          )}
+          {onDescartar && lead.etapa !== "perdido" && (
+            <Button size="sm" variant="outline" className="h-6 text-[10px] px-1.5 text-rose-600" onClick={(e) => { stop(e); onDescartar(); }}>
+              <X className="w-3 h-3" />
+            </Button>
+          )}
         </div>
       )}
     </div>
