@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import {
   Plus, Search, Phone, MessageCircle, MapPin, Trophy, Target,
-  TrendingUp, Users, DollarSign, Clock, Tag, Filter,
+  TrendingUp, Users, DollarSign, Clock, Tag, Filter, Calendar, X, RotateCcw,
 } from "lucide-react";
 
 const ETAPAS = [
