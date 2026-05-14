@@ -41,6 +41,8 @@ const STATUS_COLOR: Record<string, string> = {
 const Visitas = () => {
   const { toast } = useToast();
   const { user, hasRole } = useAuth();
+  const navigate = useNavigate();
+  const isGerente = hasRole("admin", "gerente");
   const [list, setList] = useState<Visita[]>([]);
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
