@@ -634,6 +634,28 @@ export default function Vendedores() {
         }}
         canDelete={isGestor || (isVendedor && detalheLead?.vendedor_id === user?.id)}
       />
+
+      {/* Agendar visita */}
+      <Dialog open={!!agendarLead} onOpenChange={(o) => !o && setAgendarLead(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Agendar visita — {agendarLead?.nome}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Data e hora</Label>
+              <Input type="datetime-local" value={agendarData} onChange={(e) => setAgendarData(e.target.value)} />
+            </div>
+            <p className="text-xs text-slate-500">
+              A visita será criada e os gerentes serão notificados na agenda para assumirem.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAgendarLead(null)}>Cancelar</Button>
+            <Button onClick={confirmarAgendar}>Confirmar agendamento</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
