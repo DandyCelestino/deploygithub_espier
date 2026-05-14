@@ -242,6 +242,68 @@ export default function Vendedores() {
     fetchAll();
   }
 
+  function abrirAgendar(lead: Lead, reagendar = false) {
+    setAgendarLead(lead);
+    const base = new Date(); base.setHours(base.getHours() + 24);
+    setAgendarData(base.toISOString().slice(0, 16));
+    if (reagendar) {/* mesma UI */}
+  }
+
+  async function confirmarAgendar() {
+    if (!agendarLead || !agendarData) return;
+    const dataISO = new Date(agendarData).toISOString();
+    const vendNome = agendarLead.vendedor_nome || user?.email || "";
+    // 1. Cria visita
+    const { data: visita, error: vErr } = await supabase.from("visitas").insert({
+      vendedor_id: agendarLead.vendedor_id,
+      vendedor_nome: vendNome,
+      cliente_nome: agendarLead.nome,
+      cliente_telefone: agendarLead.telefone,
+      cliente_email: agendarLead.email,
+      endereco: agendarLead.endereco,
+      cidade: agendarLead.cidade,
+      data_visita: dataISO,
+      servico_descricao: agendarLead.servico_interesse,
+      valor_estimado: Number(agendarLead.valor_estimado || 0),
+      status: "agendada",
+      lead_id: agendarLead.id,
+    } as any).select("id").single();
+    if (vErr) { toast.error(vErr.message); return; }
+    // 2. Notifica gerentes via agenda_eventos
+    await supabase.from("agenda_eventos").insert({
+      titulo: `Visita: ${agendarLead.nome}`,
+      descricao: `Vendedor ${vendNome} agendou visita ao lead ${agendarLead.nome}.`,
+      data_inicio: dataISO,
+      data_fim: dataISO,
+      tipo: "visita",
+      status: "agendado",
+      criado_por: user!.id,
+      criado_por_nome: vendNome,
+      target_roles: ["gerente", "admin"] as any,
+      local: [agendarLead.endereco, agendarLead.cidade].filter(Boolean).join(", "),
+    } as any);
+    // 3. Move lead
+    await supabase.from("leads").update({ etapa: "agendamento_visita" }).eq("id", agendarLead.id);
+    await supabase.from("lead_atividades").insert({
+      lead_id: agendarLead.id, autor_id: user!.id, tipo: "agendamento",
+      descricao: `Visita agendada para ${new Date(dataISO).toLocaleString("pt-BR")}`,
+    });
+    toast.success("Visita agendada e gerentes notificados");
+    setAgendarLead(null);
+    fetchAll();
+  }
+
+  async function descartarLead(lead: Lead) {
+    if (!confirm(`Descartar o lead "${lead.nome}"?`)) return;
+    await supabase.from("leads").update({ etapa: "perdido" }).eq("id", lead.id);
+    await supabase.from("lead_atividades").insert({
+      lead_id: lead.id, autor_id: user!.id, tipo: "descarte",
+      descricao: "Lead descartado pelo vendedor",
+    });
+    toast.success("Lead descartado");
+    fetchAll();
+  }
+
   // filtragem
   const leadsFiltrados = useMemo(() => {
     return leads.filter((l) => {
