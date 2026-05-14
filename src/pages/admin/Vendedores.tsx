@@ -109,6 +109,10 @@ export default function Vendedores() {
   const [comissoes, setComissoes] = useState<any[]>([]);
   const [meta, setMeta] = useState<{ meta_valor: number; meta_vendas: number } | null>(null);
 
+  // Agendar visita
+  const [agendarLead, setAgendarLead] = useState<Lead | null>(null);
+  const [agendarData, setAgendarData] = useState<string>("");
+
   useEffect(() => {
     if (!user) return;
     fetchAll();
