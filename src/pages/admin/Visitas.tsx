@@ -234,8 +234,23 @@ const Visitas = () => {
                     : v.autoriza_orcamento ? <span className="text-xs text-amber-600">Autorizado</span> : <span className="text-xs text-slate-400">—</span>}
                 </TableCell>
                 <TableCell>
-                  {(hasRole("admin", "gerente") || v.vendedor_id === user?.id) &&
-                    <Button size="icon" variant="ghost" onClick={() => openEdit(v)}><Pencil className="w-4 h-4" /></Button>}
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {(hasRole("admin", "gerente") || v.vendedor_id === user?.id) &&
+                      <Button size="icon" variant="ghost" onClick={() => openEdit(v)}><Pencil className="w-4 h-4" /></Button>}
+                    {isGerente && !v.assumida_por && !v.orcamento_id && (
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => assumirAgenda(v)}>
+                        <Hand className="w-3 h-3 mr-1" /> Assumir
+                      </Button>
+                    )}
+                    {isGerente && v.assumida_por === user?.id && !v.orcamento_id && (
+                      <Button size="sm" className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700" onClick={() => gerarOrcamento(v)}>
+                        <FileText className="w-3 h-3 mr-1" /> Gerar orçamento
+                      </Button>
+                    )}
+                    {v.assumida_por && v.assumida_por !== user?.id && !v.orcamento_id && (
+                      <span className="text-[10px] text-slate-500 italic">Assumida</span>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
