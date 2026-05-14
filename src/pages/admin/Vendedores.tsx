@@ -491,7 +491,13 @@ export default function Vendedores() {
                   return (
                     <KanbanColumn key={etapa.id} etapa={etapa} count={cards.length} total={total} onDrop={(id) => moverEtapa(id, etapa.id)}>
                       {cards.map((l) => (
-                        <KanbanCard key={l.id} lead={l} onClick={() => abrirLead(l)} />
+                        <KanbanCard
+                          key={l.id} lead={l}
+                          onClick={() => abrirLead(l)}
+                          onAgendar={() => abrirAgendar(l)}
+                          onReagendar={() => abrirAgendar(l, true)}
+                          onDescartar={() => descartarLead(l)}
+                        />
                       ))}
                     </KanbanColumn>
                   );
