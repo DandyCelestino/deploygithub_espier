@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, Calendar, MapPin, CheckCircle2, Search } from "lucide-react";
+import { Plus, Pencil, Calendar, MapPin, CheckCircle2, Search, Hand, FileText } from "lucide-react";
 
 interface Visita {
   id: string; vendedor_id: string; vendedor_nome: string | null;
