@@ -110,6 +110,59 @@ const Visitas = () => {
     setOpen(false); load();
   };
 
+  const assumirAgenda = async (v: Visita) => {
+    const { error } = await supabase.from("visitas")
+      .update({ assumida_por: user!.id, assumida_em: new Date().toISOString() } as any)
+      .eq("id", v.id);
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Agenda assumida", description: "Você pode gerar o orçamento desta visita." });
+    if (v.lead_id) {
+      await supabase.from("leads").update({ etapa: "visita_realizada" }).eq("id", v.lead_id);
+    }
+    load();
+  };
+
+  const gerarOrcamento = async (v: Visita) => {
+    if (v.orcamento_id) {
+      navigate("/admin/orcamentos");
+      return;
+    }
+    const { data: orc, error } = await supabase.from("orcamentos").insert({
+      criado_por: user!.id,
+      cliente_nome: v.cliente_nome,
+      cliente_telefone: v.cliente_telefone,
+      cliente_email: v.cliente_email,
+      endereco: v.endereco ?? "",
+      cidade: v.cidade ?? "",
+      estado: "SP",
+      servico_solicitado: v.servico_descricao ?? "Serviço a definir",
+      valor_total: v.valor_estimado,
+      valor_instalacao: v.valor_estimado,
+      status: "pendente",
+      origem: "interno",
+      visita_id: v.id,
+      lead_id: v.lead_id ?? null,
+      vendedor_id: v.vendedor_id,
+    } as any).select("id").single();
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    await supabase.from("visitas").update({ orcamento_id: orc!.id, status: "realizada" } as any).eq("id", v.id);
+    if (v.lead_id) {
+      await supabase.from("leads").update({ etapa: "proposta_andamento", orcamento_id: orc!.id } as any).eq("id", v.lead_id);
+    }
+    // Notifica vendedor
+    await supabase.from("agenda_eventos").insert({
+      titulo: `Orçamento disponível — ${v.cliente_nome}`,
+      descricao: "Orçamento criado pelo gerente. Acompanhe em Orçamentos.",
+      data_inicio: new Date().toISOString(),
+      data_fim: new Date().toISOString(),
+      tipo: "notificacao",
+      criado_por: user!.id,
+      target_user_ids: [v.vendedor_id] as any,
+      target_roles: [] as any,
+    } as any);
+    toast({ title: "Orçamento gerado", description: "Vendedor notificado." });
+    navigate("/admin/orcamentos");
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
