@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, Calendar, MapPin, CheckCircle2, Search } from "lucide-react";
+import { Plus, Pencil, Calendar, MapPin, CheckCircle2, Search, Hand, FileText } from "lucide-react";
 
 interface Visita {
   id: string; vendedor_id: string; vendedor_nome: string | null;
@@ -19,6 +20,7 @@ interface Visita {
   endereco: string | null; cidade: string | null; data_visita: string;
   servico_descricao: string | null; valor_estimado: number; status: string;
   autoriza_orcamento: boolean; orcamento_id: string | null; observacoes: string | null;
+  assumida_por?: string | null; assumida_em?: string | null; lead_id?: string | null;
 }
 
 const empty = {
@@ -39,6 +41,8 @@ const STATUS_COLOR: Record<string, string> = {
 const Visitas = () => {
   const { toast } = useToast();
   const { user, hasRole } = useAuth();
+  const navigate = useNavigate();
+  const isGerente = hasRole("admin", "gerente");
   const [list, setList] = useState<Visita[]>([]);
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
@@ -104,6 +108,60 @@ const Visitas = () => {
       toast({ title: "Orçamento gerado automaticamente" });
     }
     setOpen(false); load();
+  };
+
+  const assumirAgenda = async (v: Visita) => {
+    const { error } = await supabase.from("visitas")
+      .update({ assumida_por: user!.id, assumida_em: new Date().toISOString() } as any)
+      .eq("id", v.id);
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Agenda assumida", description: "Você pode gerar o orçamento desta visita." });
+    if (v.lead_id) {
+      await supabase.from("leads").update({ etapa: "visita_realizada" }).eq("id", v.lead_id);
+    }
+    load();
+  };
+
+  const gerarOrcamento = async (v: Visita) => {
+    if (v.orcamento_id) {
+      navigate("/admin/orcamentos");
+      return;
+    }
+    const { data: orc, error } = await supabase.from("orcamentos").insert({
+      criado_por: user!.id,
+      cliente_nome: v.cliente_nome,
+      cliente_telefone: v.cliente_telefone,
+      cliente_email: v.cliente_email,
+      endereco: v.endereco ?? "",
+      cidade: v.cidade ?? "",
+      estado: "SP",
+      servico_solicitado: v.servico_descricao ?? "Serviço a definir",
+      valor_total: v.valor_estimado,
+      valor_instalacao: v.valor_estimado,
+      status: "pendente",
+      origem: "interno",
+      visita_id: v.id,
+      lead_id: v.lead_id ?? null,
+      vendedor_id: v.vendedor_id,
+    } as any).select("id").single();
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    await supabase.from("visitas").update({ orcamento_id: orc!.id, status: "realizada" } as any).eq("id", v.id);
+    if (v.lead_id) {
+      await supabase.from("leads").update({ etapa: "proposta_andamento", orcamento_id: orc!.id } as any).eq("id", v.lead_id);
+    }
+    // Notifica vendedor
+    await supabase.from("agenda_eventos").insert({
+      titulo: `Orçamento disponível — ${v.cliente_nome}`,
+      descricao: "Orçamento criado pelo gerente. Acompanhe em Orçamentos.",
+      data_inicio: new Date().toISOString(),
+      data_fim: new Date().toISOString(),
+      tipo: "notificacao",
+      criado_por: user!.id,
+      target_user_ids: [v.vendedor_id] as any,
+      target_roles: [] as any,
+    } as any);
+    toast({ title: "Orçamento gerado", description: "Vendedor notificado." });
+    navigate("/admin/orcamentos");
   };
 
   return (
@@ -176,8 +234,23 @@ const Visitas = () => {
                     : v.autoriza_orcamento ? <span className="text-xs text-amber-600">Autorizado</span> : <span className="text-xs text-slate-400">—</span>}
                 </TableCell>
                 <TableCell>
-                  {(hasRole("admin", "gerente") || v.vendedor_id === user?.id) &&
-                    <Button size="icon" variant="ghost" onClick={() => openEdit(v)}><Pencil className="w-4 h-4" /></Button>}
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {(hasRole("admin", "gerente") || v.vendedor_id === user?.id) &&
+                      <Button size="icon" variant="ghost" onClick={() => openEdit(v)}><Pencil className="w-4 h-4" /></Button>}
+                    {isGerente && !v.assumida_por && !v.orcamento_id && (
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => assumirAgenda(v)}>
+                        <Hand className="w-3 h-3 mr-1" /> Assumir
+                      </Button>
+                    )}
+                    {isGerente && v.assumida_por === user?.id && !v.orcamento_id && (
+                      <Button size="sm" className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700" onClick={() => gerarOrcamento(v)}>
+                        <FileText className="w-3 h-3 mr-1" /> Gerar orçamento
+                      </Button>
+                    )}
+                    {v.assumida_por && v.assumida_por !== user?.id && !v.orcamento_id && (
+                      <span className="text-[10px] text-slate-500 italic">Assumida</span>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

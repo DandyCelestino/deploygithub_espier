@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import {
   Plus, Search, Phone, MessageCircle, MapPin, Trophy, Target,
-  TrendingUp, Users, DollarSign, Clock, Tag, Filter,
+  TrendingUp, Users, DollarSign, Clock, Tag, Filter, Calendar, X, RotateCcw,
 } from "lucide-react";
 
 const ETAPAS = [
@@ -108,6 +108,10 @@ export default function Vendedores() {
   // metas / comissões para painel
   const [comissoes, setComissoes] = useState<any[]>([]);
   const [meta, setMeta] = useState<{ meta_valor: number; meta_vendas: number } | null>(null);
+
+  // Agendar visita
+  const [agendarLead, setAgendarLead] = useState<Lead | null>(null);
+  const [agendarData, setAgendarData] = useState<string>("");
 
   useEffect(() => {
     if (!user) return;
@@ -235,6 +239,68 @@ export default function Vendedores() {
     if (error) { toast.error(error.message); return; }
     toast.success("Excluído");
     setDetalheLead(null);
+    fetchAll();
+  }
+
+  function abrirAgendar(lead: Lead, reagendar = false) {
+    setAgendarLead(lead);
+    const base = new Date(); base.setHours(base.getHours() + 24);
+    setAgendarData(base.toISOString().slice(0, 16));
+    if (reagendar) {/* mesma UI */}
+  }
+
+  async function confirmarAgendar() {
+    if (!agendarLead || !agendarData) return;
+    const dataISO = new Date(agendarData).toISOString();
+    const vendNome = agendarLead.vendedor_nome || user?.email || "";
+    // 1. Cria visita
+    const { data: visita, error: vErr } = await supabase.from("visitas").insert({
+      vendedor_id: agendarLead.vendedor_id,
+      vendedor_nome: vendNome,
+      cliente_nome: agendarLead.nome,
+      cliente_telefone: agendarLead.telefone,
+      cliente_email: agendarLead.email,
+      endereco: agendarLead.endereco,
+      cidade: agendarLead.cidade,
+      data_visita: dataISO,
+      servico_descricao: agendarLead.servico_interesse,
+      valor_estimado: Number(agendarLead.valor_estimado || 0),
+      status: "agendada",
+      lead_id: agendarLead.id,
+    } as any).select("id").single();
+    if (vErr) { toast.error(vErr.message); return; }
+    // 2. Notifica gerentes via agenda_eventos
+    await supabase.from("agenda_eventos").insert({
+      titulo: `Visita: ${agendarLead.nome}`,
+      descricao: `Vendedor ${vendNome} agendou visita ao lead ${agendarLead.nome}.`,
+      data_inicio: dataISO,
+      data_fim: dataISO,
+      tipo: "visita",
+      status: "agendado",
+      criado_por: user!.id,
+      criado_por_nome: vendNome,
+      target_roles: ["gerente", "admin"] as any,
+      local: [agendarLead.endereco, agendarLead.cidade].filter(Boolean).join(", "),
+    } as any);
+    // 3. Move lead
+    await supabase.from("leads").update({ etapa: "agendamento_visita" }).eq("id", agendarLead.id);
+    await supabase.from("lead_atividades").insert({
+      lead_id: agendarLead.id, autor_id: user!.id, tipo: "agendamento",
+      descricao: `Visita agendada para ${new Date(dataISO).toLocaleString("pt-BR")}`,
+    });
+    toast.success("Visita agendada e gerentes notificados");
+    setAgendarLead(null);
+    fetchAll();
+  }
+
+  async function descartarLead(lead: Lead) {
+    if (!confirm(`Descartar o lead "${lead.nome}"?`)) return;
+    await supabase.from("leads").update({ etapa: "perdido" }).eq("id", lead.id);
+    await supabase.from("lead_atividades").insert({
+      lead_id: lead.id, autor_id: user!.id, tipo: "descarte",
+      descricao: "Lead descartado pelo vendedor",
+    });
+    toast.success("Lead descartado");
     fetchAll();
   }
 
@@ -425,7 +491,13 @@ export default function Vendedores() {
                   return (
                     <KanbanColumn key={etapa.id} etapa={etapa} count={cards.length} total={total} onDrop={(id) => moverEtapa(id, etapa.id)}>
                       {cards.map((l) => (
-                        <KanbanCard key={l.id} lead={l} onClick={() => abrirLead(l)} />
+                        <KanbanCard
+                          key={l.id} lead={l}
+                          onClick={() => abrirLead(l)}
+                          onAgendar={() => abrirAgendar(l)}
+                          onReagendar={() => abrirAgendar(l, true)}
+                          onDescartar={() => descartarLead(l)}
+                        />
                       ))}
                     </KanbanColumn>
                   );
@@ -562,6 +634,28 @@ export default function Vendedores() {
         }}
         canDelete={isGestor || (isVendedor && detalheLead?.vendedor_id === user?.id)}
       />
+
+      {/* Agendar visita */}
+      <Dialog open={!!agendarLead} onOpenChange={(o) => !o && setAgendarLead(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Agendar visita — {agendarLead?.nome}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Data e hora</Label>
+              <Input type="datetime-local" value={agendarData} onChange={(e) => setAgendarData(e.target.value)} />
+            </div>
+            <p className="text-xs text-slate-500">
+              A visita será criada e os gerentes serão notificados na agenda para assumirem.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAgendarLead(null)}>Cancelar</Button>
+            <Button onClick={confirmarAgendar}>Confirmar agendamento</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -603,9 +697,13 @@ function KanbanColumn({
   );
 }
 
-function KanbanCard({ lead, onClick }: { lead: Lead; onClick: () => void }) {
+function KanbanCard({ lead, onClick, onAgendar, onReagendar, onDescartar }: {
+  lead: Lead; onClick: () => void;
+  onAgendar?: () => void; onReagendar?: () => void; onDescartar?: () => void;
+}) {
   const prio = PRIORIDADES.find((p) => p.id === lead.prioridade);
   const dias = diasParado(lead.etapa_changed_at);
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
   return (
     <div
       draggable
@@ -626,13 +724,32 @@ function KanbanCard({ lead, onClick }: { lead: Lead; onClick: () => void }) {
       <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
         <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{dias}d na etapa</span>
         <div className="flex gap-1">
-          {lead.whatsapp && <a href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-emerald-600"><MessageCircle className="w-3.5 h-3.5" /></a>}
-          {lead.telefone && <a href={`tel:${lead.telefone}`} onClick={(e) => e.stopPropagation()} className="text-blue-600"><Phone className="w-3.5 h-3.5" /></a>}
+          {lead.whatsapp && <a href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" onClick={stop} className="text-emerald-600"><MessageCircle className="w-3.5 h-3.5" /></a>}
+          {lead.telefone && <a href={`tel:${lead.telefone}`} onClick={stop} className="text-blue-600"><Phone className="w-3.5 h-3.5" /></a>}
         </div>
       </div>
       {lead.tags?.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-1.5">
           {lead.tags.slice(0, 3).map((t: string, i: number) => <span key={i} className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded flex items-center gap-0.5"><Tag className="w-2.5 h-2.5" />{t}</span>)}
+        </div>
+      )}
+      {(onAgendar || onReagendar || onDescartar) && (
+        <div className="flex gap-1 mt-2 pt-2 border-t border-slate-100">
+          {onAgendar && lead.etapa !== "agendamento_visita" && (
+            <Button size="sm" variant="outline" className="h-6 text-[10px] px-1.5 flex-1" onClick={(e) => { stop(e); onAgendar(); }}>
+              <Calendar className="w-3 h-3 mr-0.5" /> Agendar
+            </Button>
+          )}
+          {onReagendar && lead.etapa === "agendamento_visita" && (
+            <Button size="sm" variant="outline" className="h-6 text-[10px] px-1.5 flex-1" onClick={(e) => { stop(e); onReagendar(); }}>
+              <RotateCcw className="w-3 h-3 mr-0.5" /> Reagendar
+            </Button>
+          )}
+          {onDescartar && lead.etapa !== "perdido" && (
+            <Button size="sm" variant="outline" className="h-6 text-[10px] px-1.5 text-rose-600" onClick={(e) => { stop(e); onDescartar(); }}>
+              <X className="w-3 h-3" />
+            </Button>
+          )}
         </div>
       )}
     </div>

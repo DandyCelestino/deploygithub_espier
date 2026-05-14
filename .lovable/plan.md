@@ -1,59 +1,89 @@
 
-# Fase 4 — Refinamento de papéis, fluxos e permissões
+# Workflow Comercial — Plano de Implementação
 
-## 1. Usuários (apenas admin master)
-- Em `src/pages/admin/Usuarios.tsx`:
-  - Botões **Novo usuário**, **Editar**, **Resetar senha**, **Excluir** visíveis somente para `admin`.
-  - Diálogos: criar (nome, e-mail, role, senha temporária), editar (nome/matrícula/role), trocar senha, confirmar exclusão.
-- Edge function nova **`admin-manage-user`** (service-role) com ações: `create`, `update_profile`, `set_password`, `delete`. Valida que o solicitante tem role `admin`.
-- Mantém aprovação por candidatura, mas adiciona criação direta.
+Avaliando o que **já existe** vs **falta**, descartando duplicidades para não retrabalhar.
 
-## 2. "Esqueci minha senha"
-- Em `src/pages/admin/AdminAuth.tsx`: link **Esqueci minha senha** → modal pede e-mail → `supabase.auth.resetPasswordForEmail(email, { redirectTo: <site>/admin/auth?recover=1 })`.
-- Trata `recover=1` mostrando formulário para definir nova senha (`supabase.auth.updateUser({ password })`).
+## Status atual (já implementado)
 
-## 3. Técnico — esconder Orçamentos e restringir OS
-- `src/components/admin/AdminLayout.tsx`: ocultar item **Orçamentos** quando o usuário tem somente `tecnico`.
-- `src/App.tsx`: rota `/admin/orcamentos` exige roles `admin|gerente|vendedor|financeiro` (não técnico).
-- `src/pages/admin/OrdensServico.tsx`: no card/diálogo da OS para técnico que **ainda não assumiu**:
-  - Exibir só: nome do cliente, serviço, **cidade** (sem endereço/telefone/e-mail), lista de materiais previstos.
-  - Aviso: *"Dados completos só após assumir a OS."*
-  - Após assumir (`tecnico_id = auth.uid()`), libera visualização total.
+| Item do pedido | Status | Onde |
+|---|---|---|
+| Cadastro de Lead (nome, telefone, endereço, serviço, origem, obs) | ✅ | `Vendedores.tsx` + tabela `leads` |
+| Kanban comercial (15 etapas) | ✅ | `Vendedores.tsx` |
+| Cadastro de Visita pelo vendedor | ✅ | `Visitas.tsx` + tabela `visitas` |
+| Visita autoriza orçamento (trigger) | ✅ | `on_visita_autoriza_orcamento` |
+| Orçamento → cria OS ao aprovar | ✅ | `on_orcamento_aprovado` |
+| Comissão vendedor 10% | ✅ | `on_os_create_commission` |
+| OS — checklist, vistoria, comissão técnico | ✅ | triggers existentes |
+| Contas a receber recorrentes (mensalidade) | ✅ | `on_os_finalizada_comissao` |
+| Permissões granulares por módulo | ✅ | `usePermissions` + `user_permissions` |
+| Histórico/Logs (`activity_logs`) | ✅ | `log_activity()` |
+| Rastreio público + feedback do cliente | ✅ | `Rastreio.tsx` |
 
-## 4. Vendedor — solicitar orçamento + acompanhar evolução
-- Em `src/pages/admin/Orcamentos.tsx`:
-  - Vendedor passa a poder **inserir solicitação** (`status='solicitado'`, `vendedor_id=auth.uid()`, `origem='vendedor'`).
-  - Listagem do vendedor mostra abas/cards: **Solicitados**, **Aprovados (em execução)**, **Realizados (finalizados)**, **Comissões 10%**.
-- RLS: adicionar policies para `vendedor` inserir orçamento próprio e visualizar onde `vendedor_id = auth.uid()`.
+## O que **falta** e será implementado
 
-## 5. Gerente — fluxo completo
-- Em `src/pages/admin/Dashboard.tsx` (visão gerente): cards **Solicitações de orçamento**, **Orçamentos realizados**, **OS criadas**, **OS aguardando vistoria**, **OS finalizadas**.
-- Gerente edita orçamento `solicitado` → completa valores → marca `aprovado` (trigger existente já cria OS).
-- Vistoria/aprovação libera pagamento técnico (trigger `on_supervisao_aprovada` já existe).
+### 1. Botões de ação no card do Lead (Kanban)
+- `Vendedores.tsx`: adicionar no card → **Agendar visita**, **Descartar**, **Reagendar**.
+- "Agendar visita" abre dialog que cria registro em `visitas` **+** evento em `agenda_eventos` direcionado a gerentes (`target_roles: ['gerente']`), e move o lead para `visita_agendada`.
 
-## 6. Técnico — dashboard de pagamentos
-- Em `Dashboard.tsx` (visão técnico): cards de **A receber** / **Liberados** / **Pagos** lendo de `financeiro_contas` (`categoria='comissao_tecnico'` + `referencia_tipo='ordens_servico'` cujas OS sejam do técnico).
+### 2. Gerente "Assume Agenda" (gate p/ orçamento)
+- Nova coluna `visitas.assumida_por uuid` e `visitas.assumida_em timestamptz`.
+- Em `Agenda.tsx` / nova seção em `Visitas.tsx`: botão **Assumir agenda** (somente gerente).
+- Após assumir: visita some da fila dos demais gerentes (RLS / filtro), libera botão **Gerar orçamento** no card; bloqueado antes disso.
 
-## 7. Trabalhe Conosco
-- Em `src/components/TrabalheConosco.tsx`:
-  - `cargo_desejado` vira `Select`: Técnico, Gerente, Vendedor, Call Center.
-  - Substituir `disponibilidade` por **Modalidade** (`Select`): Freelance, Home Office, CLT, Colaborador, Parceiro, Fornecedor.
-- Coluna `candidaturas.disponibilidade` continua armazenando o valor (sem migração nova).
+### 3. Gerar Orçamento a partir da visita (one-click)
+- Botão **Gerar Orçamento** (só visível para o gerente que assumiu) → cria `orcamentos` puxando dados do lead/visita, abre tela de edição, e ao salvar move lead para `proposta_andamento`.
 
-## 8. Permissões granulares operantes
-- Criar `src/hooks/usePermissions.ts`: carrega `user_permissions` do usuário + roles, expõe `can(module, action)`.
-  - Regra: se houver linha em `user_permissions` para `(user_id, module)`, ela **sobrescreve** o default por role; senão usa o default por role.
-- Aplicar nas páginas (`Usuarios`, `Clientes`, `Orcamentos`, `OrdensServico`, `Estoque`, `Financeiro`, `Visitas`, `Agenda`, `Configuracoes`):
-  - Esconder botões Novo/Editar/Excluir quando `can(...)` é falso.
-  - Em `AdminLayout` ocultar itens de menu quando `can(module,'view')` é falso.
+### 4. Encaminhar Orçamento ao Financeiro
+- Em `Orcamentos.tsx`: botão **Encaminhar para Financeiro** (vendedor) → seta `status='solicitado'` + `setor_responsavel='financeiro'` + log.
+- Move lead para `pedido_orcamento`.
 
-## SQL (migration)
-- Policies extra em `orcamentos`: vendedor pode `INSERT` com `vendedor_id=auth.uid()` e status `solicitado`; vendedor `UPDATE` próprio enquanto `status='solicitado'`.
-- Permitir status `solicitado` (texto livre, já aceito).
-- Nenhuma alteração de schema necessária.
+### 5. Financeiro "Assumir Orçamento" + Negociação
+- Nova coluna `orcamentos.assumido_por uuid` e `assumido_em timestamptz`.
+- Em `Orcamentos.tsx` (perfil financeiro): aba **Pendentes** com botão **Assumir** → status `negociacao`; libera campos: forma de pagamento, parcelas, entrada, desconto.
+- Botões: **Aprovar**, **Reprovar**, **Solicitar ajuste**, **Enviar contrato**.
 
-## Arquivos a criar/editar
-- **Criar**: `supabase/functions/admin-manage-user/index.ts`, `src/hooks/usePermissions.ts`, migration de policies.
-- **Editar**: `Usuarios.tsx`, `AdminAuth.tsx`, `AdminLayout.tsx`, `App.tsx`, `OrdensServico.tsx`, `Orcamentos.tsx`, `Dashboard.tsx`, `TrabalheConosco.tsx`.
+### 6. Enviar contrato → Fechamento → Venda concluída
+- Botão **Enviar contrato** marca `orcamentos.contrato_enviado_em` + cria `contratos` (status `aguardando_assinatura`) e move lead para `fechamento`.
+- Marcação manual **Contrato assinado** (assinatura digital fica para fase futura — Zapsign/Clicksign exigem chaves) → status `fechado` → trigger `on_contrato_fechado` (já existe) cria orçamento/OS; move lead para `venda_concluida`.
 
-Confirma para eu prosseguir com a implementação completa?
+### 7. Sincronização Lead ↔ Orçamento ↔ OS
+- Triggers que atualizam `leads.etapa` automaticamente conforme:
+  - visita criada → `visita_agendada`
+  - visita assumida → `visita_assumida`
+  - orçamento criado → `proposta_andamento`
+  - orçamento `solicitado` → `pedido_orcamento`
+  - orçamento assumido financeiro → `negociacao`
+  - contrato enviado → `fechamento`
+  - contrato fechado → `venda_concluida`
+  - orçamento reprovado → `perdido`
+
+### 8. Notificações no painel
+- Já existe `agenda_eventos` com `target_roles`/`target_user_ids`. Usar para:
+  - Vendedor recebe evento "Orçamento disponível" quando gerente salva.
+  - Financeiro recebe "Novo orçamento para assumir".
+  - Vendedor recebe "Contrato enviado".
+- Card no Dashboard: "Notificações pendentes" (lista eventos do tipo `notificacao` direcionados ao usuário, marca como lida).
+
+## Fora de escopo nesta fase (precisa decisão/credenciais)
+- ❌ **Assinatura digital integrada** (Zapsign/Clicksign/DocuSign) — exige API key de cada provedor; deixo o status manual + upload de PDF agora.
+- ❌ **WhatsApp automático** (envio de confirmação/cobrança) — exige Evolution/Z-API/Meta Business; mantenho **link wa.me** já existente.
+- ❌ **Boletos/PIX/Carnê automáticos** — exige integração bancária (Asaas, Iugu, Mercado Pago…). Mantenho registro manual em `financeiro_contas`.
+- ❌ **n8n / Socket.io / Flutter / Next.js** — fora da stack atual (memória do projeto: React+Vite+Supabase).
+
+## Arquivos / migrations
+
+**Migration (1)**
+- `visitas`: add `assumida_por uuid`, `assumida_em timestamptz`.
+- `orcamentos`: add `assumido_por uuid`, `assumido_em timestamptz`, `forma_pagamento text`, `parcelas int`, `entrada numeric`, `desconto numeric`, `contrato_enviado_em timestamptz`.
+- `contratos`: add `status` valor `aguardando_assinatura` (texto livre, ok).
+- Funções/triggers de sincronização de `leads.etapa`.
+- RLS: gerente só vê visitas não assumidas OU assumidas por ele; financeiro só vê orçamentos `solicitado`/`negociacao`/assumidos por ele.
+
+**Edits**
+- `src/pages/admin/Vendedores.tsx` — botões no card (Agendar/Descartar/Reagendar), modal "Agendar visita".
+- `src/pages/admin/Visitas.tsx` — botão "Assumir agenda" + "Gerar orçamento".
+- `src/pages/admin/Orcamentos.tsx` — fluxo Encaminhar/Assumir/Negociação/Enviar contrato + campos comerciais.
+- `src/pages/admin/Dashboard.tsx` — card "Notificações" por usuário.
+
+## Confirmação
+Confirma para eu prosseguir com **(1) migration + (2) UI dos 4 arquivos acima**, mantendo assinatura digital, WhatsApp API e cobrança bancária para uma fase separada com credenciais?

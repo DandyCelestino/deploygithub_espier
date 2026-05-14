@@ -285,7 +285,10 @@ export type Database = {
           client_id: string
           commission_value: number
           created_at: string
+          enviado_em: string | null
           id: string
+          lead_id: string | null
+          orcamento_id: string | null
           status: string
           total_value: number
           updated_at: string
@@ -295,7 +298,10 @@ export type Database = {
           client_id: string
           commission_value?: number
           created_at?: string
+          enviado_em?: string | null
           id?: string
+          lead_id?: string | null
+          orcamento_id?: string | null
           status?: string
           total_value?: number
           updated_at?: string
@@ -305,7 +311,10 @@ export type Database = {
           client_id?: string
           commission_value?: number
           created_at?: string
+          enviado_em?: string | null
           id?: string
+          lead_id?: string | null
+          orcamento_id?: string | null
           status?: string
           total_value?: number
           updated_at?: string
@@ -674,20 +683,28 @@ export type Database = {
       }
       orcamentos: {
         Row: {
+          assumido_em: string | null
+          assumido_por: string | null
           cidade: string
           cliente_email: string | null
           cliente_id: string | null
           cliente_nome: string
           cliente_telefone: string | null
           commission_value: number
+          contrato_enviado_em: string | null
           contrato_id: string | null
           created_at: string
           criado_por: string | null
+          desconto: number
           descricao: string | null
           endereco: string
+          entrada: number
           estado: string
+          forma_pagamento: string | null
           id: string
+          lead_id: string | null
           origem: string
+          parcelas: number
           servico_solicitado: string
           setor_responsavel: string | null
           status: string
@@ -698,22 +715,31 @@ export type Database = {
           valor_mensal: number
           valor_total: number
           vendedor_id: string | null
+          visita_id: string | null
         }
         Insert: {
+          assumido_em?: string | null
+          assumido_por?: string | null
           cidade: string
           cliente_email?: string | null
           cliente_id?: string | null
           cliente_nome: string
           cliente_telefone?: string | null
           commission_value?: number
+          contrato_enviado_em?: string | null
           contrato_id?: string | null
           created_at?: string
           criado_por?: string | null
+          desconto?: number
           descricao?: string | null
           endereco: string
+          entrada?: number
           estado?: string
+          forma_pagamento?: string | null
           id?: string
+          lead_id?: string | null
           origem?: string
+          parcelas?: number
           servico_solicitado: string
           setor_responsavel?: string | null
           status?: string
@@ -724,22 +750,31 @@ export type Database = {
           valor_mensal?: number
           valor_total?: number
           vendedor_id?: string | null
+          visita_id?: string | null
         }
         Update: {
+          assumido_em?: string | null
+          assumido_por?: string | null
           cidade?: string
           cliente_email?: string | null
           cliente_id?: string | null
           cliente_nome?: string
           cliente_telefone?: string | null
           commission_value?: number
+          contrato_enviado_em?: string | null
           contrato_id?: string | null
           created_at?: string
           criado_por?: string | null
+          desconto?: number
           descricao?: string | null
           endereco?: string
+          entrada?: number
           estado?: string
+          forma_pagamento?: string | null
           id?: string
+          lead_id?: string | null
           origem?: string
+          parcelas?: number
           servico_solicitado?: string
           setor_responsavel?: string | null
           status?: string
@@ -750,6 +785,7 @@ export type Database = {
           valor_mensal?: number
           valor_total?: number
           vendedor_id?: string | null
+          visita_id?: string | null
         }
         Relationships: [
           {
@@ -1085,6 +1121,8 @@ export type Database = {
       }
       visitas: {
         Row: {
+          assumida_em: string | null
+          assumida_por: string | null
           autoriza_orcamento: boolean
           cidade: string | null
           cliente_email: string | null
@@ -1095,6 +1133,7 @@ export type Database = {
           data_visita: string
           endereco: string | null
           id: string
+          lead_id: string | null
           observacoes: string | null
           orcamento_id: string | null
           servico_descricao: string | null
@@ -1105,6 +1144,8 @@ export type Database = {
           vendedor_nome: string | null
         }
         Insert: {
+          assumida_em?: string | null
+          assumida_por?: string | null
           autoriza_orcamento?: boolean
           cidade?: string | null
           cliente_email?: string | null
@@ -1115,6 +1156,7 @@ export type Database = {
           data_visita: string
           endereco?: string | null
           id?: string
+          lead_id?: string | null
           observacoes?: string | null
           orcamento_id?: string | null
           servico_descricao?: string | null
@@ -1125,6 +1167,8 @@ export type Database = {
           vendedor_nome?: string | null
         }
         Update: {
+          assumida_em?: string | null
+          assumida_por?: string | null
           autoriza_orcamento?: boolean
           cidade?: string | null
           cliente_email?: string | null
@@ -1135,6 +1179,7 @@ export type Database = {
           data_visita?: string
           endereco?: string | null
           id?: string
+          lead_id?: string | null
           observacoes?: string | null
           orcamento_id?: string | null
           servico_descricao?: string | null
