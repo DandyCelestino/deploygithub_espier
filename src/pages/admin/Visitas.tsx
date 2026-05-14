@@ -162,6 +162,7 @@ const Visitas = () => {
     } as any);
     toast({ title: "Orçamento gerado", description: "Vendedor notificado." });
     navigate("/admin/orcamentos");
+  };
 
   return (
     <div>
