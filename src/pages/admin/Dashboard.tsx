@@ -76,9 +76,29 @@ const Dashboard = () => {
 
       await Promise.all(tasks);
       setStats(out);
+
+      // Notificações: eventos do tipo "notificacao" direcionados ao usuário ou seus papéis
+      const { data: evs } = await supabase
+        .from("agenda_eventos")
+        .select("id,titulo,descricao,data_inicio,tipo,target_user_ids,target_roles,criado_por")
+        .eq("tipo", "notificacao")
+        .order("data_inicio", { ascending: false })
+        .limit(20);
+      const meus = (evs ?? []).filter((e: any) =>
+        (e.target_user_ids ?? []).includes(user.id) ||
+        (e.target_roles ?? []).some((r: string) => roles.includes(r as any)) ||
+        e.criado_por === user.id
+      );
+      setNotificacoes(meus.slice(0, 8));
+
       setLoading(false);
     })();
   }, [user, roles.join(",")]);
+
+  const dispensarNotificacao = async (id: string) => {
+    await supabase.from("agenda_eventos").update({ status: "lido" }).eq("id", id);
+    setNotificacoes(n => n.filter(x => x.id !== id));
+  };
 
   return (
     <div>
