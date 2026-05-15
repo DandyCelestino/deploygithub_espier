@@ -130,6 +130,10 @@ const Orcamentos = () => {
       valor_mensal: String(o.valor_mensal ?? 0),
       setor_responsavel: o.setor_responsavel ?? "",
       vendedor_id: o.vendedor_id ?? "",
+      forma_pagamento: o.forma_pagamento ?? "",
+      parcelas: String(o.parcelas ?? 1),
+      entrada: String(o.entrada ?? 0),
+      desconto: String(o.desconto ?? 0),
     });
     const { data } = await supabase.from("orcamento_itens").select("*").eq("orcamento_id", o.id);
     setItens((data ?? []) as ItemOrc[]);
