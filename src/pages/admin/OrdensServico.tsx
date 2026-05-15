@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Eye, Upload, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Camera, Search } from "lucide-react";
+import { Eye, Upload, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Camera, Search, Trash2 } from "lucide-react";
 
 interface OS {
   id: string; cliente_nome: string; servico_solicitado: string; endereco: string; cidade: string;
@@ -132,6 +132,13 @@ const OrdensServico = () => {
     }).eq("id", o.id);
     if (error) toast({ title: "Não foi possível assumir", description: error.message, variant: "destructive" });
     else { toast({ title: "OS assumida" }); load(); }
+  };
+
+  const excluirOS = async (o: OS) => {
+    if (!window.confirm(`Tem certeza que deseja excluir a OS de ${o.cliente_nome}?\n\nEsta ação não pode ser desfeita.`)) return;
+    const { error } = await supabase.from("ordens_servico").delete().eq("id", o.id);
+    if (error) toast({ title: "Erro ao excluir", description: error.message, variant: "destructive" });
+    else { toast({ title: "OS excluída" }); load(); }
   };
 
   const checklistOk = editing
@@ -288,6 +295,11 @@ const OrdensServico = () => {
                   <Button size="icon" variant="ghost" onClick={() => { setEditing(o); setOpen(true); }}><Eye className="w-4 h-4" /></Button>
                   {hasRole("tecnico") && o.status === "aberta" && !o.tecnico_id && (
                     <Button size="sm" onClick={() => assumirOS(o)}>Assumir</Button>
+                  )}
+                  {hasRole("admin") && (
+                    <Button size="icon" variant="ghost" className="text-rose-600 hover:text-rose-700 hover:bg-rose-50" onClick={() => excluirOS(o)} title="Excluir OS">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   )}
                 </TableCell>
               </TableRow>
