@@ -415,8 +415,26 @@ const Orcamentos = () => {
                   {hasRole("admin", "gerente") && o.cliente_telefone && (
                     <Button size="icon" variant="ghost" title="Enviar WhatsApp" onClick={() => enviarWhatsAppFromList(o)} className="text-emerald-600 hover:text-emerald-700"><MessageCircle className="w-4 h-4" /></Button>
                   )}
-                  {hasRole("admin", "gerente") && o.status === "pendente" && (
+                  {(hasRole("admin", "gerente", "vendedor")) && (o.status === "pendente") && !o.assumido_por && (
+                    <Button size="sm" variant="outline" onClick={() => encaminharFinanceiro(o)} title="Encaminhar para Financeiro">
+                      <Send className="w-4 h-4 mr-1" /> Financeiro
+                    </Button>
+                  )}
+                  {hasRole("financeiro") && o.status === "solicitado" && !o.assumido_por && (
+                    <Button size="sm" onClick={() => assumirOrcamento(o)} className="bg-blue-600 hover:bg-blue-700">
+                      <UserCheck className="w-4 h-4 mr-1" /> Assumir
+                    </Button>
+                  )}
+                  {hasRole("financeiro", "admin", "gerente") && o.status === "negociacao" && o.assumido_por === user?.id && !o.contrato_enviado_em && (
+                    <Button size="sm" onClick={() => enviarContrato(o)} className="bg-indigo-600 hover:bg-indigo-700">
+                      <FileSignature className="w-4 h-4 mr-1" /> Enviar contrato
+                    </Button>
+                  )}
+                  {hasRole("admin", "gerente") && (o.status === "pendente" || o.status === "negociacao") && (
                     <Button size="sm" onClick={() => aprovar(o)} className="bg-emerald-600 hover:bg-emerald-700"><CheckCircle2 className="w-4 h-4 mr-1" /> Aprovar</Button>
+                  )}
+                  {hasRole("admin", "gerente", "financeiro") && o.status !== "rejeitado" && o.status !== "aprovado" && (
+                    <Button size="icon" variant="ghost" title="Rejeitar" onClick={() => rejeitar(o)} className="text-rose-600 hover:text-rose-700"><XCircle className="w-4 h-4" /></Button>
                   )}
                 </TableCell>
               </TableRow>
