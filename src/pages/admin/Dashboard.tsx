@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ClipboardList, Wrench, DollarSign, Users, UserPlus, Package,
-  TrendingUp, AlertCircle, CheckCircle2, Eye, ShieldCheck, Calendar,
+  TrendingUp, AlertCircle, CheckCircle2, Eye, ShieldCheck, Calendar, Bell,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,6 +16,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState<Record<string, number>>({});
   const [tecnicoOS, setTecnicoOS] = useState<Record<string, any[]>>({});
   const [vendedorComissoes, setVendedorComissoes] = useState<any[]>([]);
+  const [notificacoes, setNotificacoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
