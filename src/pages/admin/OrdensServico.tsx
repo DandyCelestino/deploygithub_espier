@@ -134,6 +134,13 @@ const OrdensServico = () => {
     else { toast({ title: "OS assumida" }); load(); }
   };
 
+  const excluirOS = async (o: OS) => {
+    if (!window.confirm(`Tem certeza que deseja excluir a OS de ${o.cliente_nome}?\n\nEsta ação não pode ser desfeita.`)) return;
+    const { error } = await supabase.from("ordens_servico").delete().eq("id", o.id);
+    if (error) toast({ title: "Erro ao excluir", description: error.message, variant: "destructive" });
+    else { toast({ title: "OS excluída" }); load(); }
+  };
+
   const checklistOk = editing
     ? CHECKLIST_KEYS.every(([k]) => Boolean((editing as any)[k]))
     : false;
