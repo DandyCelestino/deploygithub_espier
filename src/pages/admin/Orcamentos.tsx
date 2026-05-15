@@ -218,6 +218,65 @@ const Orcamentos = () => {
     else { toast({ title: "Aprovado!", description: "OS gerada automaticamente." }); load(); }
   };
 
+  const rejeitar = async (o: Orcamento) => {
+    if (!confirm(`Rejeitar orçamento de ${o.cliente_nome}?`)) return;
+    const { error } = await supabase.from("orcamentos").update({ status: "rejeitado" }).eq("id", o.id);
+    if (error) toast({ title: "Erro", description: error.message, variant: "destructive" });
+    else {
+      if (o.lead_id) await supabase.from("leads").update({ etapa: "perdido" }).eq("id", o.lead_id);
+      toast({ title: "Orçamento rejeitado" }); load();
+    }
+  };
+
+  const encaminharFinanceiro = async (o: Orcamento) => {
+    const { error } = await supabase.from("orcamentos").update({
+      status: "solicitado", setor_responsavel: "financeiro",
+    }).eq("id", o.id);
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    await supabase.from("agenda_eventos").insert({
+      titulo: `Novo orçamento para análise: ${o.cliente_nome}`,
+      descricao: `Orçamento ${moeda(o.valor_total)} aguardando assumir.`,
+      tipo: "notificacao", data_inicio: new Date().toISOString(),
+      criado_por: user!.id, target_roles: ["financeiro"],
+    } as any);
+    if (o.lead_id) await supabase.from("leads").update({ etapa: "pedido_orcamento" }).eq("id", o.lead_id);
+    toast({ title: "Encaminhado ao Financeiro" }); load();
+  };
+
+  const assumirOrcamento = async (o: Orcamento) => {
+    const { error } = await supabase.from("orcamentos").update({
+      assumido_por: user!.id, assumido_em: new Date().toISOString(), status: "negociacao",
+    }).eq("id", o.id);
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    if (o.lead_id) await supabase.from("leads").update({ etapa: "negociacao" }).eq("id", o.lead_id);
+    toast({ title: "Orçamento assumido" }); load();
+  };
+
+  const enviarContrato = async (o: Orcamento) => {
+    const now = new Date().toISOString();
+    const { error: e1 } = await supabase.from("orcamentos").update({ contrato_enviado_em: now }).eq("id", o.id);
+    if (e1) { toast({ title: "Erro", description: e1.message, variant: "destructive" }); return; }
+    if (o.cliente_id && o.vendedor_id) {
+      await supabase.from("contratos").insert({
+        client_id: o.cliente_id, vendedor_id: o.vendedor_id,
+        orcamento_id: o.id, lead_id: o.lead_id ?? null,
+        status: "aguardando_assinatura",
+        total_value: o.valor_total, commission_value: o.valor_total * 0.10,
+        enviado_em: now,
+      } as any);
+    }
+    if (o.lead_id) await supabase.from("leads").update({ etapa: "fechamento" }).eq("id", o.lead_id);
+    if (o.vendedor_id) {
+      await supabase.from("agenda_eventos").insert({
+        titulo: `Contrato enviado — ${o.cliente_nome}`,
+        descricao: `Aguardando assinatura.`, tipo: "notificacao",
+        data_inicio: now, criado_por: user!.id, target_user_ids: [o.vendedor_id],
+      } as any);
+    }
+    toast({ title: "Contrato enviado", description: "Aguardando assinatura do cliente." });
+    load();
+  };
+
   const validadeAteStr = (o: Orcamento) => {
     const d = new Date(o.created_at);
     d.setDate(d.getDate() + (o.validade_dias ?? 30));
