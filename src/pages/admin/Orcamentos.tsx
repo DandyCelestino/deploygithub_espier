@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, CheckCircle2, FileText, Trash2, MessageCircle, Eye, Search } from "lucide-react";
+import { Plus, Pencil, CheckCircle2, FileText, Trash2, MessageCircle, Eye, Search, Send, UserCheck, FileSignature, XCircle } from "lucide-react";
 
 interface Orcamento {
   id: string; cliente_nome: string; cliente_email: string | null; cliente_telefone: string | null;
@@ -18,6 +18,9 @@ interface Orcamento {
   descricao: string | null; validade_dias?: number;
   cliente_id?: string | null; tipo_servico?: string; valor_mensal?: number;
   origem?: string; setor_responsavel?: string | null; vendedor_id?: string | null;
+  assumido_por?: string | null; assumido_em?: string | null;
+  forma_pagamento?: string | null; parcelas?: number; entrada?: number; desconto?: number;
+  contrato_enviado_em?: string | null; lead_id?: string | null;
 }
 interface ItemEstoque { id: string; descricao: string; codigo: string | null; unidade: string; valor_venda?: number; }
 interface Cliente { id: string; name: string; email: string | null; phone: string | null; address: string | null; city: string | null; state: string | null; }
@@ -27,8 +30,13 @@ interface ItemOrc {
   descricao: string; quantidade: number; unidade: string; valor_total: number;
 }
 
-const STATUS = ["pendente", "aprovado", "rejeitado"];
-const badge = (s: string) => s === "aprovado" ? "bg-emerald-50 text-emerald-700" : s === "rejeitado" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700";
+const STATUS = ["pendente", "solicitado", "negociacao", "aprovado", "rejeitado"];
+const badge = (s: string) =>
+  s === "aprovado" ? "bg-emerald-50 text-emerald-700"
+  : s === "rejeitado" ? "bg-rose-50 text-rose-700"
+  : s === "negociacao" ? "bg-blue-50 text-blue-700"
+  : s === "solicitado" ? "bg-purple-50 text-purple-700"
+  : "bg-amber-50 text-amber-700";
 const moeda = (n: number) => `R$ ${Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const Orcamentos = () => {
@@ -56,6 +64,7 @@ const Orcamentos = () => {
     valor_instalacao: "", status: "pendente", validade_dias: "30",
     tipo_servico: "avulso", valor_mensal: "",
     setor_responsavel: "", vendedor_id: "",
+    forma_pagamento: "", parcelas: "1", entrada: "0", desconto: "0",
   });
   const [busy, setBusy] = useState(false);
 
@@ -105,6 +114,7 @@ const Orcamentos = () => {
       endereco: "", cidade: "", estado: "SP", servico_solicitado: "", descricao: "",
       valor_instalacao: "", status: "pendente", validade_dias: "30",
       tipo_servico: "avulso", valor_mensal: "", setor_responsavel: "", vendedor_id: "",
+      forma_pagamento: "", parcelas: "1", entrada: "0", desconto: "0",
     });
     setOpen(true);
   };
@@ -120,6 +130,10 @@ const Orcamentos = () => {
       valor_mensal: String(o.valor_mensal ?? 0),
       setor_responsavel: o.setor_responsavel ?? "",
       vendedor_id: o.vendedor_id ?? "",
+      forma_pagamento: o.forma_pagamento ?? "",
+      parcelas: String(o.parcelas ?? 1),
+      entrada: String(o.entrada ?? 0),
+      desconto: String(o.desconto ?? 0),
     });
     const { data } = await supabase.from("orcamento_itens").select("*").eq("orcamento_id", o.id);
     setItens((data ?? []) as ItemOrc[]);
@@ -160,6 +174,10 @@ const Orcamentos = () => {
       setor_responsavel: isVendedorOnly ? "comercial" : (form.setor_responsavel || null),
       vendedor_id: isVendedorOnly ? user!.id : (form.vendedor_id || null),
       origem: isVendedorOnly ? "vendedor" : "interno",
+      forma_pagamento: form.forma_pagamento || null,
+      parcelas: Number(form.parcelas) || 1,
+      entrada: Number(form.entrada) || 0,
+      desconto: Number(form.desconto) || 0,
     };
     let orcId = editing?.id;
     const res = editing
@@ -198,6 +216,65 @@ const Orcamentos = () => {
     const { error } = await supabase.from("orcamentos").update({ status: "aprovado" }).eq("id", o.id);
     if (error) toast({ title: "Erro", description: error.message, variant: "destructive" });
     else { toast({ title: "Aprovado!", description: "OS gerada automaticamente." }); load(); }
+  };
+
+  const rejeitar = async (o: Orcamento) => {
+    if (!confirm(`Rejeitar orçamento de ${o.cliente_nome}?`)) return;
+    const { error } = await supabase.from("orcamentos").update({ status: "rejeitado" }).eq("id", o.id);
+    if (error) toast({ title: "Erro", description: error.message, variant: "destructive" });
+    else {
+      if (o.lead_id) await supabase.from("leads").update({ etapa: "perdido" }).eq("id", o.lead_id);
+      toast({ title: "Orçamento rejeitado" }); load();
+    }
+  };
+
+  const encaminharFinanceiro = async (o: Orcamento) => {
+    const { error } = await supabase.from("orcamentos").update({
+      status: "solicitado", setor_responsavel: "financeiro",
+    }).eq("id", o.id);
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    await supabase.from("agenda_eventos").insert({
+      titulo: `Novo orçamento para análise: ${o.cliente_nome}`,
+      descricao: `Orçamento ${moeda(o.valor_total)} aguardando assumir.`,
+      tipo: "notificacao", data_inicio: new Date().toISOString(),
+      criado_por: user!.id, target_roles: ["financeiro"],
+    } as any);
+    if (o.lead_id) await supabase.from("leads").update({ etapa: "pedido_orcamento" }).eq("id", o.lead_id);
+    toast({ title: "Encaminhado ao Financeiro" }); load();
+  };
+
+  const assumirOrcamento = async (o: Orcamento) => {
+    const { error } = await supabase.from("orcamentos").update({
+      assumido_por: user!.id, assumido_em: new Date().toISOString(), status: "negociacao",
+    }).eq("id", o.id);
+    if (error) { toast({ title: "Erro", description: error.message, variant: "destructive" }); return; }
+    if (o.lead_id) await supabase.from("leads").update({ etapa: "negociacao" }).eq("id", o.lead_id);
+    toast({ title: "Orçamento assumido" }); load();
+  };
+
+  const enviarContrato = async (o: Orcamento) => {
+    const now = new Date().toISOString();
+    const { error: e1 } = await supabase.from("orcamentos").update({ contrato_enviado_em: now }).eq("id", o.id);
+    if (e1) { toast({ title: "Erro", description: e1.message, variant: "destructive" }); return; }
+    if (o.cliente_id && o.vendedor_id) {
+      await supabase.from("contratos").insert({
+        client_id: o.cliente_id, vendedor_id: o.vendedor_id,
+        orcamento_id: o.id, lead_id: o.lead_id ?? null,
+        status: "aguardando_assinatura",
+        total_value: o.valor_total, commission_value: o.valor_total * 0.10,
+        enviado_em: now,
+      } as any);
+    }
+    if (o.lead_id) await supabase.from("leads").update({ etapa: "fechamento" }).eq("id", o.lead_id);
+    if (o.vendedor_id) {
+      await supabase.from("agenda_eventos").insert({
+        titulo: `Contrato enviado — ${o.cliente_nome}`,
+        descricao: `Aguardando assinatura.`, tipo: "notificacao",
+        data_inicio: now, criado_por: user!.id, target_user_ids: [o.vendedor_id],
+      } as any);
+    }
+    toast({ title: "Contrato enviado", description: "Aguardando assinatura do cliente." });
+    load();
   };
 
   const validadeAteStr = (o: Orcamento) => {
@@ -338,8 +415,26 @@ const Orcamentos = () => {
                   {hasRole("admin", "gerente") && o.cliente_telefone && (
                     <Button size="icon" variant="ghost" title="Enviar WhatsApp" onClick={() => enviarWhatsAppFromList(o)} className="text-emerald-600 hover:text-emerald-700"><MessageCircle className="w-4 h-4" /></Button>
                   )}
-                  {hasRole("admin", "gerente") && o.status === "pendente" && (
+                  {(hasRole("admin", "gerente", "vendedor")) && (o.status === "pendente") && !o.assumido_por && (
+                    <Button size="sm" variant="outline" onClick={() => encaminharFinanceiro(o)} title="Encaminhar para Financeiro">
+                      <Send className="w-4 h-4 mr-1" /> Financeiro
+                    </Button>
+                  )}
+                  {hasRole("financeiro") && o.status === "solicitado" && !o.assumido_por && (
+                    <Button size="sm" onClick={() => assumirOrcamento(o)} className="bg-blue-600 hover:bg-blue-700">
+                      <UserCheck className="w-4 h-4 mr-1" /> Assumir
+                    </Button>
+                  )}
+                  {hasRole("financeiro", "admin", "gerente") && o.status === "negociacao" && o.assumido_por === user?.id && !o.contrato_enviado_em && (
+                    <Button size="sm" onClick={() => enviarContrato(o)} className="bg-indigo-600 hover:bg-indigo-700">
+                      <FileSignature className="w-4 h-4 mr-1" /> Enviar contrato
+                    </Button>
+                  )}
+                  {hasRole("admin", "gerente") && (o.status === "pendente" || o.status === "negociacao") && (
                     <Button size="sm" onClick={() => aprovar(o)} className="bg-emerald-600 hover:bg-emerald-700"><CheckCircle2 className="w-4 h-4 mr-1" /> Aprovar</Button>
+                  )}
+                  {hasRole("admin", "gerente", "financeiro") && o.status !== "rejeitado" && o.status !== "aprovado" && (
+                    <Button size="icon" variant="ghost" title="Rejeitar" onClick={() => rejeitar(o)} className="text-rose-600 hover:text-rose-700"><XCircle className="w-4 h-4" /></Button>
                   )}
                 </TableCell>
               </TableRow>
@@ -453,6 +548,40 @@ const Orcamentos = () => {
               </div>
               <div className="text-right text-sm text-slate-600 mt-2">Subtotal itens: <span className="font-semibold">{moeda(totalItens)}</span></div>
             </div>
+
+            {(hasRole("admin", "gerente", "financeiro")) && (
+              <div className="border-t pt-3">
+                <h3 className="font-semibold text-slate-800 mb-2 text-sm">Condições comerciais (negociação)</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div>
+                    <label className="text-xs text-slate-600">Forma de pagamento</label>
+                    <Select value={form.forma_pagamento || "none"} onValueChange={v => setForm({ ...form, forma_pagamento: v === "none" ? "" : v })}>
+                      <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">—</SelectItem>
+                        <SelectItem value="pix">PIX</SelectItem>
+                        <SelectItem value="boleto">Boleto</SelectItem>
+                        <SelectItem value="cartao">Cartão</SelectItem>
+                        <SelectItem value="dinheiro">Dinheiro</SelectItem>
+                        <SelectItem value="transferencia">Transferência</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-600">Parcelas</label>
+                    <Input type="number" min={1} value={form.parcelas} onChange={e => setForm({ ...form, parcelas: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-600">Entrada (R$)</label>
+                    <Input type="number" step="0.01" value={form.entrada} onChange={e => setForm({ ...form, entrada: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-600">Desconto (R$)</label>
+                    <Input type="number" step="0.01" value={form.desconto} onChange={e => setForm({ ...form, desconto: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-3 gap-3 border-t pt-3">
               <div>
