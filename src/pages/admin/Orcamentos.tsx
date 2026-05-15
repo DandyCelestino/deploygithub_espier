@@ -174,6 +174,10 @@ const Orcamentos = () => {
       setor_responsavel: isVendedorOnly ? "comercial" : (form.setor_responsavel || null),
       vendedor_id: isVendedorOnly ? user!.id : (form.vendedor_id || null),
       origem: isVendedorOnly ? "vendedor" : "interno",
+      forma_pagamento: form.forma_pagamento || null,
+      parcelas: Number(form.parcelas) || 1,
+      entrada: Number(form.entrada) || 0,
+      desconto: Number(form.desconto) || 0,
     };
     let orcId = editing?.id;
     const res = editing
