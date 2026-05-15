@@ -146,6 +146,31 @@ const Dashboard = () => {
             )}
           </div>
 
+          {notificacoes.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <Bell className="w-5 h-5 text-amber-600" /> Notificações pendentes
+                <span className="text-xs font-medium text-white bg-amber-600 rounded-full px-2 py-0.5">{notificacoes.length}</span>
+              </h2>
+              <Card className="divide-y divide-slate-100">
+                {notificacoes.map(n => (
+                  <div key={n.id} className="p-4 flex items-start justify-between gap-3 hover:bg-slate-50">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-slate-900">{n.titulo}</p>
+                      {n.descricao && <p className="text-xs text-slate-600 mt-0.5">{n.descricao}</p>}
+                      <p className="text-[10px] uppercase tracking-wide text-slate-400 mt-1">
+                        {new Date(n.data_inicio).toLocaleString("pt-BR")}
+                      </p>
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => dispensarNotificacao(n.id)}>
+                      Marcar lida
+                    </Button>
+                  </div>
+                ))}
+              </Card>
+            </div>
+          )}
+
           {hasRole("tecnico") && (
             <div className="mt-8">
               <h2 className="text-lg font-bold text-slate-900 mb-3">Minhas Ordens de Serviço</h2>
