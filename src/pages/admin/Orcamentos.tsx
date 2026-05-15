@@ -549,6 +549,40 @@ const Orcamentos = () => {
               <div className="text-right text-sm text-slate-600 mt-2">Subtotal itens: <span className="font-semibold">{moeda(totalItens)}</span></div>
             </div>
 
+            {(hasRole("admin", "gerente", "financeiro")) && (
+              <div className="border-t pt-3">
+                <h3 className="font-semibold text-slate-800 mb-2 text-sm">Condições comerciais (negociação)</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div>
+                    <label className="text-xs text-slate-600">Forma de pagamento</label>
+                    <Select value={form.forma_pagamento || "none"} onValueChange={v => setForm({ ...form, forma_pagamento: v === "none" ? "" : v })}>
+                      <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">—</SelectItem>
+                        <SelectItem value="pix">PIX</SelectItem>
+                        <SelectItem value="boleto">Boleto</SelectItem>
+                        <SelectItem value="cartao">Cartão</SelectItem>
+                        <SelectItem value="dinheiro">Dinheiro</SelectItem>
+                        <SelectItem value="transferencia">Transferência</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-600">Parcelas</label>
+                    <Input type="number" min={1} value={form.parcelas} onChange={e => setForm({ ...form, parcelas: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-600">Entrada (R$)</label>
+                    <Input type="number" step="0.01" value={form.entrada} onChange={e => setForm({ ...form, entrada: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-600">Desconto (R$)</label>
+                    <Input type="number" step="0.01" value={form.desconto} onChange={e => setForm({ ...form, desconto: e.target.value })} />
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="grid grid-cols-3 gap-3 border-t pt-3">
               <div>
                 <label className="text-xs text-slate-600">Valor do serviço (instalação)</label>
