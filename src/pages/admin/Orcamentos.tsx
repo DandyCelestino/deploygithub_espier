@@ -64,6 +64,7 @@ const Orcamentos = () => {
     valor_instalacao: "", status: "pendente", validade_dias: "30",
     tipo_servico: "avulso", valor_mensal: "",
     setor_responsavel: "", vendedor_id: "",
+    forma_pagamento: "", parcelas: "1", entrada: "0", desconto: "0",
   });
   const [busy, setBusy] = useState(false);
 
