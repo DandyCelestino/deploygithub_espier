@@ -114,6 +114,7 @@ const Orcamentos = () => {
       endereco: "", cidade: "", estado: "SP", servico_solicitado: "", descricao: "",
       valor_instalacao: "", status: "pendente", validade_dias: "30",
       tipo_servico: "avulso", valor_mensal: "", setor_responsavel: "", vendedor_id: "",
+      forma_pagamento: "", parcelas: "1", entrada: "0", desconto: "0",
     });
     setOpen(true);
   };
