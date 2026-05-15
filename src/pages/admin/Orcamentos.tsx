@@ -18,6 +18,9 @@ interface Orcamento {
   descricao: string | null; validade_dias?: number;
   cliente_id?: string | null; tipo_servico?: string; valor_mensal?: number;
   origem?: string; setor_responsavel?: string | null; vendedor_id?: string | null;
+  assumido_por?: string | null; assumido_em?: string | null;
+  forma_pagamento?: string | null; parcelas?: number; entrada?: number; desconto?: number;
+  contrato_enviado_em?: string | null; lead_id?: string | null;
 }
 interface ItemEstoque { id: string; descricao: string; codigo: string | null; unidade: string; valor_venda?: number; }
 interface Cliente { id: string; name: string; email: string | null; phone: string | null; address: string | null; city: string | null; state: string | null; }
@@ -27,8 +30,13 @@ interface ItemOrc {
   descricao: string; quantidade: number; unidade: string; valor_total: number;
 }
 
-const STATUS = ["pendente", "aprovado", "rejeitado"];
-const badge = (s: string) => s === "aprovado" ? "bg-emerald-50 text-emerald-700" : s === "rejeitado" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700";
+const STATUS = ["pendente", "solicitado", "negociacao", "aprovado", "rejeitado"];
+const badge = (s: string) =>
+  s === "aprovado" ? "bg-emerald-50 text-emerald-700"
+  : s === "rejeitado" ? "bg-rose-50 text-rose-700"
+  : s === "negociacao" ? "bg-blue-50 text-blue-700"
+  : s === "solicitado" ? "bg-purple-50 text-purple-700"
+  : "bg-amber-50 text-amber-700";
 const moeda = (n: number) => `R$ ${Number(n).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 const Orcamentos = () => {
