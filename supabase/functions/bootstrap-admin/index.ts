@@ -8,12 +8,18 @@ const corsHeaders = {
 };
 
 const EMAIL = "admin@espier.com.br";
-const SENHA = "Espier#Adm!2026$Secure";
+const SENHA = "Espier#Adm!2026$seguro";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const bootstrapSecret = Deno.env.get("BOOTSTRAP_ADMIN_SECRET") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const providedSecret = req.headers.get("x-bootstrap-secret");
+    if (!providedSecret || providedSecret !== bootstrapSecret) {
+      return json({ ok: false, error: "Acesso restrito" }, 403);
+    }
+
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -61,7 +67,6 @@ Deno.serve(async (req) => {
       ok: true,
       message: "Admin garantido e senha redefinida.",
       email: EMAIL,
-      senha: SENHA,
     });
   } catch (e) {
     return json({ ok: false, error: (e as Error).message }, 500);
