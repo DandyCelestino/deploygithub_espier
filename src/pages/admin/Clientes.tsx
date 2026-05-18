@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, Search, Trash2, Building2, User } from "lucide-react";
+import { Plus, Pencil, Search, Trash2, Building2, User, FileText, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Cliente {
   id: string; name: string; email: string | null; phone: string | null; document: string | null;
