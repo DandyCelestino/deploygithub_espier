@@ -184,6 +184,27 @@ const Clientes = () => {
             <Input placeholder="UF" value={form.state} onChange={e => setForm({ ...form, state: e.target.value })} />
             <div className="sm:col-span-2"><Textarea placeholder="Observações" value={form.observacoes} onChange={e => setForm({ ...form, observacoes: e.target.value })} /></div>
           </div>
+
+          {editing && (
+            <div className="mt-5 border-t pt-4">
+              <h3 className="text-sm font-bold text-slate-700 mb-2 flex items-center gap-2"><FileText className="w-4 h-4" /> Documentos relacionados ({contratosCliente.length})</h3>
+              {contratosCliente.length === 0 ? (
+                <p className="text-xs text-slate-400">Nenhum contrato vinculado a este cliente.</p>
+              ) : (
+                <ul className="space-y-1.5">
+                  {contratosCliente.map(c => (
+                    <li key={c.id} className="flex items-center justify-between gap-2 text-sm bg-slate-50 rounded px-3 py-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-mono text-xs text-slate-600">{c.numero_contrato ?? c.id.slice(0,8)}</div>
+                        <div className="text-xs text-slate-500">R$ {Number(c.total_value).toFixed(2)} · {c.status} · {new Date(c.created_at).toLocaleDateString("pt-BR")} {c.data_assinatura ? "· ✓ assinado" : ""}</div>
+                      </div>
+                      <Link to={`/contrato/${c.token_publico}`} target="_blank" className="text-primary text-xs flex items-center gap-1 shrink-0"><ExternalLink className="w-3 h-3" /> Abrir</Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
             <Button onClick={save} disabled={busy}>{busy ? "..." : "Salvar"}</Button>
