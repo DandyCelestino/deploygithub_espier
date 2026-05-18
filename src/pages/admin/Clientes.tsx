@@ -42,8 +42,8 @@ const Clientes = () => {
   };
   useEffect(() => { load(); }, []);
 
-  const openNew = () => { setEditing(null); setForm(empty); setOpen(true); };
-  const openEdit = (c: Cliente) => {
+  const openNew = () => { setEditing(null); setForm(empty); setContratosCliente([]); setOpen(true); };
+  const openEdit = async (c: Cliente) => {
     setEditing(c);
     setForm({
       name: c.name, email: c.email ?? "", phone: c.phone ?? "", document: c.document ?? "",
@@ -51,6 +51,8 @@ const Clientes = () => {
       tipo_pessoa: c.tipo_pessoa ?? "fisica", observacoes: c.observacoes ?? "",
     });
     setOpen(true);
+    const { data } = await supabase.from("contratos").select("id,numero_contrato,total_value,status,created_at,token_publico,data_assinatura").eq("client_id", c.id).order("created_at", { ascending: false });
+    setContratosCliente(data ?? []);
   };
 
   const save = async () => {
