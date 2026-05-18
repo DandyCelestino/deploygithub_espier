@@ -34,6 +34,7 @@ const Clientes = () => {
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
   const [delId, setDelId] = useState<string | null>(null);
+  const [contratosCliente, setContratosCliente] = useState<any[]>([]);
 
   const load = async () => {
     const { data } = await supabase.from("clientes").select("*").order("created_at", { ascending: false });
