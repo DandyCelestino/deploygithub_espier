@@ -11,6 +11,7 @@ import ControleAcesso from "./pages/ControleAcesso.tsx";
 import TI from "./pages/TI.tsx";
 import Telecom from "./pages/Telecom.tsx";
 import Rastreio from "./pages/Rastreio.tsx";
+import ContratoPublico from "./pages/ContratoPublico.tsx";
 
 import AdminAuth from "./pages/admin/AdminAuth.tsx";
 import AdminLayout from "./components/admin/AdminLayout.tsx";
