@@ -16,7 +16,6 @@ interface Override {
   can_delete: boolean;
 }
 
-// Defaults baseados em role (alinhados com as rotas / RLS atuais)
 const ROLE_DEFAULTS: Record<AppRole, Partial<Record<PermModule, PermAction[]>>> = {
   admin: {
     candidaturas: ["view", "create", "edit", "delete"],
@@ -71,15 +70,32 @@ export function usePermissions() {
   const [overrides, setOverrides] = useState<Record<string, Override>>({});
   const [loaded, setLoaded] = useState(false);
 
+  const load = useCallback(async (uid: string) => {
+    const { data } = await supabase.from("user_permissions").select("*").eq("user_id", uid);
+    const map: Record<string, Override> = {};
+    (data ?? []).forEach((r: any) => { map[r.module] = r; });
+    setOverrides(map);
+    setLoaded(true);
+  }, []);
+
   useEffect(() => {
     if (!user) { setOverrides({}); setLoaded(true); return; }
-    supabase.from("user_permissions").select("*").eq("user_id", user.id).then(({ data }) => {
-      const map: Record<string, Override> = {};
-      (data ?? []).forEach((r: any) => { map[r.module] = r; });
-      setOverrides(map);
-      setLoaded(true);
-    });
-  }, [user?.id]);
+    load(user.id);
+    const ch = supabase
+      .channel(`user-perms-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "user_permissions", filter: `user_id=eq.${user.id}` },
+        () => load(user.id)
+      )
+      .subscribe();
+    const onFocus = () => load(user.id);
+    window.addEventListener("focus", onFocus);
+    return () => {
+      supabase.removeChannel(ch);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [user?.id, load]);
 
   const can = useCallback((mod: PermModule, action: PermAction): boolean => {
     if (!user) return false;
@@ -89,7 +105,6 @@ export function usePermissions() {
       const key = `can_${action}` as keyof Override;
       return Boolean(ov[key]);
     }
-    // Sem override → cai no default por role
     return roles.some((r) => (ROLE_DEFAULTS[r]?.[mod] ?? []).includes(action));
   }, [user, isAdmin, overrides, roles]);
 

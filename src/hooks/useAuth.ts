@@ -20,13 +20,16 @@ export function useAuth(): AuthState {
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
 
+  async function fetchRoles(uid: string) {
+    const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
+    setRoles(((data ?? []) as { role: AppRole }[]).map((r) => r.role));
+  }
+
   useEffect(() => {
-    // listener primeiro
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
-        // defer pra evitar deadlock
         setTimeout(() => fetchRoles(s.user.id), 0);
       } else {
         setRoles([]);
@@ -46,10 +49,26 @@ export function useAuth(): AuthState {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  async function fetchRoles(uid: string) {
-    const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);
-    setRoles(((data ?? []) as { role: AppRole }[]).map((r) => r.role));
-  }
+  // Realtime: papéis mudados por admin refletem imediatamente
+  useEffect(() => {
+    if (!user?.id) return;
+    const ch = supabase
+      .channel(`user-roles-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "user_roles", filter: `user_id=eq.${user.id}` },
+        () => fetchRoles(user.id)
+      )
+      .subscribe();
+
+    const onFocus = () => fetchRoles(user.id);
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      supabase.removeChannel(ch);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [user?.id]);
 
   return {
     user,
