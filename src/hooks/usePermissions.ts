@@ -82,7 +82,7 @@ export function usePermissions() {
     if (!user) { setOverrides({}); setLoaded(true); return; }
     load(user.id);
     const ch = supabase
-      .channel(`user-perms-${user.id}`)
+      .channel(`user-perms-${user.id}-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "user_permissions", filter: `user_id=eq.${user.id}` },

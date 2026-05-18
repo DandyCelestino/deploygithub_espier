@@ -53,7 +53,7 @@ export function useAuth(): AuthState {
   useEffect(() => {
     if (!user?.id) return;
     const ch = supabase
-      .channel(`user-roles-${user.id}`)
+      .channel(`user-roles-${user.id}-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "user_roles", filter: `user_id=eq.${user.id}` },
