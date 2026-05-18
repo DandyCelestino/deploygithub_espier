@@ -60,16 +60,16 @@ const App = () => (
             }
           >
             <Route index element={<Dashboard />} />
-            <Route path="candidaturas" element={<ProtectedRoute roles={["admin","gerente"]}><Candidaturas /></ProtectedRoute>} />
-            <Route path="usuarios" element={<ProtectedRoute roles={["admin"]}><Usuarios /></ProtectedRoute>} />
-            <Route path="clientes" element={<ProtectedRoute roles={["admin","gerente","vendedor"]}><Clientes /></ProtectedRoute>} />
-            <Route path="contratos" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro"]}><Contratos /></ProtectedRoute>} />
-            <Route path="orcamentos" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro"]}><Orcamentos /></ProtectedRoute>} />
-            <Route path="ordens" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><OrdensServico /></ProtectedRoute>} />
-            <Route path="estoque" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]}><Estoque /></ProtectedRoute>} />
-            <Route path="financeiro" element={<ProtectedRoute roles={["admin","gerente","financeiro"]}><Financeiro /></ProtectedRoute>} />
-            <Route path="visitas" element={<ProtectedRoute roles={["admin","gerente","vendedor"]}><Visitas /></ProtectedRoute>} />
-            <Route path="agenda" element={<ProtectedRoute roles={["admin","gerente","tecnico","vendedor","financeiro"]}><Agenda /></ProtectedRoute>} />
+            <Route path="candidaturas" element={<ProtectedRoute roles={["admin","gerente"]} module="candidaturas"><Candidaturas /></ProtectedRoute>} />
+            <Route path="usuarios" element={<ProtectedRoute roles={["admin"]} module="usuarios"><Usuarios /></ProtectedRoute>} />
+            <Route path="clientes" element={<ProtectedRoute roles={["admin","gerente","vendedor"]} module="clientes"><Clientes /></ProtectedRoute>} />
+            <Route path="contratos" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro"]} module="contratos"><Contratos /></ProtectedRoute>} />
+            <Route path="orcamentos" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro"]} module="orcamentos"><Orcamentos /></ProtectedRoute>} />
+            <Route path="ordens" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]} module="ordens"><OrdensServico /></ProtectedRoute>} />
+            <Route path="estoque" element={<ProtectedRoute roles={["admin","gerente","tecnico","financeiro"]} module="estoque"><Estoque /></ProtectedRoute>} />
+            <Route path="financeiro" element={<ProtectedRoute roles={["admin","gerente","financeiro"]} module="financeiro"><Financeiro /></ProtectedRoute>} />
+            <Route path="visitas" element={<ProtectedRoute roles={["admin","gerente","vendedor"]} module="visitas"><Visitas /></ProtectedRoute>} />
+            <Route path="agenda" element={<ProtectedRoute roles={["admin","gerente","tecnico","vendedor","financeiro"]} module="agenda"><Agenda /></ProtectedRoute>} />
             <Route path="permissoes" element={<ProtectedRoute roles={["admin"]}><Permissoes /></ProtectedRoute>} />
             <Route path="historico" element={<ProtectedRoute roles={["admin","gerente"]}><Historico /></ProtectedRoute>} />
             <Route path="comissoes" element={<ProtectedRoute roles={["admin","gerente","vendedor","financeiro"]}><Comissoes /></ProtectedRoute>} />
