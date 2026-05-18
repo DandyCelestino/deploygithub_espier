@@ -49,6 +49,7 @@ const App = () => (
           <Route path="/ti" element={<TI />} />
           <Route path="/ti/telecom" element={<Telecom />} />
           <Route path="/rastreio" element={<Rastreio />} />
+          <Route path="/contrato/:token" element={<ContratoPublico />} />
 
           {/* Área restrita */}
           <Route path="/admin/auth" element={<AdminAuth />} />
