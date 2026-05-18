@@ -282,42 +282,87 @@ export type Database = {
       }
       contratos: {
         Row: {
+          assinatura_cpf: string | null
+          assinatura_ip: string | null
+          assinatura_nome: string | null
           client_id: string
           commission_value: number
           created_at: string
+          data_assinatura: string | null
           enviado_em: string | null
+          enviado_whatsapp_em: string | null
+          forma_pagamento: string | null
+          garantia_meses: number
           id: string
+          itens: Json
           lead_id: string | null
+          numero_contrato: string | null
+          objeto: string | null
+          observacoes: string | null
           orcamento_id: string | null
+          prazo_execucao_dias: number | null
+          sla_resposta_horas: number
           status: string
+          token_publico: string
           total_value: number
           updated_at: string
+          valor_mensal: number
           vendedor_id: string
         }
         Insert: {
+          assinatura_cpf?: string | null
+          assinatura_ip?: string | null
+          assinatura_nome?: string | null
           client_id: string
           commission_value?: number
           created_at?: string
+          data_assinatura?: string | null
           enviado_em?: string | null
+          enviado_whatsapp_em?: string | null
+          forma_pagamento?: string | null
+          garantia_meses?: number
           id?: string
+          itens?: Json
           lead_id?: string | null
+          numero_contrato?: string | null
+          objeto?: string | null
+          observacoes?: string | null
           orcamento_id?: string | null
+          prazo_execucao_dias?: number | null
+          sla_resposta_horas?: number
           status?: string
+          token_publico?: string
           total_value?: number
           updated_at?: string
+          valor_mensal?: number
           vendedor_id: string
         }
         Update: {
+          assinatura_cpf?: string | null
+          assinatura_ip?: string | null
+          assinatura_nome?: string | null
           client_id?: string
           commission_value?: number
           created_at?: string
+          data_assinatura?: string | null
           enviado_em?: string | null
+          enviado_whatsapp_em?: string | null
+          forma_pagamento?: string | null
+          garantia_meses?: number
           id?: string
+          itens?: Json
           lead_id?: string | null
+          numero_contrato?: string | null
+          objeto?: string | null
+          observacoes?: string | null
           orcamento_id?: string | null
+          prazo_execucao_dias?: number | null
+          sla_resposta_horas?: number
           status?: string
+          token_publico?: string
           total_value?: number
           updated_at?: string
+          valor_mensal?: number
           vendedor_id?: string
         }
         Relationships: [
@@ -1196,6 +1241,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assinar_contrato: {
+        Args: { _cpf: string; _nome: string; _token: string }
+        Returns: Json
+      }
+      get_contrato_by_token: { Args: { _token: string }; Returns: Json }
       get_os_by_tracking_code: { Args: { _codigo: string }; Returns: Json }
       has_role: {
         Args: {
