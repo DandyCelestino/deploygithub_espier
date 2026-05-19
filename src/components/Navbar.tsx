@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import logoEspier from "@/assets/espier-logo.png";
+import logoEspier from "@/assets/espier-logo-transparent.png";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -62,11 +62,13 @@ const Navbar = () => {
     >
       <div className="section-container flex items-center justify-between h-16 lg:h-20">
         <a href="/#home" className="flex items-center gap-2.5 group" aria-label="Espier.Telecom">
-          <img
-            src={logoEspier}
-            alt="Espier.Telecom"
-            className="h-9 lg:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform"
-          />
+          <div className="bg-white rounded-md px-1.5 py-1">
+            <img
+              src={logoEspier}
+              alt="Espier.Telecom"
+              className="h-9 lg:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform"
+            />
+          </div>
         </a>
 
         {/* Desktop */}
