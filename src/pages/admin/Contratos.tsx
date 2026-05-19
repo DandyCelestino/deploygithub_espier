@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, Search, Trash2, ExternalLink, Send, FileText, Eye } from "lucide-react";
+import { Plus, Pencil, Search, Trash2, ExternalLink, Send, FileText, Eye, Download, Copy } from "lucide-react";
 
 interface Item { descricao: string; quantidade: number; valor_unit: number; }
 interface Contrato {
