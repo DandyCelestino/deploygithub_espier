@@ -13,6 +13,7 @@ const fmtDate = (d?: string | null) => d ? new Date(d).toLocaleDateString("pt-BR
 
 const ContratoPublico = () => {
   const { token } = useParams();
+  const [params] = useSearchParams();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
@@ -29,6 +30,14 @@ const ContratoPublico = () => {
   };
   useEffect(() => { if (token) load(); }, [token]);
 
+  // Auto-print quando vier com ?print=1 (usado pelo admin para gerar PDF)
+  useEffect(() => {
+    if (!loading && data?.contrato && params.get("print") === "1") {
+      const t = setTimeout(() => window.print(), 600);
+      return () => clearTimeout(t);
+    }
+  }, [loading, data, params]);
+
   const assinar = async () => {
     if (nome.trim().length < 3 || cpf.replace(/\D/g, "").length < 11) {
       toast({ title: "Preencha nome completo e CPF válido", variant: "destructive" }); return;
@@ -39,7 +48,16 @@ const ContratoPublico = () => {
     if (error || !(res as any)?.ok) { toast({ title: "Erro ao assinar", description: (res as any)?.error ?? error?.message, variant: "destructive" }); return; }
     toast({ title: "Contrato assinado com sucesso!" });
     load();
+    // Após assinar, oferecer download automático
+    setTimeout(() => window.print(), 800);
   };
+
+  const compartilharWhatsapp = () => {
+    const link = window.location.origin + `/contrato/${token}`;
+    const msg = `Contrato ${data?.contrato?.numero_contrato ?? ""} assinado digitalmente. Acesse: ${link}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+  };
+
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-slate-400" /></div>;
   if (!data?.contrato) return <div className="min-h-screen flex items-center justify-center text-slate-600">Contrato não encontrado ou link expirado.</div>;
