@@ -82,6 +82,9 @@ const ContratoPublico = () => {
 
         <article className="bg-white shadow-sm rounded-lg p-8 sm:p-12 print:shadow-none print:p-0 text-slate-800 text-[14px] leading-relaxed">
           <header className="text-center border-b pb-4 mb-6">
+            <div className="flex justify-center mb-3">
+              <img src={logoEspier} alt="Espier.Telecom" className="h-16 w-auto object-contain" />
+            </div>
             <div className="text-xs text-slate-500 tracking-widest">ESPIER.TELECOM — TI · TELECOM · SEGURANÇA</div>
             <h1 className="text-2xl font-bold mt-2">CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h1>
             <div className="text-sm text-slate-600 mt-1">Nº {c.numero_contrato} · Emitido em {fmtDate(c.created_at)}</div>
