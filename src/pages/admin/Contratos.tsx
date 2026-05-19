@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, Pencil, Search, Trash2, ExternalLink, Send, FileText, Eye } from "lucide-react";
+import { Plus, Pencil, Search, Trash2, ExternalLink, Send, FileText, Eye, Download, Copy } from "lucide-react";
 
 interface Item { descricao: string; quantidade: number; valor_unit: number; }
 interface Contrato {
@@ -118,16 +118,32 @@ const Contratos = () => {
 
   const linkPublico = (token: string) => `${window.location.origin}/contrato/${token}`;
 
+  const copiarLink = async (c: Contrato) => {
+    try {
+      await navigator.clipboard.writeText(linkPublico(c.token_publico));
+      toast({ title: "Link copiado para a área de transferência" });
+    } catch {
+      toast({ title: "Não foi possível copiar", variant: "destructive" });
+    }
+  };
+
+  const baixarPdf = (c: Contrato) => {
+    // abre o link público com auto-print → cliente/admin gera o PDF
+    window.open(linkPublico(c.token_publico) + "?print=1", "_blank");
+  };
+
   const enviarWhatsapp = async (c: Contrato) => {
     const cli = clientes.find(x => x.id === c.client_id);
     if (!cli?.phone) { toast({ title: "Cliente sem telefone cadastrado", variant: "destructive" }); return; }
     const tel = cli.phone.replace(/\D/g, "");
     const link = linkPublico(c.token_publico);
-    const msg = `Olá ${cli.name}! Segue o contrato *${c.numero_contrato}* da Espier.Telecom para sua análise e assinatura digital:\n\n${link}\n\nQualquer dúvida estamos à disposição.`;
+    const acao = c.data_assinatura ? "sua cópia assinada digitalmente" : "sua análise e assinatura digital";
+    const msg = `Olá ${cli.name}! Segue o contrato *${c.numero_contrato}* da Espier.Telecom para ${acao}:\n\n${link}\n\nVocê pode visualizar, assinar e baixar o PDF diretamente no link acima.\n\nQualquer dúvida estamos à disposição.`;
     await supabase.from("contratos").update({ enviado_whatsapp_em: new Date().toISOString(), status: c.status === "em_negociacao" ? "enviado" : c.status }).eq("id", c.id);
     window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`, "_blank");
     load();
   };
+
 
   const clientName = (id: string) => clientes.find(c => c.id === id)?.name ?? "—";
   const canEdit = (c: Contrato) => hasRole("admin", "gerente") || c.vendedor_id === user?.id;
@@ -185,13 +201,16 @@ const Contratos = () => {
                 <TableCell><span className={`text-xs font-bold px-2 py-0.5 rounded-full ${statusBadge(c.status)}`}>{statusLabel[c.status] ?? c.status}</span></TableCell>
                 <TableCell className="text-xs">{c.data_assinatura ? <span className="text-emerald-700">✓ {c.assinatura_nome}</span> : c.enviado_whatsapp_em ? <span className="text-blue-700">Enviado</span> : <span className="text-slate-400">—</span>}</TableCell>
                 <TableCell>
-                  <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" title="Visualizar" onClick={() => window.open(linkPublico(c.token_publico), "_blank")}><Eye className="w-4 h-4" /></Button>
+                  <div className="flex gap-1 flex-wrap">
+                    <Button size="icon" variant="ghost" title="Visualizar contrato" onClick={() => window.open(linkPublico(c.token_publico), "_blank")}><Eye className="w-4 h-4" /></Button>
+                    <Button size="icon" variant="ghost" title="Baixar PDF" onClick={() => baixarPdf(c)}><Download className="w-4 h-4 text-slate-700" /></Button>
+                    <Button size="icon" variant="ghost" title="Copiar link" onClick={() => copiarLink(c)}><Copy className="w-4 h-4" /></Button>
                     <Button size="icon" variant="ghost" title="Enviar por WhatsApp" onClick={() => enviarWhatsapp(c)}><Send className="w-4 h-4 text-emerald-600" /></Button>
                     {canEdit(c) && <Button size="icon" variant="ghost" title="Editar" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>}
                     {canDelete && <Button size="icon" variant="ghost" title="Excluir" onClick={() => setDelId(c.id)}><Trash2 className="w-4 h-4 text-rose-600" /></Button>}
                   </div>
                 </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
