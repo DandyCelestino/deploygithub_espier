@@ -201,13 +201,16 @@ const Contratos = () => {
                 <TableCell><span className={`text-xs font-bold px-2 py-0.5 rounded-full ${statusBadge(c.status)}`}>{statusLabel[c.status] ?? c.status}</span></TableCell>
                 <TableCell className="text-xs">{c.data_assinatura ? <span className="text-emerald-700">✓ {c.assinatura_nome}</span> : c.enviado_whatsapp_em ? <span className="text-blue-700">Enviado</span> : <span className="text-slate-400">—</span>}</TableCell>
                 <TableCell>
-                  <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" title="Visualizar" onClick={() => window.open(linkPublico(c.token_publico), "_blank")}><Eye className="w-4 h-4" /></Button>
+                  <div className="flex gap-1 flex-wrap">
+                    <Button size="icon" variant="ghost" title="Visualizar contrato" onClick={() => window.open(linkPublico(c.token_publico), "_blank")}><Eye className="w-4 h-4" /></Button>
+                    <Button size="icon" variant="ghost" title="Baixar PDF" onClick={() => baixarPdf(c)}><Download className="w-4 h-4 text-slate-700" /></Button>
+                    <Button size="icon" variant="ghost" title="Copiar link" onClick={() => copiarLink(c)}><Copy className="w-4 h-4" /></Button>
                     <Button size="icon" variant="ghost" title="Enviar por WhatsApp" onClick={() => enviarWhatsapp(c)}><Send className="w-4 h-4 text-emerald-600" /></Button>
                     {canEdit(c) && <Button size="icon" variant="ghost" title="Editar" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>}
                     {canDelete && <Button size="icon" variant="ghost" title="Excluir" onClick={() => setDelId(c.id)}><Trash2 className="w-4 h-4 text-rose-600" /></Button>}
                   </div>
                 </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
