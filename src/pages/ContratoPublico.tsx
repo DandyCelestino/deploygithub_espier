@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CheckCircle2, Printer, ShieldCheck } from "lucide-react";
+import { Loader2, CheckCircle2, Printer, ShieldCheck, Download, Share2 } from "lucide-react";
 
 interface Item { descricao: string; quantidade: number; valor_unit: number; }
 
