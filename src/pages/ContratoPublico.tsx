@@ -70,10 +70,14 @@ const ContratoPublico = () => {
   return (
     <div className="min-h-screen bg-slate-100 py-6 print:bg-white print:py-0">
       <div className="max-w-4xl mx-auto px-3">
-        <div className="flex justify-between items-center mb-4 print:hidden">
-          <div className="text-sm text-slate-600">Contrato <strong>{c.numero_contrato}</strong></div>
-          <Button variant="outline" size="sm" onClick={() => window.print()}><Printer className="w-4 h-4 mr-1.5" /> Imprimir / PDF</Button>
+        <div className="flex justify-between items-center mb-4 print:hidden flex-wrap gap-2">
+          <div className="text-sm text-slate-600">Contrato <strong>{c.numero_contrato}</strong> {assinado && <span className="ml-2 text-emerald-700 text-xs font-bold">✓ ASSINADO</span>}</div>
+          <div className="flex gap-2">
+            {assinado && <Button variant="outline" size="sm" onClick={compartilharWhatsapp}><Share2 className="w-4 h-4 mr-1.5" /> Compartilhar</Button>}
+            <Button variant="outline" size="sm" onClick={() => window.print()}><Download className="w-4 h-4 mr-1.5" /> Baixar PDF</Button>
+          </div>
         </div>
+
 
         <article className="bg-white shadow-sm rounded-lg p-8 sm:p-12 print:shadow-none print:p-0 text-slate-800 text-[14px] leading-relaxed">
           <header className="text-center border-b pb-4 mb-6">
