@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2, ShieldCheck, Download, Share2 } from "lucide-react";
+import logoEspier from "@/assets/espier-logo-transparent.png";
 
 interface Item { descricao: string; quantidade: number; valor_unit: number; }
 
