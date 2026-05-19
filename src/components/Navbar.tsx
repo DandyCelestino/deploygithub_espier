@@ -62,11 +62,13 @@ const Navbar = () => {
     >
       <div className="section-container flex items-center justify-between h-16 lg:h-20">
         <a href="/#home" className="flex items-center gap-2.5 group" aria-label="Espier.Telecom">
-          <img
-            src={logoEspier}
-            alt="Espier.Telecom"
-            className="h-9 lg:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform"
-          />
+          <div className="bg-white rounded-md px-1.5 py-1">
+            <img
+              src={logoEspier}
+              alt="Espier.Telecom"
+              className="h-9 lg:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform"
+            />
+          </div>
         </a>
 
         {/* Desktop */}
