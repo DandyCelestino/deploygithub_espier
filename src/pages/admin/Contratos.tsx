@@ -118,16 +118,32 @@ const Contratos = () => {
 
   const linkPublico = (token: string) => `${window.location.origin}/contrato/${token}`;
 
+  const copiarLink = async (c: Contrato) => {
+    try {
+      await navigator.clipboard.writeText(linkPublico(c.token_publico));
+      toast({ title: "Link copiado para a área de transferência" });
+    } catch {
+      toast({ title: "Não foi possível copiar", variant: "destructive" });
+    }
+  };
+
+  const baixarPdf = (c: Contrato) => {
+    // abre o link público com auto-print → cliente/admin gera o PDF
+    window.open(linkPublico(c.token_publico) + "?print=1", "_blank");
+  };
+
   const enviarWhatsapp = async (c: Contrato) => {
     const cli = clientes.find(x => x.id === c.client_id);
     if (!cli?.phone) { toast({ title: "Cliente sem telefone cadastrado", variant: "destructive" }); return; }
     const tel = cli.phone.replace(/\D/g, "");
     const link = linkPublico(c.token_publico);
-    const msg = `Olá ${cli.name}! Segue o contrato *${c.numero_contrato}* da Espier.Telecom para sua análise e assinatura digital:\n\n${link}\n\nQualquer dúvida estamos à disposição.`;
+    const acao = c.data_assinatura ? "sua cópia assinada digitalmente" : "sua análise e assinatura digital";
+    const msg = `Olá ${cli.name}! Segue o contrato *${c.numero_contrato}* da Espier.Telecom para ${acao}:\n\n${link}\n\nVocê pode visualizar, assinar e baixar o PDF diretamente no link acima.\n\nQualquer dúvida estamos à disposição.`;
     await supabase.from("contratos").update({ enviado_whatsapp_em: new Date().toISOString(), status: c.status === "em_negociacao" ? "enviado" : c.status }).eq("id", c.id);
     window.open(`https://wa.me/55${tel}?text=${encodeURIComponent(msg)}`, "_blank");
     load();
   };
+
 
   const clientName = (id: string) => clientes.find(c => c.id === id)?.name ?? "—";
   const canEdit = (c: Contrato) => hasRole("admin", "gerente") || c.vendedor_id === user?.id;
