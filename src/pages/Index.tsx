@@ -19,6 +19,7 @@ const Index = () => (
     <Services />
     <Security />
     <Portfolio />
+    <EspierEmAcao />
     <Testimonials />
     <Contact />
     <TrabalheConosco />
