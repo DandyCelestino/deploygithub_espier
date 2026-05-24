@@ -15,6 +15,7 @@ type Props = {
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
+  onGoTo: (index: number) => void;
 };
 
 const GaleriaLightbox = ({
@@ -24,6 +25,7 @@ const GaleriaLightbox = ({
   onClose,
   onPrev,
   onNext,
+  onGoTo,
 }: Props) => {
   const item = items[currentIndex];
 
@@ -52,7 +54,7 @@ const GaleriaLightbox = ({
 
   return (
     <div
-      className="fixed inset-1 z-[100] flex items-center justify-center"
+      className="fixed inset-0 z-[100] flex items-center justify-center"
       role="dialog"
       aria-modal="true"
       aria-label="Galeria de fotos"
@@ -84,7 +86,7 @@ const GaleriaLightbox = ({
           e.stopPropagation();
           onPrev();
         }}
-        className="absolute left-3 sm:left-6 z-10 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors disabled:opacity-30"
+        className="absolute left-3 sm:left-6 z-10 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
         aria-label="Foto anterior"
       >
         <ChevronLeft className="w-7 h-7" />
@@ -96,7 +98,7 @@ const GaleriaLightbox = ({
           e.stopPropagation();
           onNext();
         }}
-        className="absolute right-3 sm:right-6 z-10 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors disabled:opacity-30"
+        className="absolute right-3 sm:right-6 z-10 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
         aria-label="Próxima foto"
       >
         <ChevronRight className="w-7 h-7" />
@@ -104,7 +106,7 @@ const GaleriaLightbox = ({
 
       {/* Content */}
       <div
-        className="relative z-0 flex flex-col items-center justify-center w-full h-full px-4 sm:px-16 py-16"
+        className="relative z-0 flex flex-col items-center justify-center w-full h-full px-4 sm:px-16 py-16 pb-24"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Image container */}
@@ -136,21 +138,20 @@ const GaleriaLightbox = ({
       </div>
 
       {/* Thumbnail strip */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2 max-w-[90vw] overflow-x-auto px-2 pb-1 scrollbar-thin">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2 max-w-[90vw] overflow-x-auto px-2 pb-1">
         {items.map((thumb, idx) => (
           <button
             key={idx}
             onClick={(e) => {
               e.stopPropagation();
-              // Navigate by calculating offset? We need a prop for that.
-              // For simplicity, let's just expose onSelect via parent.
-              // But we only have onPrev/onNext. Let's add onGoTo as optional.
+              onGoTo(idx);
             }}
             className={`flex-shrink-0 w-14 h-10 sm:w-20 sm:h-14 rounded-md overflow-hidden border-2 transition-all ${
               idx === currentIndex
                 ? "border-primary scale-110"
                 : "border-transparent opacity-60 hover:opacity-100"
             }`}
+            aria-label={`Ir para ${thumb.title}`}
           >
             <img
               src={thumb.img}
