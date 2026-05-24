@@ -1,5 +1,5 @@
 import imgTI from "@/assets/espier-tecnica-interna.png";
-import imgSeguranca from "@/assets/espier-campo-barra.png";
+import imgSeguranca from "@/assets/galeria/cftv-instalacao-carro.jpg";
 import imgRecepcaoComercial from "@/assets/espier-recepcao-comercial.png";
 import imgInfraLogistica from "@/assets/espier-infra-logistica.png";
 import imgSobre from "@/assets/espier-campo-barra.png";
