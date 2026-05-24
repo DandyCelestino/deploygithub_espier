@@ -74,7 +74,7 @@ const EspierEmAcao = () => {
   const closeLightbox = () => setLightboxOpen(false);
 
   const goToPrev = () =>
-    setCurrentIndex((prev) => (prev === 1 ? items.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? items.length - 1 : prev - 1));
 
   const goToNext = () =>
     setCurrentIndex((prev) => (prev === items.length - 1 ? 0 : prev + 1));
